@@ -1,0 +1,9 @@
+{
+  "global": "CC_ForeverDB",
+  "files": "ForeverDB",
+  "toc": "CommandCenter_ForeverDB.toc",
+  "target": "CommandCenter_ForeverDB",
+  "tables": ["npc", "obj", "quest", "qg", "item", "drop", "odrop", "idrop", "vend", "vp", "rew", "start", "world", "spw", "spm"],
+  "prune": true,
+  "fields": { "item": [0, 1] }
+}

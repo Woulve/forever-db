@@ -1,0 +1,121 @@
+# Builds the WoW Forever master database and every addon slice.
+# Runs daily, when new recordings are pushed to the addon repo (repository_dispatch), or by hand.
+# Publishes only when the data actually changed, then tells each addon repo to pick it up.
+name: Build database
+
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [new-recordings]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-db
+  cancel-in-progress: false
+
+env:
+  BASE_REPO: https://github.com/cmangos/classic-db.git
+  ADDON_REPO: ${{ vars.ADDON_REPO }}          # e.g. yourname/CommandCenter (holds collected/)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tests
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1 >/dev/null
+          python tests/run_tests.py
+
+      - name: Get the open vanilla database
+        run: |
+          git clone --depth 1 "$BASE_REPO" base-src
+          echo "BASE_SHA=$(git -C base-src rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+      - name: Cache base import
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: work/base.json
+          key: base-${{ env.BASE_SHA }}-${{ hashFiles('tools/import_base.py', 'tools/sqldump.py') }}
+
+      - name: Import base
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p work
+          # the full world dump lives in Full_DB/ (zip / sql / sql.gz); fall back to the whole repo
+          if [ -d base-src/Full_DB ]; then SRC=base-src/Full_DB; else SRC=base-src; fi
+          python tools/import_base.py "$SRC" work/base.json
+
+      - name: Get recordings from the addon repo
+        if: env.ADDON_REPO != ''
+        env:
+          TOKEN: ${{ secrets.PIPELINE_TOKEN }}
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse "https://x-access-token:${TOKEN}@github.com/${ADDON_REPO}.git" addon-src
+          git -C addon-src sparse-checkout set collected
+          mkdir -p addon-src/collected
+
+      - name: Build master
+        run: |
+          mkdir -p dist
+          python tools/build.py --base work/base.json --collected collected addon-src/collected --out dist/forever.json
+
+      - name: Changed?
+        id: diff
+        run: |
+          NEW=$(python -c "import json;print(json.load(open('dist/forever.json'))['meta']['hash'])")
+          OLD=$(python -c "import json,os;print(json.load(open('manifest.json'))['hash'] if os.path.exists('manifest.json') else '')")
+          echo "new=$NEW" >> "$GITHUB_OUTPUT"
+          if [ "$NEW" = "$OLD" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Slices
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          for spec in slices/*.json; do
+            name=$(basename "$spec" .json)
+            target=$(python -c "import json;print(json.load(open('$spec')).get('target','$name'))")
+            mkdir -p "out/$name/$target"
+            if [ -f "slices/$name.toc" ]; then cp "slices/$name.toc" "out/$name/$target/"; fi
+            python tools/slice.py "$spec" dist/forever.json "out/$name/$target"
+            cp LICENSE-DATA.txt "out/$name/$target/"
+            if [ -f base-src/LICENSE ] || [ -f base-src/COPYING ]; then cp base-src/LICENSE "out/$name/$target/GPL-2.0.txt" 2>/dev/null || cp base-src/COPYING "out/$name/$target/GPL-2.0.txt"; fi
+            (cd "out/$name" && zip -qr "../../dist/$name.zip" "$target")
+          done
+          gzip -kf dist/forever.json
+
+      - name: Publish
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          m = json.load(open("dist/forever.json"))["meta"]
+          json.dump(m, open("manifest.json", "w"), indent=1, sort_keys=True)
+          PY
+          git config user.name "forever-db bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "Database ${{ steps.diff.outputs.new }}" || true
+          git push
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest dist/forever.json.gz dist/*.zip --title "Forever database (latest)" --notes "Built $(date -u +%F) from base ${BASE_SHA} + recordings. Hash ${{ steps.diff.outputs.new }}."
+
+      - name: Tell the addon repos
+        if: steps.diff.outputs.changed == 'true' && env.ADDON_REPO != ''
+        env:
+          GH_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
+        run: |
+          gh api "repos/${ADDON_REPO}/dispatches" -f event_type=db-updated -f "client_payload[hash]=${{ steps.diff.outputs.new }}"
+          # more addons: list them in the DB_CONSUMERS variable (space separated owner/repo)
+          for r in ${{ vars.DB_CONSUMERS }}; do gh api "repos/$r/dispatches" -f event_type=db-updated || true; done

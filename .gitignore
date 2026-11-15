@@ -1,0 +1,6 @@
+work/
+dist/
+out/
+base-src/
+addon-src/
+__pycache__/
