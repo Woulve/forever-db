@@ -1,0 +1,25 @@
+{
+ "build": "2026-11-15",
+ "counts": {
+  "drop": 7239,
+  "idrop": 2273,
+  "item": 17718,
+  "npc": 10384,
+  "obj": 10743,
+  "odrop": 2990,
+  "qe": 4154,
+  "qg": 3956,
+  "quest": 4245,
+  "rew": 2138,
+  "seen": 0,
+  "spm": 0,
+  "spw": 15118,
+  "start": 216,
+  "vend": 1765,
+  "vp": 0,
+  "world": 2995
+ },
+ "hash": "11c7d6137731cbd1",
+ "recordings": 0,
+ "sources": "cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings"
+}
