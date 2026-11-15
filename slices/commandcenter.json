@@ -3,7 +3,35 @@
   "files": "ForeverDB",
   "toc": "CommandCenter_ForeverDB.toc",
   "target": "CommandCenter_ForeverDB",
-  "tables": ["npc", "obj", "quest", "qg", "item", "drop", "odrop", "idrop", "vend", "vp", "rew", "start", "world", "spw", "spm"],
+  "tables": [
+    "npc",
+    "obj",
+    "quest",
+    "qg",
+    "item",
+    "drop",
+    "odrop",
+    "idrop",
+    "vend",
+    "vp",
+    "rew",
+    "start",
+    "world",
+    "spw",
+    "spm"
+  ],
   "prune": true,
-  "fields": { "item": [0, 1] }
+  "fields": {
+    "item": [
+      0,
+      1
+    ]
+  },
+  "max_rows": {
+    "drop": 40,
+    "odrop": 30,
+    "idrop": 30,
+    "vend": 30,
+    "rew": 20
+  }
 }

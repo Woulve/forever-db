@@ -10,6 +10,7 @@ Spec (slices/<name>.json):
     "tables": ["npc", "drop", ...],      which master tables to include
     "prune": true,                       keep only npcs/objects/quests/items referenced by the other tables
     "fields": {"npc": [0, 1, 2, 3, 4]}   optional: which columns of a row to keep
+    "max_rows": {"drop": 40}             optional: keep only the best N sources per item
   }
 Flattening done for Lua: drop/odrop/idrop rows [[src, chance], ...] -> {src, chance, src, chance, ...}.
 Big tables are written in chunks wrapped in functions (Lua's per-function constant limit),
@@ -89,6 +90,12 @@ def make_slice(db, spec):
     tables = spec["tables"]
     out = {}
     keep = None
+    caps = spec.get("max_rows", {})
+    if caps:
+        db = dict(db)
+        for t, n in caps.items():
+            if t in db:
+                db[t] = {k: v[:n] for k, v in db[t].items()}
     if spec.get("prune"):
         npcs, objs, quests, items = referenced(db, tables)
         keep = {"npc": npcs, "obj": objs, "quest": quests, "qg": quests, "qe": quests, "item": items,
@@ -105,7 +112,12 @@ def make_slice(db, spec):
                 if (kind == "c" and num not in keep["npc"]) or (kind == "o" and num not in keep["obj"]):
                     continue
             if t in ("drop", "odrop", "idrop"):
+                cap = spec.get("max_rows", {}).get(t)
+                if cap:
+                    v = v[:cap]
                 v = [x for pair in v for x in pair]
+            elif t in ("vend", "rew") and spec.get("max_rows", {}).get(t):
+                v = v[:spec["max_rows"][t]]
             cols = spec.get("fields", {}).get(t)
             if cols and isinstance(v, list):
                 v = [v[c] if c < len(v) else None for c in cols]

@@ -3,7 +3,7 @@
 A World of Warcraft: Forever database that rebuilds itself and feeds any number of addons.
 
 **Sources**
-- **Base:** the open vanilla world database [cMaNGOS classic-db](https://github.com/cmangos/classic-db) (GPL-2.0), which gives loot with real drop chances, vendors, quests, NPCs, objects and spawn points.
+- **Base:** the open vanilla world database [cMaNGOS classic-db](https://github.com/cmangos/classic-db) (GPL-3.0), which gives loot with real drop chances, vendors, quests, NPCs, objects and spawn points.
 - **Forever:** in-game recordings from Command Center's recorder (`CommandCenterCollect`). These add Forever-only creatures, items, vendors, quests and map spots, fix renamed things, and replace a base drop rate once something has been looted 20+ times.
 
 Wowhead is **not** scraped. Their terms forbid it.
@@ -67,4 +67,4 @@ Tables:
 
 ## Licence
 
-The generated data includes GPL-2.0 data from cMaNGOS. Every slice ships `LICENSE-DATA.txt` and `GPL-2.0.txt`.
+The generated data includes GPL-3.0 data from cMaNGOS. Every slice ships `LICENSE-DATA.txt` and `LICENSE-GPL.txt`.

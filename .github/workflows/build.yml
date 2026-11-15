@@ -68,6 +68,7 @@ jobs:
       - name: Build master
         run: |
           mkdir -p dist
+          mkdir -p addon-src/collected
           python tools/build.py --base work/base.json --collected collected addon-src/collected --out dist/forever.json
 
       - name: Changed?
@@ -85,10 +86,11 @@ jobs:
             name=$(basename "$spec" .json)
             target=$(python -c "import json;print(json.load(open('$spec')).get('target','$name'))")
             mkdir -p "out/$name/$target"
-            if [ -f "slices/$name.toc" ]; then cp "slices/$name.toc" "out/$name/$target/"; fi
+            toc=$(python -c "import json;print(json.load(open('$spec')).get('toc',''))")
+            if [ -f "slices/$name.toc" ] && [ -n "$toc" ]; then cp "slices/$name.toc" "out/$name/$target/$toc"; fi
             python tools/slice.py "$spec" dist/forever.json "out/$name/$target"
             cp LICENSE-DATA.txt "out/$name/$target/"
-            if [ -f base-src/LICENSE ] || [ -f base-src/COPYING ]; then cp base-src/LICENSE "out/$name/$target/GPL-2.0.txt" 2>/dev/null || cp base-src/COPYING "out/$name/$target/GPL-2.0.txt"; fi
+            for lic in LICENSE.md LICENSE COPYING; do if [ -f "base-src/$lic" ]; then cp "base-src/$lic" "out/$name/$target/LICENSE-GPL.txt"; break; fi; done
             (cd "out/$name" && zip -qr "../../dist/$name.zip" "$target")
           done
           gzip -kf dist/forever.json

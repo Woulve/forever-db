@@ -191,7 +191,7 @@ def main():
     ap.add_argument("--base", required=True)
     ap.add_argument("--collected", nargs="*", default=[])
     ap.add_argument("--out", required=True)
-    ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-2.0) + WoW Forever in-game recordings")
+    ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings")
     a = ap.parse_args()
     with open(a.base, encoding="utf-8") as f:
         base = json.load(f)

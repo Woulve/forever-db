@@ -5,6 +5,6 @@
 ## Version: 0
 ## LoadOnDemand: 1
 ## Dependencies: CommandCenter
-## X-License: GPL-2.0 (data derived from cMaNGOS classic-db) - see LICENSE-DATA.txt
+## X-License: GPL-3.0 (data derived from cMaNGOS classic-db) - see LICENSE-DATA.txt
 
 ForeverDB.lua
