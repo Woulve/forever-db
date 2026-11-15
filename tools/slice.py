@@ -4,9 +4,9 @@
 
 Spec (slices/<name>.json):
   {
-    "global": "CC_ForeverDB",            Lua global the data lands in
+    "global": "ForeverDB",               Lua global the data lands in
     "files": "ForeverDB",                file name prefix (ForeverDB.lua, ForeverDB_2.lua, ...)
-    "toc": "CommandCenter_ForeverDB.toc",  optional: rewrite the file list + version in this toc
+    "toc": "ForeverDB.toc",             optional: rewrite the file list + version in this toc
     "tables": ["npc", "drop", ...],      which master tables to include
     "prune": true,                       keep only npcs/objects/quests/items referenced by the other tables
     "fields": {"npc": [0, 1, 2, 3, 4]}   optional: which columns of a row to keep

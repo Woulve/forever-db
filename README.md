@@ -14,9 +14,14 @@ Wowhead is **not** scraped. Their terms forbid it.
 2. The addon repo pings this repo, which also runs daily on its own. `Build database` then:
    - re-imports the base when it changes;
    - merges every recording;
-   - publishes a new `latest` release only when the data's hash changed.
-3. Each addon repo listed gets a `db-updated` ping and pulls its slice.
-4. The addon repo's daily release job uploads to CurseForge only if something changed.
+   - and, only when the data's hash changed (or when run by hand with *force*):
+     - rebuilds the **ForeverDB** addon in `ForeverDB/`;
+     - commits it and tags it `vYYYY.MM.DD.N`;
+     - uploads it to CurseForge (project 1807282);
+     - refreshes the `latest` GitHub release.
+3. Repos listed in `DB_CONSUMERS` get a `db-updated` ping.
+
+The **ForeverDB** addon is published on its own. Addons that use it list it as a required dependency on CurseForge, and the CurseForge app installs it for players. It is LoadOnDemand: an addon calls `C_AddOns.LoadAddOn("ForeverDB")`, then reads the global `ForeverDB`. Command Center does this.
 
 ## Layout
 
@@ -28,18 +33,26 @@ tools/sqldump.py       dump reader (no MySQL needed)
 tools/luatable.py      SavedVariables reader
 slices/<name>.json     what each addon gets; slices/<name>.toc = its data addon's toc
 tests/run_tests.py     end-to-end test on a tiny sample
+ForeverDB/             the shared data addon (generated - do not edit; uploaded to CurseForge)
+.pkgmeta               CurseForge packaging for ForeverDB/
 ```
 
 ## Using it in another addon
 
+**Easiest:** use the shared **ForeverDB** addon.
+1. Add it as a required dependency in your `.pkgmeta` (`required-dependencies`).
+2. Load it when you need it: `C_AddOns.LoadAddOn("ForeverDB")`.
+3. Read the global `ForeverDB` (tables below). `ForeverDB.meta` has the build date, hash and counts.
+
+**Own slice** (other tables or limits, shipped inside your addon):
 1. Add `slices/myaddon.json`, for example:
    ```json
    {"global": "MyAddon_DB", "files": "Data", "target": "MyAddon_Data", "toc": "MyAddon_Data.toc",
     "tables": ["npc", "quest", "qg", "spw", "spm"], "prune": false}
    ```
    Optionally add `slices/myaddon.toc` if the slice should be its own LoadOnDemand addon.
-2. Add the addon's repo to the `DB_CONSUMERS` repository variable.
-3. In that repo, copy `update-db.yml` from CommandCenter and change the asset name to `myaddon.zip`.
+2. Every slice is attached to the `latest` release as `myaddon.zip`.
+3. Add your repo to `DB_CONSUMERS` and download that asset on the `db-updated` ping.
 
 Tables:
 
@@ -64,6 +77,7 @@ Tables:
 - **Variable `ADDON_REPO`:** `owner/CommandCenter`, the repo holding `collected/`.
 - **Variable `DB_CONSUMERS`** (optional): other addon repos to ping.
 - **Secret `PIPELINE_TOKEN`:** a fine-grained GitHub token with Contents (read/write) and Actions (read/write) on both repos.
+- **Secret `CF_API_KEY`:** CurseForge API token (https://legacy.curseforge.com/account/api-tokens), used to upload ForeverDB.
 
 ## Licence
 

@@ -1,12 +1,18 @@
-# Builds the WoW Forever master database and every addon slice.
+# Builds the WoW Forever master database and every slice.
 # Runs daily, when new recordings are pushed to the addon repo (repository_dispatch), or by hand.
-# Publishes only when the data actually changed, then tells each addon repo to pick it up.
+# Only when the data actually changed: commits the ForeverDB addon folder, tags it,
+# uploads it to CurseForge (project 1807282) and refreshes the "latest" GitHub release.
 name: Build database
 
 on:
   schedule:
     - cron: "17 7 * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Release even if the data didn't change"
+        type: boolean
+        default: false
   repository_dispatch:
     types: [new-recordings]
 
@@ -20,12 +26,15 @@ concurrency:
 env:
   BASE_REPO: https://github.com/cmangos/classic-db.git
   ADDON_REPO: ${{ vars.ADDON_REPO }}          # e.g. yourname/CommandCenter (holds collected/)
+  CF_PROJECT: "1807282"                       # CurseForge project of the ForeverDB addon
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -77,7 +86,7 @@ jobs:
           NEW=$(python -c "import json;print(json.load(open('dist/forever.json'))['meta']['hash'])")
           OLD=$(python -c "import json,os;print(json.load(open('manifest.json'))['hash'] if os.path.exists('manifest.json') else '')")
           echo "new=$NEW" >> "$GITHUB_OUTPUT"
-          if [ "$NEW" = "$OLD" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+          if [ "$NEW" = "$OLD" ] && [ "${{ inputs.force }}" != "true" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
 
       - name: Slices
         if: steps.diff.outputs.changed == 'true'
@@ -105,19 +114,33 @@ jobs:
           m = json.load(open("dist/forever.json"))["meta"]
           json.dump(m, open("manifest.json", "w"), indent=1, sort_keys=True)
           PY
+          # the ForeverDB addon folder lives in the repo so the CurseForge packager can ship it
+          rm -rf ForeverDB
+          cp -r out/forever/ForeverDB ForeverDB
+          VERSION="$(date -u +%Y.%m.%d).${{ github.run_number }}"
+          sed -i "s/^## Version:.*/## Version: $VERSION/" ForeverDB/ForeverDB.toc
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           git config user.name "forever-db bot"
           git config user.email "actions@users.noreply.github.com"
-          git add manifest.json
-          git commit -m "Database ${{ steps.diff.outputs.new }}" || true
-          git push
+          git add manifest.json ForeverDB
+          git commit -m "ForeverDB $VERSION (data ${{ steps.diff.outputs.new }})" || true
+          git tag "v$VERSION"
+          git push origin HEAD "v$VERSION"
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest dist/forever.json.gz dist/*.zip --title "Forever database (latest)" --notes "Built $(date -u +%F) from base ${BASE_SHA} + recordings. Hash ${{ steps.diff.outputs.new }}."
+          gh release create latest dist/forever.json.gz dist/*.zip --title "Forever database (latest)" --notes "ForeverDB $VERSION, built $(date -u +%F) from base ${BASE_SHA} + recordings. Hash ${{ steps.diff.outputs.new }}."
 
-      - name: Tell the addon repos
-        if: steps.diff.outputs.changed == 'true' && env.ADDON_REPO != ''
+      - name: Upload ForeverDB to CurseForge
+        if: steps.diff.outputs.changed == 'true'
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -p ${{ env.CF_PROJECT }}
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+
+      - name: Tell other repos
+        if: steps.diff.outputs.changed == 'true' && vars.DB_CONSUMERS != ''
         env:
           GH_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
         run: |
-          gh api "repos/${ADDON_REPO}/dispatches" -f event_type=db-updated -f "client_payload[hash]=${{ steps.diff.outputs.new }}"
-          # more addons: list them in the DB_CONSUMERS variable (space separated owner/repo)
-          for r in ${{ vars.DB_CONSUMERS }}; do gh api "repos/$r/dispatches" -f event_type=db-updated || true; done
+          # repos that want a ping when the data changes: DB_CONSUMERS variable (space separated owner/repo)
+          for r in ${{ vars.DB_CONSUMERS }}; do gh api "repos/$r/dispatches" -f event_type=db-updated -f "client_payload[version]=$VERSION" || true; done

@@ -1,0 +1,15 @@
+package-as: ForeverDB
+
+move-folders:
+  ForeverDB/ForeverDB: ForeverDB
+
+ignore:
+  - tools
+  - tests
+  - slices
+  - collected
+  - work
+  - README.md
+  - LICENSE-DATA.txt
+  - manifest.json
+  - .github

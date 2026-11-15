@@ -1,8 +1,8 @@
 {
-  "global": "CC_ForeverDB",
+  "global": "ForeverDB",
   "files": "ForeverDB",
-  "toc": "CommandCenter_ForeverDB.toc",
-  "target": "CommandCenter_ForeverDB",
+  "toc": "ForeverDB.toc",
+  "target": "ForeverDB",
   "tables": [
     "npc",
     "obj",

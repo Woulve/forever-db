@@ -19,7 +19,7 @@ def main():
         f.write("## Interface: 16001\n## Version: 0\n\nold.lua\n")
     run("tools/import_base.py", dump, os.path.join(tmp, "base.json"))
     run("tools/build.py", "--base", os.path.join(tmp, "base.json"), "--collected", col, "--out", os.path.join(tmp, "forever.json"))
-    spec = json.load(open(os.path.join(ROOT, "slices", "commandcenter.json")))
+    spec = json.load(open(os.path.join(ROOT, "slices", "forever.json")))
     spec["toc"] = "Test_DB.toc"
     sp = os.path.join(tmp, "spec.json"); json.dump(spec, open(sp, "w"))
     run("tools/slice.py", sp, os.path.join(tmp, "forever.json"), out)
@@ -41,12 +41,12 @@ def main():
     toc = open(os.path.join(out, "Test_DB.toc")).read()
     check("toc lists data file", "ForeverDB.lua" in toc and "old.lua" not in toc)
     lua = open(os.path.join(out, "ForeverDB.lua")).read()
-    check("lua written", "CC_ForeverDB" in lua and ";(function()" in lua)
+    check("lua written", "ForeverDB = ForeverDB or {}" in lua and ";(function()" in lua)
     if shutil.which("texlua") or shutil.which("lua") or shutil.which("lua5.1"):
         exe = shutil.which("lua5.1") or shutil.which("lua") or shutil.which("texlua")
         chk = os.path.join(tmp, "check.lua")
         with open(chk, "w") as f:
-            f.write('dofile([[%s]]) assert(CC_ForeverDB.drop[5523][1]) print("lua loads")' % os.path.join(out, "ForeverDB.lua"))
+            f.write('dofile([[%s]]) assert(ForeverDB.drop[5523][1]) print("lua loads")' % os.path.join(out, "ForeverDB.lua"))
         r = subprocess.run([exe, chk], capture_output=True, text=True)
         if r.returncode:
             print(r.stdout, r.stderr)
