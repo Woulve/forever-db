@@ -1,40 +1,55 @@
 # ForeverDB merge report
 
-Sources in priority order: questie, vmangos, cmangos, pfquest (Forever sources win any field they have; otherwise the most common value wins).
+Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, legacy, spf (Forever sources win any field they have; otherwise the most common value wins).
 
 ## Entries per source
 
 | Source | npc | obj | item | quest |
 |---|---|---|---|---|
-| questie | 15564 (5442 only here) | 7289 (627 only here) | 24111 (9096 only here) | 5914 (1662 only here) |
+| client | 0 (0 only here) | 0 (0 only here) | 32008 (5458 only here) | 0 (0 only here) |
+| questie | 15564 (5267 only here) | 7289 (568 only here) | 24111 (246 only here) | 5914 (112 only here) |
+| att | 1447 (0 only here) | 235 (2 only here) | 14217 (27 only here) | 5039 (47 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
+| legacy | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
+| spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15830, obj 11920, item 26814, quest 6095, qg 5410, qe 5744, vend 3923, rew 2563, drop 9818, odrop 3718, idrop 2746, qx 5914, nfac 7458, dng 232, ind 130, start 653, world 3136, spw 15877, spz 16321
+Merged: npc 15830, obj 11922, item 32301, quest 6142, qg 5512, qe 5744, vend 3949, rew 3110, drop 11139, odrop 3733, idrop 2746, qx 5914, nfac 7458, dng 232, ind 130, taxi 101, umap 60, umaa 61, area 1404, ach 495, ctree 6759, crit 3357, mtree 2872, hol 23, sla 7389, ieff 9025, seff 3927, tset 9, bpet 122, ctun 100, wmo 1081, legacy 5, lcrit 6, explore 43, spf 18, start 816, world 3136, spw 15877, spz 16344
 
-Forever-only entries (only the Forever source has them): npc 5442, obj 627, item 9096, quest 1662
+Forever-only entries (only the Forever source has them): npc 5267, obj 570, item 5731, quest 159
 
 ## Disagreements
 
 | Field | Entries where sources disagree |
 |---|---|
+| item.reqLevel | 667 |
 | npc.minLv | 641 |
 | npc.maxLv | 628 |
-| item.reqLevel | 321 |
-| quest.minLevel | 208 |
+| quest.minLevel | 291 |
+| item.quality | 248 |
 | quest.level | 128 |
-| item.name | 54 |
+| item.name | 83 |
 | obj.name | 41 |
 | quest.title | 32 |
-| item.quality | 20 |
 | npc.name | 12 |
 | npc.sub | 11 |
 | npc.rank | 1 |
+| start | 1 |
 
 Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 
 ## Examples
+
+**item.reqLevel**
+- 872: {"client": 18, "questie": 18, "vmangos": 16, "cmangos": 16} -> chose 18
+- 1076: {"questie": 21, "vmangos": 20, "cmangos": 20} -> chose 21
+- 1082: {"questie": 5, "vmangos": 10, "cmangos": 10} -> chose 5
+- 1187: {"questie": 27, "vmangos": 20, "cmangos": 20} -> chose 27
+- 1214: {"client": 14, "questie": 14, "vmangos": 12, "cmangos": 12} -> chose 14
+- 1215: {"client": 19, "questie": 19, "vmangos": 17, "cmangos": 17} -> chose 19
+- 1314: {"client": 16, "questie": 16, "vmangos": 15, "cmangos": 15} -> chose 16
+- 1355: {"client": 12, "questie": 12, "vmangos": 10, "cmangos": 10} -> chose 12
 
 **npc.minLv**
 - 1: {"questie": 1, "vmangos": 63, "cmangos": 1, "pfquest": 63} -> chose 1
@@ -56,25 +71,25 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 167: {"questie": 15, "vmangos": 13, "cmangos": 13, "pfquest": 13} -> chose 15
 - 219: {"questie": 45, "vmangos": 20, "cmangos": 20, "pfquest": 20} -> chose 45
 
-**item.reqLevel**
-- 872: {"questie": 18, "vmangos": 16, "cmangos": 16} -> chose 18
-- 1076: {"questie": 21, "vmangos": 20, "cmangos": 20} -> chose 21
-- 1082: {"questie": 5, "vmangos": 10, "cmangos": 10} -> chose 5
-- 1187: {"questie": 27, "vmangos": 20, "cmangos": 20} -> chose 27
-- 1214: {"questie": 14, "vmangos": 12, "cmangos": 12} -> chose 14
-- 1215: {"questie": 19, "vmangos": 17, "cmangos": 17} -> chose 19
-- 1314: {"questie": 16, "vmangos": 15, "cmangos": 15} -> chose 16
-- 1355: {"questie": 12, "vmangos": 10, "cmangos": 10} -> chose 12
-
 **quest.minLevel**
-- 17: {"questie": 38, "vmangos": 38, "cmangos": 36, "pfquest": 38} -> chose 38
+- 17: {"questie": 38, "att": 38, "vmangos": 38, "cmangos": 36, "pfquest": 38} -> chose 38
 - 117: {"questie": 10, "vmangos": 0, "cmangos": 0} -> chose 10
-- 172: {"questie": 10, "vmangos": 10, "cmangos": 10, "pfquest": 26} -> chose 10
-- 299: {"questie": 22, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 22
-- 303: {"questie": 22, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 22
-- 421: {"questie": 12, "vmangos": 9, "cmangos": 9, "pfquest": 9} -> chose 12
-- 618: {"questie": 40, "vmangos": 37, "cmangos": 40, "pfquest": 37} -> chose 40
-- 619: {"questie": 35, "vmangos": 1, "cmangos": 1, "pfquest": 1} -> chose 35
+- 172: {"questie": 10, "att": 10, "vmangos": 10, "cmangos": 10, "pfquest": 26} -> chose 10
+- 299: {"questie": 22, "att": 22, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 22
+- 303: {"questie": 22, "att": 25, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 22
+- 377: {"questie": 22, "att": 24, "vmangos": 22, "cmangos": 22, "pfquest": 22} -> chose 22
+- 378: {"questie": 22, "att": 25, "vmangos": 22, "cmangos": 22, "pfquest": 22} -> chose 22
+- 421: {"questie": 12, "att": 9, "vmangos": 9, "cmangos": 9, "pfquest": 9} -> chose 12
+
+**item.quality**
+- 763: {"client": 2, "vmangos": 1, "cmangos": 1} -> chose 2
+- 872: {"client": 3, "vmangos": 2, "cmangos": 2} -> chose 3
+- 876: {"client": 1, "vmangos": 0, "cmangos": 0} -> chose 1
+- 1264: {"client": 3, "vmangos": 2, "cmangos": 2} -> chose 3
+- 1604: {"client": 3, "vmangos": 2, "cmangos": 2} -> chose 3
+- 1913: {"client": 2, "vmangos": 1, "cmangos": 1} -> chose 2
+- 1929: {"client": 3, "vmangos": 2, "cmangos": 2} -> chose 3
+- 1934: {"client": 3, "vmangos": 2, "cmangos": 2} -> chose 3
 
 **quest.level**
 - 172: {"questie": 60, "vmangos": 60, "cmangos": 60, "pfquest": 29} -> chose 60
@@ -88,13 +103,13 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 
 **item.name**
 - 1262: {"questie": "Keg of Thunderbrew", "vmangos": "Keg of Thunderbrew Lager", "cmangos": "Keg of Thunderbrew Lager", "pfquest": "Keg of Thunderbrew Lager"} -> chose 'Keg of Thunderbrew'
-- 2550: {"questie": "Monster - Bow, Brown", "vmangos": "Monster - Bow, Short", "cmangos": "Monster - Bow, Brown", "pfquest": "Monster - Bow, Short"} -> chose 'Monster - Bow, Brown'
-- 2695: {"questie": "Monster - Mace, Board with Nail Club", "vmangos": "Monster - Mace, Spiked Club", "cmangos": "Monster - Mace, Board with Nail Club", "pfquest": "Monster - Mace, Spiked Club"} -> chose 'Monster - Mace, Board with Nail Club'
+- 2315: {"client": "Gray Leather Boots", "questie": "Dark Leather Boots", "vmangos": "Dark Leather Boots", "cmangos": "Dark Leather Boots", "pfquest": "Dark Leather Boots"} -> chose 'Gray Leather Boots'
+- 2550: {"client": "Monster - Bow, Short", "questie": "Monster - Bow, Brown", "vmangos": "Monster - Bow, Short", "cmangos": "Monster - Bow, Brown", "pfquest": "Monster - Bow, Short"} -> chose 'Monster - Bow, Short'
+- 2695: {"client": "Monster - Mace, Spiked Club", "questie": "Monster - Mace, Board with Nail Club", "vmangos": "Monster - Mace, Spiked Club", "cmangos": "Monster - Mace, Board with Nail Club", "pfquest": "Monster - Mace, Spiked Club"} -> chose 'Monster - Mace, Spiked Club'
 - 3034: {"questie": "Glyphed Breastplate", "vmangos": "BKP \"Impact\" Shot", "cmangos": "Deprecated BKP \"Impact\" Shot", "pfquest": "BKP \"Impact\" Shot"} -> chose 'Glyphed Breastplate'
 - 3148: {"questie": "Work Shirt", "vmangos": "Deprecated Work Shirt", "cmangos": "Work Shirt", "pfquest": "Work Shirt"} -> chose 'Work Shirt'
 - 5229: {"questie": "Handstitched Leather Bracers", "vmangos": "Empty Greater Bloodstone", "cmangos": "Handstitched Leather Bracers", "pfquest": "Empty Greater Bloodstone"} -> chose 'Handstitched Leather Bracers'
-- 5259: {"questie": "Monster - Flaming Arrows", "vmangos": "Monster - Bow, Red", "cmangos": "Monster - Flaming Arrows", "pfquest": "Monster - Bow, Red"} -> chose 'Monster - Flaming Arrows'
-- 6232: {"questie": "Monster - Item, Flowers - Bouquet Roses", "vmangos": "Monster - Item, Flowers  - Boquet Roses", "cmangos": "Monster - Item, Flowers - Bouquet Roses", "pfquest": "Monster - Item, Flowers  - Boquet Roses"} -> chose 'Monster - Item, Flowers - Bouquet Roses'
+- 5259: {"client": "Monster - Bow, Red", "questie": "Monster - Flaming Arrows", "vmangos": "Monster - Bow, Red", "cmangos": "Monster - Flaming Arrows", "pfquest": "Monster - Bow, Red"} -> chose 'Monster - Bow, Red'
 
 **obj.name**
 - 12653: {"vmangos": "Ghost Saber Trap", "cmangos": "Cat Figurine Trap"} -> chose 'Ghost Saber Trap'
@@ -115,16 +130,6 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 685: {"questie": "WANTED: Otto and Falconcrest", "vmangos": "Wanted!  Otto and Falconcrest", "cmangos": "Wanted!  Otto and Falconcrest", "pfquest": "Wanted!  Otto and Falconcrest"} -> chose 'WANTED: Otto and Falconcrest'
 - 1658: {"questie": "Crashing the Wickerman Festival", "vmangos": "Crashing the Wickerman Festival", "cmangos": "Crashing the Wickerman Festival (PvP)", "pfquest": "Crashing the Wickerman Festival"} -> chose 'Crashing the Wickerman Festival'
 - 4002: {"questie": "The Eastern Kingdom", "vmangos": "The Eastern Kingdoms", "cmangos": "The Eastern Kingdom", "pfquest": "The Eastern Kingdoms"} -> chose 'The Eastern Kingdom'
-
-**item.quality**
-- 3034: {"vmangos": 1, "cmangos": 2} -> chose 1
-- 3148: {"vmangos": 1, "cmangos": 0} -> chose 1
-- 3396: {"vmangos": 2, "cmangos": 1} -> chose 2
-- 3777: {"vmangos": 0, "cmangos": 1} -> chose 0
-- 5446: {"vmangos": 0, "cmangos": 1} -> chose 0
-- 5447: {"vmangos": 0, "cmangos": 1} -> chose 0
-- 5448: {"vmangos": 0, "cmangos": 1} -> chose 0
-- 5451: {"vmangos": 0, "cmangos": 1} -> chose 0
 
 **npc.name**
 - 219: {"questie": "Groundskeeper Lomar", "vmangos": "[UNUSED] Logan Mar", "cmangos": "[UNUSED] Logan Mar", "pfquest": "[UNUSED] Logan Mar"} -> chose 'Groundskeeper Lomar'
@@ -148,4 +153,7 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 
 **npc.rank**
 - 219: {"questie": 1, "vmangos": 0, "cmangos": 0} -> chose 1
+
+**start**
+- 11463: {"questie": 4281, "att": 4135, "vmangos": 4281, "cmangos": 4281, "pfquest": 4281} -> chose None
 

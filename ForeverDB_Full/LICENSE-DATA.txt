@@ -1,0 +1,34 @@
+WoW Forever database (forever-db / ForeverDB)
+
+This data is merged from several open World of Warcraft Classic / WoW Forever databases,
+cross-checked against each other, plus in-game recordings made by WoW Forever players
+with Command Center's recorder. The merged data as a whole is distributed under the
+GNU General Public License v3.0 (see LICENSE-GPL.txt next to this file).
+
+Sources and their licences:
+
+- QuestieDB (https://github.com/Questie/QuestieDB) - WoW Forever quests, NPCs, items,
+  objects and map positions, including its Forever corrections. Offered by the Questie team
+  under the GNU GPL v3; their LICENSE.md notes that older Questie contributions were never
+  formally licensed. Questie's name and logo are not used.
+- VMaNGOS world database (https://github.com/vmangos/core) - GNU GPL v2 or (at your option)
+  any later version, used here under GPL v3.
+- cMaNGOS classic-db (https://github.com/cmangos/classic-db) - GNU GPL v3.
+- AllTheThings (https://github.com/ATTWoWAddon/AllTheThings) - MIT licence, copyright (c) 2026
+  AllTheThings WoW Addon; see LICENSE-AllTheThings.txt. Its WoW Forever database sources (quest
+  givers, quest levels, positions, rewards, vendors, drops) and the WoW Forever client tables it
+  ships (items, flight masters, maps, zones, achievements, criteria, holidays, recipes, item
+  effects, transmog sets, battle pets; Blizzard Entertainment's game data, exported by wago.tools).
+- LegacyForever (https://github.com/cjber/legacy-forever) - GNU GPL v3 or later: WoW Forever's
+  Legacy challenges, exploration areas and reviewed criterion locations.
+- Shortest Path Forever (https://github.com/cjber/shortest-path-forever) - GNU GPL v3 or later:
+  flight paths and times, boats/zeppelins and their timetables, portals, teleports, dungeon
+  entrances, trainers and other town services.
+- pfQuest database (https://github.com/shagu/pfQuest) - MIT licence, copyright (c)
+  2017-2021 Eric Mauser (Shagu); see LICENSE-pfQuest.txt.
+- WoW Forever in-game recordings (Command Center's recorder).
+
+Wowhead is not scraped by this project.
+
+World of Warcraft and all related names are trademarks of Blizzard Entertainment.
+This project is not affiliated with Blizzard Entertainment or with any of the projects above.

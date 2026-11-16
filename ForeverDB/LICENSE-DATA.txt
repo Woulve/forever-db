@@ -14,6 +14,16 @@ Sources and their licences:
 - VMaNGOS world database (https://github.com/vmangos/core) - GNU GPL v2 or (at your option)
   any later version, used here under GPL v3.
 - cMaNGOS classic-db (https://github.com/cmangos/classic-db) - GNU GPL v3.
+- AllTheThings (https://github.com/ATTWoWAddon/AllTheThings) - MIT licence, copyright (c) 2026
+  AllTheThings WoW Addon; see LICENSE-AllTheThings.txt. Its WoW Forever database sources (quest
+  givers, quest levels, positions, rewards, vendors, drops) and the WoW Forever client tables it
+  ships (items, flight masters, maps, zones, achievements, criteria, holidays, recipes, item
+  effects, transmog sets, battle pets; Blizzard Entertainment's game data, exported by wago.tools).
+- LegacyForever (https://github.com/cjber/legacy-forever) - GNU GPL v3 or later: WoW Forever's
+  Legacy challenges, exploration areas and reviewed criterion locations.
+- Shortest Path Forever (https://github.com/cjber/shortest-path-forever) - GNU GPL v3 or later:
+  flight paths and times, boats/zeppelins and their timetables, portals, teleports, dungeon
+  entrances, trainers and other town services.
 - pfQuest database (https://github.com/shagu/pfQuest) - MIT licence, copyright (c)
   2017-2021 Eric Mauser (Shagu); see LICENSE-pfQuest.txt.
 - WoW Forever in-game recordings (Command Center's recorder).
