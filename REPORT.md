@@ -11,7 +11,7 @@ Sources in priority order: questie, vmangos, cmangos, pfquest (Forever sources w
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
 
-Merged: npc 15830, obj 11920, item 26814, quest 6095, qg 5410, qe 5744, vend 3923, rew 2563, drop 9818, odrop 3718, idrop 2746, start 653, world 3136, spw 15877, spz 16320
+Merged: npc 15830, obj 11920, item 26814, quest 6095, qg 5410, qe 5744, vend 3923, rew 2563, drop 9818, odrop 3718, idrop 2746, qx 0, nfac 0, start 653, world 3136, spw 15877, spz 16320
 
 Forever-only entries (only the Forever source has them): npc 5442, obj 627, item 9096, quest 1662
 
