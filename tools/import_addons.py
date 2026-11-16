@@ -109,7 +109,7 @@ def add_spots(spz, key, ui, x, y):
 
 def empty():
     return {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop",
-                            "vend", "rew", "start", "world", "spw", "spz", "loc", "qx", "nfac"]}
+                            "vend", "rew", "start", "world", "spw", "spz", "loc", "qx", "nfac", "dng", "ind"]}
 
 
 def push(d, k, v):
@@ -220,7 +220,9 @@ def quest_extra(r, qk, a2u):
     6 breadcrumbFor, 7 nextInChain, 8 kill/creature objectives, 9 object objectives,
     10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill [id, value],
     15 reputation rewards [faction, value, ...], 16 exploration spots {uiMap: [x, y, ...]} (0-1000),
-    17 parentQuest, 18 sourceItem, 19 requiredMinRep [faction, value], 20 breadcrumbs (quests that lead here)"""
+    17 parentQuest, 18 sourceItem, 19 requiredMinRep [faction, value], 20 breadcrumbs (quests that lead here),
+    21 requiredSourceItems (items you need to make the objective, e.g. bundles you craft into it),
+    22 extra objective spots {uiMap: [x, y, ...]}, 23 extra objective targets ["c123", "o45", ...]"""
     o = field(r, qk, "objectives")
     if isinstance(o, dict):         # sparse Lua list: keep the positions (1 creatures, 2 objects, 3 items, ...)
         o = [o.get(str(i)) for i in range(1, 7)]
@@ -244,6 +246,31 @@ def quest_extra(r, qk, a2u):
                     x, y = int(round(float(pt[0]) * 10)), int(round(float(pt[1]) * 10))
                     if 0 <= x <= 1000 and 0 <= y <= 1000:
                         trig.setdefault(str(ui), []).extend([x, y])
+    # hidden / special objectives (use the cannon, burn the hut ...): spots + the npcs / objects involved
+    extra, refs = {}, []
+    for eo in obj_list(field(r, qk, "extraObjectives")):
+        if isinstance(eo, dict):     # sparse: keep positions (1 spawnlist, 2 icon, 3 text, 4 index, 5 refs)
+            eo = [eo.get(str(i)) for i in range(1, 6)]
+        if not isinstance(eo, list) or not eo:
+            continue
+        spawn = eo[0] if isinstance(eo[0], dict) else {}
+        for area, pts in spawn.items():
+            ui = a2u.get(num(area))
+            if ui is None:
+                continue
+            for pt in obj_list(pts):
+                pt = obj_list(pt)
+                if len(pt) >= 2:
+                    x, y = int(round(float(pt[0]) * 10)), int(round(float(pt[1]) * 10))
+                    if 0 <= x <= 1000 and 0 <= y <= 1000:
+                        extra.setdefault(str(ui), []).extend([x, y])
+        if len(eo) >= 5:
+            for ref in obj_list(eo[4]):
+                ref = obj_list(ref)
+                if len(ref) >= 2 and num(ref[1]):
+                    kind = {"monster": "c", "npc": "c", "object": "o", "item": "i"}.get(str(ref[0]).lower())
+                    if kind and kind + str(num(ref[1])) not in refs:
+                        refs.append(kind + str(num(ref[1])))
     sk = ints(field(r, qk, "requiredSkill"))
     mr = ints(field(r, qk, "requiredMinRep"))
     row = [num(field(r, qk, "requiredRaces")), num(field(r, qk, "requiredClasses")),
@@ -253,7 +280,8 @@ def quest_extra(r, qk, a2u):
            first_ints(o[1]) or None, first_ints(o[2]) or None, num(field(r, qk, "zoneOrSort")),
            num(field(r, qk, "questFlags")), num(field(r, qk, "specialFlags")), sk[:2] or None,
            rep or None, trig or None, num(field(r, qk, "parentQuest")), num(field(r, qk, "sourceItemId")),
-           mr[:2] or None, ints(field(r, qk, "breadcrumbs")) or None]
+           mr[:2] or None, ints(field(r, qk, "breadcrumbs")) or None,
+           ints(field(r, qk, "requiredSourceItems")) or None, extra or None, refs or None]
     while row and row[-1] in (None, 0):
         row.pop()
     return row
@@ -269,6 +297,11 @@ def questie(q, a2u):
             area = num(area)
             ui = a2u.get(area)
             if ui is None:
+                # inside a dungeon / instance (no world map): remember which one (table ind),
+                # questing addons route to its entrance (table dng)
+                key = "%s%d" % (kind, sid)
+                if area and area not in out["ind"].get(key, []):
+                    out["ind"].setdefault(key, []).append(area)
                 unmapped.add(area)
                 continue
             for pt in obj_list(pts):
@@ -324,6 +357,28 @@ def questie(q, a2u):
     return out, unmapped
 
 
+# ------------------------------------------------------------------ dungeon entrances
+def dungeons(path, a2u):
+    """QuestieDB support/Forever/Zones/dungeons.lua -> dng: area id -> [name, parentArea, [uiMap, x, y, ...]]
+    (x, y 0-1000 on the zone map). Alternative area ids (quests use them) point to the same entry."""
+    out = {}
+    if not path or not os.path.exists(path):
+        return out
+    src = open(path, encoding="utf-8").read()
+    for m in re.finditer(r'\[(\d+)\]\s*=\s*\{\s*"([^"]+)"\s*,\s*(nil|\{[\d,\s]*\})\s*,\s*(\d+)\s*,\s*\{(.*?)\}\s*\}\s*,', src):
+        area, name, alts, parent, locs = int(m.group(1)), m.group(2), m.group(3), int(m.group(4)), m.group(5)
+        spots = []
+        for z, x, y in re.findall(r'\{\s*(\d+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\}', locs):
+            ui = a2u.get(int(z))
+            if ui:
+                spots += [ui, int(round(float(x) * 10)), int(round(float(y) * 10))]
+        row = [name, parent, spots or None]
+        out[area] = row
+        for a in re.findall(r"\d+", alts if alts != "nil" else ""):
+            out.setdefault(int(a), row)
+    return out
+
+
 def main():
     import argparse
     ap = argparse.ArgumentParser()
@@ -332,6 +387,7 @@ def main():
     ap.add_argument("dst")
     ap.add_argument("--zones", help="questie export json with the zone tables (for pfquest)")
     ap.add_argument("--conversion", help="QuestieDB data/Forever/conversion.json")
+    ap.add_argument("--dungeons", help="QuestieDB support/Forever/Zones/dungeons.lua (dungeon entrances)")
     a = ap.parse_args()
     src = json.load(open(a.src, encoding="utf-8"))
     if a.kind == "pfquest":
@@ -340,6 +396,7 @@ def main():
     else:
         a2u, _ = zone_tables(a.src, a.conversion)
         out, unmapped = questie(src, a2u)
+        out["dng"] = dungeons(a.dungeons, a2u)
     print(a.kind, {k: len(v) for k, v in out.items()}, "zones without a map:", len(unmapped))
     os.makedirs(os.path.dirname(a.dst) or ".", exist_ok=True)
     with open(a.dst, "w", encoding="utf-8") as f:

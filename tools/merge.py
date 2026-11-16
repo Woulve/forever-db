@@ -30,7 +30,7 @@ FOREVER = {"questie", "recordings"}
 ENTITY = ["npc", "obj", "item", "quest"]
 UNION = ["qg", "qe", "vend", "rew"]
 DROPS = ["drop", "odrop", "idrop"]
-PASS = ["qx", "nfac"]   # single-source detail tables (QuestieDB): first source that has a key wins
+PASS = ["qx", "nfac", "dng", "ind"]   # single-source detail tables (QuestieDB): first source that has a key wins
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel"], "quest": ["title", "level", "minLevel"]}
 SPAWN_CAP = 120

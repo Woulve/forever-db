@@ -21,7 +21,11 @@
     "spm",
     "qe",
     "qx",
-    "nfac"
+    "nfac",
+    "dng",
+    "qsp",
+    "qsrc",
+    "ind"
   ],
   "prune": true,
   "fields": {

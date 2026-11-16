@@ -101,7 +101,7 @@ jobs:
           imp vmangos "$REF_VMANGOS" python tools/import_base.py work/src/vmangos work/cache/src-vmangos.json
           GEN=""; [ "$QUESTIE_GENERATED" = "off" ] && GEN="no-generated"
           CONV=work/src/questie/data/Forever/conversion.json
-          imp questie "$REF_QUESTIE-$QUESTIE_GENERATED" sh -c "lua5.1 tools/lua/export.lua questie work/src/questie Forever work/cache/questie.json $GEN && python tools/import_addons.py questie work/cache/questie.json work/cache/src-questie.json --conversion $CONV"
+          imp questie "$REF_QUESTIE-$QUESTIE_GENERATED" sh -c "lua5.1 tools/lua/export.lua questie work/src/questie Forever work/cache/questie.json $GEN && python tools/import_addons.py questie work/cache/questie.json work/cache/src-questie.json --conversion $CONV --dungeons work/src/questie/support/Forever/Zones/dungeons.lua"
           # pfQuest positions are moved onto Forever's maps with QuestieDB's zone tables
           imp pfquest "$REF_PFQUEST-$REF_QUESTIE" sh -c "lua5.1 tools/lua/export.lua pfquest work/src/pfquest work/cache/pfquest.json && python tools/import_addons.py pfquest work/cache/pfquest.json work/cache/src-pfquest.json --zones work/cache/questie.json --conversion $CONV"
 

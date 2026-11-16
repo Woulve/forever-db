@@ -82,9 +82,14 @@ def referenced(db, tables):
         quests.update(int(k) for k in db.get("qx", {}))
         quests.update(int(k) for k in db.get("qg", {}))
         for row in db.get("qx", {}).values():
-            for col, bucket in ((7, npcs), (8, objs), (9, items)):
+            for col, bucket in ((7, npcs), (8, objs), (9, items), (20, items)):
                 if len(row) > col and row[col]:
                     bucket.update(row[col])
+            for ref in (row[22] if len(row) > 22 and row[22] else []):
+                {"c": npcs, "o": objs, "i": items}.get(ref[0], set()).add(int(ref[1:]))
+        for srcs in db.get("qsrc", {}).values():
+            for ref in srcs:
+                {"c": npcs, "o": objs}.get(ref[0], set()).add(int(ref[1:]))
     for f in ("qg", "qe"):
         if f in tables:
             for q, ws in db.get(f, {}).items():
@@ -107,7 +112,7 @@ def make_slice(db, spec):
     if spec.get("prune"):
         npcs, objs, quests, items = referenced(db, tables)
         keep = {"npc": npcs, "obj": objs, "quest": quests, "qg": quests, "qe": quests, "item": items,
-                "vp": npcs, "qx": quests, "nfac": npcs}
+                "vp": npcs, "qx": quests, "nfac": npcs, "qsp": quests, "qsrc": quests}
     for t in tables:
         src = db.get(t, {})
         res = {}
@@ -115,7 +120,7 @@ def make_slice(db, spec):
             ik = int(k) if str(k).lstrip("-").isdigit() else k
             if keep and t in keep and ik not in keep[t]:
                 continue
-            if keep and t in ("spw", "spm", "seen"):
+            if keep and t in ("spw", "spm", "seen", "ind"):
                 kind, num = str(k)[0], int(str(k)[1:])
                 if (kind == "c" and num not in keep["npc"]) or (kind == "o" and num not in keep["obj"]):
                     continue

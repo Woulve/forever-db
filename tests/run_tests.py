@@ -15,6 +15,7 @@ def main():
     os.makedirs(dump); os.makedirs(col); os.makedirs(out)
     shutil.copy(os.path.join(HERE, "mini.sql"), dump)
     shutil.copy(os.path.join(HERE, "rec1.lua"), col)
+    shutil.copy(os.path.join(HERE, "rec2.lua"), col)
     with open(os.path.join(out, "Test_DB.toc"), "w") as f:
         f.write("## Interface: 16001\n## Version: 0\n\nold.lua\n")
     run("tools/import_base.py", dump, os.path.join(tmp, "base.json"))
@@ -38,6 +39,8 @@ def main():
     check("recorded quest reward", 50001 in db["rew"]["5523"])
     check("renamed npc", db["npc"]["100"][0] == "Murloc Raider (Forever)")
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
+    check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
+    check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
     toc = open(os.path.join(out, "Test_DB.toc")).read()
     check("toc lists data file", "ForeverDB.lua" in toc and "old.lua" not in toc)
     lua = open(os.path.join(out, "ForeverDB.lua")).read()
@@ -69,7 +72,8 @@ def main():
         qj, pj = os.path.join(tmp, "questie.json"), os.path.join(tmp, "pfquest.json")
         subprocess.run([exe, "tools/lua/export.lua", "questie", os.path.join(fx, "questiedb"), "Forever", qj], check=True, cwd=ROOT)
         subprocess.run([exe, "tools/lua/export.lua", "pfquest", os.path.join(fx, "pfquest"), pj], check=True, cwd=ROOT)
-        run("tools/import_addons.py", "questie", qj, os.path.join(tmp, "src-questie.json"), "--conversion", conv)
+        dng = os.path.join(fx, "questiedb", "support", "Forever", "Zones", "dungeons.lua")
+        run("tools/import_addons.py", "questie", qj, os.path.join(tmp, "src-questie.json"), "--conversion", conv, "--dungeons", dng)
         run("tools/import_addons.py", "pfquest", pj, os.path.join(tmp, "src-pfquest.json"), "--zones", qj, "--conversion", conv)
         qs = json.load(open(os.path.join(tmp, "src-questie.json")))
         pf = json.load(open(os.path.join(tmp, "src-pfquest.json")))
@@ -77,6 +81,9 @@ def main():
         check("questie _add operation", "c100" in qs["qg"].get("50002", []))
         check("questie replacement", qs["npc"]["100"][2] == 12)
         check("questie quest details (qx) for every quest", set(qs["qx"]) == set(qs["quest"]))
+        check("dungeon entrances (dng) incl. alternative area ids",
+              qs["dng"].get("1581", [None])[0] == "The Deadmines" and qs["dng"].get("10029", [None])[0] == "The Deadmines"
+              and qs["dng"]["717"][2][1:] == [524, 700])
         check("questie authored fix", qs["npc"]["101"][0] == "Kobold Tunneler")
         check("questie dynamic (per character) fixes skipped", qs["npc"]["101"][0] != "SHOULD NOT APPLY")
         check("questie spawn on Forever map", qs["spz"]["c99999"] == {"1429": [255, 402]})

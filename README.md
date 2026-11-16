@@ -10,7 +10,7 @@ A World of Warcraft: Forever database that rebuilds itself and feeds any number 
 | [VMaNGOS](https://github.com/vmangos/core) nightly dump | Very accurate 1.12 drop rates, vendors, quests, spawns | GPL-2.0-or-later |
 | [cMaNGOS classic-db](https://github.com/cmangos/classic-db) | Same kinds of data, independently maintained | GPL-3.0 |
 | [pfQuest](https://github.com/shagu/pfQuest) | Drop rates, map positions, names in 9 languages | MIT |
-| Command Center recordings (`CommandCenterCollect`) | What players actually see in Forever; replaces a drop rate once something was looted 20+ times | - |
+| Command Center + Questicus recordings (`CommandCenterCollect`, `QuesticusCollect`) | What players actually see in Forever; replaces a drop rate once something was looted 20+ times | - |
 
 Left out on purpose: MaNGOS Zero (CC BY-NC-SA, not compatible with GPL or CurseForge rewards).
 Wowhead is **not** scraped (their terms forbid it). Note: QuestieDB's *generated delta-base*
@@ -96,8 +96,12 @@ Tables:
 | `world` | world drops (minimum level) |
 | `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |
 | `qe` | quest enders (same keys as `qg`) |
-| `qx` | quest details from QuestieDB, per quest: 1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo, 6 breadcrumbFor, 7 nextInChain, 8 creature objectives, 9 object objectives, 10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill {id, value}, 15 reputation rewards {faction, value, ...}, 16 exploration spots {[uiMap] = {x, y, ...}}, 17 parentQuest, 18 sourceItem, 19 requiredMinRep, 20 breadcrumbs |
+| `qx` | quest details from QuestieDB, per quest: 1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo, 6 breadcrumbFor, 7 nextInChain, 8 creature objectives, 9 object objectives, 10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill {id, value}, 15 reputation rewards {faction, value, ...}, 16 exploration spots {[uiMap] = {x, y, ...}}, 17 parentQuest, 18 sourceItem, 19 requiredMinRep, 20 breadcrumbs, 21 requiredSourceItems, 22 extra objective spots {[uiMap] = {x, y, ...}}, 23 extra objective targets {"c123", "o45"} |
 | `nfac` | NPC friendly to: "A", "H" or "AH" |
+| `dng` | dungeon entrances (QuestieDB): [areaId] = {name, parentArea, {uiMap, x, y, ...}} (also under alternative area ids) |
+| `ind` | npcs / objects that live inside a dungeon: ["c123"] = {areaId, ...} (route to its `dng` entrance) |
+| `qsp` | quest objective areas players made progress in (Questicus recordings): [quest] = {[uiMap] = {x, y, ...}} |
+| `qsrc` | what players looted right before a quest objective counted up (Questicus recordings): [quest] = {"o645516", ...} |
 | `spm` | map spots (uiMap, 0-1000): Forever positions for things without world coordinates + recordings |
 
 The master `forever.json` (release asset) also has `spz` (all Forever map positions), `loc`

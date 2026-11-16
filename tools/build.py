@@ -2,7 +2,7 @@
 
   python tools/build.py --base data/base.json --collected <folder(s) with *.lua> --out dist/forever.json
 
-Recordings (CommandCenterCollect from Command Center's Collector) override the base for
+Recordings (CommandCenterCollect from Command Center's Collector, QuesticusCollect from Questicus) override the base for
 names / levels (WoW Forever renamed or changed things), add Forever-only creatures, items,
 vendors, quests, drops and map spots, and replace a base drop chance once enough loots
 were recorded (FOREVER_RATE_MIN) because Forever changed many rates.
@@ -10,6 +10,8 @@ Master format = import_base.py format plus:
   spm  {"c123": {uiMap: [x, y, ...]}}       map spots (0-1000) seen in game
   vp   {npc: {item: [price, stack, limited, costs]}}
   seen {"c123": {item: [count, outOf]}}     raw loot counts (for future rate refinement)
+  qsp  {quest: {uiMap: [x, y, ...]}}        where players made progress on a quest's objectives (Questicus)
+  qsrc {quest: ["o645516", "c123", ...]}    what players looted right before an objective counted up (Questicus)
   meta {build, sources, counts}
 """
 import argparse, glob, json, os, sys, hashlib, datetime
@@ -38,14 +40,16 @@ def load_recordings(folders):
     for folder in folders:
         for path in sorted(glob.glob(os.path.join(folder, "**", "*.lua"), recursive=True)):
             with open(path, encoding="utf-8", errors="replace") as f:
-                v = load_var(f.read(), "CommandCenterCollect")
-            if isinstance(v, dict):
-                recs.append((path, v))
+                text = f.read()
+            for var in ("CommandCenterCollect", "QuesticusCollect"):
+                v = load_var(text, var)
+                if isinstance(v, dict):
+                    recs.append((path, v))
     return recs
 
 
 def merge_recordings(recs):
-    agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}}
+    agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}, "qsp": {}, "qsrc": {}}
     for _, r in recs:
         for key, e in as_dict(r.get("loot")).items():
             e = as_dict(e)
@@ -97,6 +101,21 @@ def merge_recordings(recs):
                         break
                     if not any(abs(lst[j] - x) <= SPOT_NEAR and abs(lst[j + 1] - y) <= SPOT_NEAR for j in range(0, len(lst), 2)):
                         lst += [x, y]
+        for qid, maps in as_dict(r.get("qsp")).items():
+            a = agg["qsp"].setdefault(int(qid), {})
+            for m, pts in as_dict(maps).items():
+                lst = a.setdefault(int(m), [])
+                for k in range(0, len(pts) - 1, 2):
+                    x, y = int(pts[k]), int(pts[k + 1])
+                    if len(lst) >= SPOT_MAX * 2:
+                        break
+                    if not any(abs(lst[j] - x) <= SPOT_NEAR and abs(lst[j + 1] - y) <= SPOT_NEAR for j in range(0, len(lst), 2)):
+                        lst += [x, y]
+        for qid, srcs in as_dict(r.get("qsrc")).items():
+            a = agg["qsrc"].setdefault(int(qid), {})
+            for key, c in as_dict(srcs).items():
+                key = str(key).replace(":", "")
+                a[key] = a.get(key, 0) + int(c or 0)
         for it, e in as_dict(r.get("item")).items():
             e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
             if e and e[0]:
@@ -177,6 +196,13 @@ def build(base, agg):
             lst = db["rew"].setdefault(int(it), [])
             if qid not in lst:
                 lst.append(qid)
+    # quest objective areas / sources seen in game (Questicus)
+    db["qsp"] = {q: {m: p for m, p in maps.items() if p} for q, maps in agg["qsp"].items()}
+    db["qsrc"] = {}
+    for q, srcs in agg["qsrc"].items():
+        keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1]) if c >= 2][:6]
+        if keep:
+            db["qsrc"][q] = keep
     # map spots
     for key, maps in agg["sp"].items():
         kind, sid = who(key)
