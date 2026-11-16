@@ -1,8 +1,10 @@
 {
  "build": "2026-11-16",
  "counts": {
+  "dng": 232,
   "drop": 9818,
   "idrop": 2746,
+  "ind": 126,
   "item": 26814,
   "nfac": 7458,
   "npc": 15830,
@@ -10,6 +12,8 @@
   "odrop": 3718,
   "qe": 5744,
   "qg": 5410,
+  "qsp": 0,
+  "qsrc": 0,
   "quest": 6095,
   "qx": 5914,
   "rew": 2563,
@@ -22,7 +26,7 @@
   "vp": 0,
   "world": 3136
  },
- "hash": "5efdf9490a6ddf4f",
+ "hash": "7261b874a1f0cd4c",
  "recordings": 0,
  "sourceList": [
   {
