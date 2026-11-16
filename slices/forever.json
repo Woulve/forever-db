@@ -25,7 +25,8 @@
     "dng",
     "qsp",
     "qsrc",
-    "ind"
+    "ind",
+    "note"
   ],
   "prune": true,
   "fields": {

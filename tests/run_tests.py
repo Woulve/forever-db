@@ -41,6 +41,9 @@ def main():
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
     check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
     check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
+    check("fixes.json applied (Old Rot-Chum spot + note, extra quest giver)",
+          db["spm"]["c257001"]["2548"] == [771, 728] and "murloc hut" in db["note"]["c257001"]
+          and "c259961" in db["qg"]["95120"])
     toc = open(os.path.join(out, "Test_DB.toc")).read()
     check("toc lists data file", "ForeverDB.lua" in toc and "old.lua" not in toc)
     lua = open(os.path.join(out, "ForeverDB.lua")).read()

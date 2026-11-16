@@ -219,6 +219,33 @@ def digest(db):
     return hashlib.sha256(json.dumps(db, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def apply_fixes(db, path):
+    """fixes.json: hand-checked corrections that win over every source and recording."""
+    if not path or not os.path.exists(path):
+        return 0
+    fx = json.load(open(path, encoding="utf-8"))
+    n = 0
+    spm = db.setdefault("spm", {})
+    for key, maps in (fx.get("spm") or {}).items():
+        spm[key] = {int(m): list(p) for m, p in maps.items()}
+        if key in db.get("spw", {}):
+            del db["spw"][key]           # the corrected map spots replace the world spawns too
+        n += 1
+    for t in ("qg", "qe"):
+        tbl = db.setdefault(t, {})
+        for q, keys in (fx.get(t) or {}).items():
+            cur = tbl.setdefault(int(q), [])
+            for k in keys:
+                if k not in cur:
+                    cur.append(k)
+                    n += 1
+    note = db.setdefault("note", {})
+    for key, text in (fx.get("note") or {}).items():
+        note[key] = text
+        n += 1
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", required=True)
@@ -226,18 +253,22 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings")
     ap.add_argument("--sources-json", help="JSON list of {name, repo, ref, licence} for meta.sourceList")
+    ap.add_argument("--fixes", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "fixes.json"),
+                    help="hand-checked corrections (default: fixes.json in the repo)")
     a = ap.parse_args()
     with open(a.base, encoding="utf-8") as f:
         base = json.load(f)
     recs = load_recordings(a.collected)
     agg = merge_recordings(recs)
     db = build(base, agg)
+    fixed = apply_fixes(db, a.fixes)
     h = digest(db)
     db["meta"] = {
         "build": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
         "hash": h[:16],
         "sources": a.source_note,
         "recordings": len(recs),
+        "fixes": fixed,
         "sourceList": json.load(open(a.sources_json)) if a.sources_json and os.path.exists(a.sources_json) else [],
         "counts": {k: len(v) for k, v in db.items() if isinstance(v, dict) and k not in ("loc", "src")},
     }

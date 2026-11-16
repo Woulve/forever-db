@@ -29,6 +29,12 @@ was built by the Questie team from Wowhead's Forever pages; set the repository v
 - The report lists, per source, how many entries it has and how many only it has, plus every
   field where sources disagree, with examples.
 
+## Hand-checked corrections
+
+`fixes.json` is applied last and wins over every source and recording: `spm` replaces an npc's or object's
+map spots (`"c257001": {"2548": [771, 728]}`, uiMap with 0-1000 coordinates, i.e. map % x 10), `qg` / `qe` add
+quest givers / enders, `note` adds a short tip. Add a line there whenever a location is confirmed in game.
+
 ## How it updates
 
 1. Twice a day (07:17 and 19:17 UTC), and whenever new recordings arrive, `Build database`:
@@ -101,6 +107,7 @@ Tables:
 | `dng` | dungeon entrances (QuestieDB): [areaId] = {name, parentArea, {uiMap, x, y, ...}} (also under alternative area ids) |
 | `ind` | npcs / objects that live inside a dungeon: ["c123"] = {areaId, ...} (route to its `dng` entrance) |
 | `qsp` | quest objective areas players made progress in (Questicus recordings): [quest] = {[uiMap] = {x, y, ...}} |
+| `note` | short hand-written tips for npcs / objects (from `fixes.json`): ["c257001"] = "Stands in a murloc hut..." |
 | `qsrc` | what players looted right before a quest objective counted up (Questicus recordings): [quest] = {"o645516", ...} |
 | `spm` | map spots (uiMap, 0-1000): Forever positions for things without world coordinates + recordings |
 
