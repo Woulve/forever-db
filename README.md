@@ -131,6 +131,7 @@ Tables:
 | `dng` | dungeon entrances (QuestieDB): [areaId] = {name, parentArea, {uiMap, x, y, ...}} (also under alternative area ids) |
 | `ind` | npcs / objects that live inside a dungeon: ["c123"] = {areaId, ...} (route to its `dng` entrance) |
 | `ptl` | patrol paths of moving mobs, recorded in game with Questicus `/qc patrol` (the longest recording wins): ["c123"] = {[uiMap] = {x, y, ...} in walking order} |
+| (recordings) `removed` | spots players Ctrl-clicked away in Questicus ("nothing here"): the matching `spw` / `spm` points of that npc / object are deleted at build time (12 yd / 15 map units); fixes.json still wins |
 | `qwk` | how long quests really take (active time while working on them, averaged over everyone's runs, Questicus): [quest] = {seconds, runs} |
 | `qsp` | quest objective areas players made progress in (Questicus recordings): [quest] = {[uiMap] = {x, y, ...}} |
 | `note` | short hand-written tips for npcs / objects (from `fixes.json`): ["c257001"] = "Stands in a murloc hut..." |

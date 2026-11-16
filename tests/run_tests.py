@@ -43,6 +43,7 @@ def main():
     check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
     check("Questicus patrol path kept in walking order", db["ptl"]["c263380"]["2548"] == [100, 100, 120, 110, 140, 130, 160, 150])
     check("Questicus real quest time (active seconds, runs)", db["qwk"]["50001"] == [300, 2])
+    check("spot a player removed in game is gone, the other stays", db["spm"]["c888"]["1429"] == [300, 300])
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import build as _b
     t = {"qx": {1: [0, 0, None, None, None, None, 3], 2: [0, 0, None, None, None, None, 3], 3: [0], 4: [0, 0, [9], None, None, None, 5], 5: [0, 0, [7]]}}

@@ -14,6 +14,8 @@ Master format = import_base.py format plus:
   qsrc {quest: ["o645516", "c123", ...]}    what players looted right before an objective counted up (Questicus)
   ptl  {"c123": {uiMap: [x, y, ...]}}       a patrolling mob's path, in walking order (Questicus /qc patrol)
   qwk  {quest: [seconds, runs]}             how long the quest really takes (active time, Questicus)
+Removed spots (QuesticusCollect.removed, players Ctrl-clicked "nothing here") delete the matching
+spw / spm points of that npc / object after the recordings are merged.
   meta {build, sources, counts}
 """
 import argparse, glob, json, os, sys, hashlib, datetime
@@ -52,7 +54,7 @@ def load_recordings(folders):
 
 def merge_recordings(recs):
     agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}, "qsp": {}, "qsrc": {},
-           "ptl": {}, "qwk": {}}
+           "ptl": {}, "qwk": {}, "removed": {}}
     for _, r in recs:
         for key, e in as_dict(r.get("loot")).items():
             e = as_dict(e)
@@ -127,6 +129,13 @@ def merge_recordings(recs):
                 cur = agg["ptl"].setdefault(key, {})
                 if len(pts) >= 6 and len(pts) > len(cur.get(int(m), [])):
                     cur[int(m)] = pts[:400]
+        # spots players removed in game ("nothing here")
+        for key, lst in as_dict(r.get("removed")).items():
+            key = str(key).replace(":", "")
+            items = lst if isinstance(lst, list) else list(as_dict(lst).values())
+            for e in items:
+                e = as_dict(e)
+                agg["removed"].setdefault(key, []).append(e)
         # active work time per quest: averaged over every run
         for qid, w in as_dict(r.get("qwork")).items():
             w = as_dict(w)
@@ -233,7 +242,50 @@ def build(base, agg):
             for k in range(0, len(pts) - 1, 2):
                 if not any(abs(lst[j] - pts[k]) <= SPOT_NEAR and abs(lst[j + 1] - pts[k + 1]) <= SPOT_NEAR for j in range(0, len(lst) - 1, 2)):
                     lst += [pts[k], pts[k + 1]]
+    remove_spots(db, agg["removed"])      # last: also catches spots players recorded themselves
     return db
+
+
+REMOVE_WORLD = 12       # yards
+REMOVE_MAP = 15         # 0-1000 map units
+
+
+def remove_spots(db, removed):
+    """Delete spw / spm points near the spots players removed in game."""
+    n = 0
+    for key, spots in removed.items():
+        world = [(int(float(e.get("i") or -1)), float(e.get("x") or 0), float(e.get("y") or 0)) for e in spots if e.get("i") is not None]
+        maps = [(int(float(e.get("m"))), int(float(e.get("mx"))), int(float(e.get("my")))) for e in spots
+                if e.get("m") not in (None, False) and e.get("mx") is not None and e.get("my") is not None]
+        groups = db.get("spw", {}).get(key)
+        if groups:
+            keep = []
+            for g in groups:
+                inst, pts = g[0], g[1:]
+                out = [inst]
+                for k in range(0, len(pts) - 1, 2):
+                    x, y = pts[k], pts[k + 1]
+                    if any(i == inst and abs(x - rx) <= REMOVE_WORLD and abs(y - ry) <= REMOVE_WORLD for i, rx, ry in world):
+                        n += 1
+                        continue
+                    out += [x, y]
+                if len(out) > 1:
+                    keep.append(out)
+            db["spw"][key] = keep
+        cur = db.get("spm", {}).get(key)
+        if cur:
+            for m in list(cur.keys()):
+                pts = cur[m]
+                out = []
+                for k in range(0, len(pts) - 1, 2):
+                    x, y = pts[k], pts[k + 1]
+                    if any(str(mm) == str(m) and abs(x - rx) <= REMOVE_MAP and abs(y - ry) <= REMOVE_MAP for mm, rx, ry in maps):
+                        n += 1
+                        continue
+                    out += [x, y]
+                cur[m] = out
+    db.setdefault("meta", {})["removedSpots"] = n
+    return n
 
 
 def digest(db):
