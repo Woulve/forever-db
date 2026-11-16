@@ -221,8 +221,10 @@ def quest_extra(r, qk, a2u):
     10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill [id, value],
     15 reputation rewards [faction, value, ...], 16 exploration spots {uiMap: [x, y, ...]} (0-1000),
     17 parentQuest, 18 sourceItem, 19 requiredMinRep [faction, value], 20 breadcrumbs (quests that lead here)"""
-    o = obj_list(field(r, qk, "objectives"))
-    o = (o + [None] * 6)[:6]
+    o = field(r, qk, "objectives")
+    if isinstance(o, dict):         # sparse Lua list: keep the positions (1 creatures, 2 objects, 3 items, ...)
+        o = [o.get(str(i)) for i in range(1, 7)]
+    o = ((o if isinstance(o, list) else []) + [None] * 6)[:6]
     creatures = first_ints(o[0]) + first_ints(o[4])
     rep = []
     for e in obj_list(field(r, qk, "reputationReward")):
