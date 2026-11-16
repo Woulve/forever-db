@@ -41,6 +41,11 @@ def main():
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
     check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
     check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import build as _b
+    t = {"qx": {1: [0, 0, None, None, None, None, 3], 2: [0, 0, None, None, None, None, 3], 3: [0], 4: [0, 0, [9], None, None, None, 5], 5: [0, 0, [7]]}}
+    check("chain prerequisites from 'next' links (only where none exist)",
+          _b.chain_prereqs(t) == 1 and t["qx"][3][2] == [1, 2] and t["qx"][5][2] == [7])
     check("fixes.json applied (Old Rot-Chum spot + note, extra quest giver)",
           db["spm"]["c257001"]["2548"] == [771, 728] and "murloc hut" in db["note"]["c257001"]
           and "c259961" in db["qg"]["95120"])

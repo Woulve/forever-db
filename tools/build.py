@@ -219,6 +219,30 @@ def digest(db):
     return hashlib.sha256(json.dumps(db, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def chain_prereqs(db):
+    """A quest that another quest names as its next one (qx 7) but has no prerequisite of its own
+    (qx 3 / 4) needs one of those quests first. QuestieDB often has only the forward link, e.g.
+    The Goblin Trader -> Smuggler's Paradise. Returns how many quests got a prerequisite."""
+    qx = db.get("qx") or {}
+    prev = {}
+    for q, row in qx.items():
+        if len(row) > 6 and row[6]:
+            prev.setdefault(int(row[6]), set()).add(int(q))
+    n = 0
+    for q, prevs in prev.items():
+        row = qx.get(q) if q in qx else qx.get(str(q))
+        if row is None:
+            continue
+        has = (len(row) > 2 and row[2]) or (len(row) > 3 and row[3])
+        if has:
+            continue
+        while len(row) < 3:
+            row.append(None)
+        row[2] = sorted(prevs)
+        n += 1
+    return n
+
+
 def apply_fixes(db, path):
     """fixes.json: hand-checked corrections that win over every source and recording."""
     if not path or not os.path.exists(path):
@@ -239,6 +263,12 @@ def apply_fixes(db, path):
                 if k not in cur:
                     cur.append(k)
                     n += 1
+    for q, pre in (fx.get("pre") or {}).items():     # prerequisite quests (any one of them)
+        row = db.setdefault("qx", {}).setdefault(int(q), [])
+        while len(row) < 3:
+            row.append(None)
+        row[2] = list(pre)
+        n += 1
     note = db.setdefault("note", {})
     for key, text in (fx.get("note") or {}).items():
         note[key] = text
@@ -261,6 +291,7 @@ def main():
     recs = load_recordings(a.collected)
     agg = merge_recordings(recs)
     db = build(base, agg)
+    chained = chain_prereqs(db)
     fixed = apply_fixes(db, a.fixes)
     h = digest(db)
     db["meta"] = {
@@ -269,6 +300,7 @@ def main():
         "sources": a.source_note,
         "recordings": len(recs),
         "fixes": fixed,
+        "chainPrereqs": chained,
         "sourceList": json.load(open(a.sources_json)) if a.sources_json and os.path.exists(a.sources_json) else [],
         "counts": {k: len(v) for k, v in db.items() if isinstance(v, dict) and k not in ("loc", "src")},
     }

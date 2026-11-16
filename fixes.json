@@ -1,13 +1,21 @@
 {
-  "_about": "Hand-checked corrections, applied last (they win over every source and recording). spm: replaces an npc/object's map spots (uiMap -> [x, y, ...] in 0-1000). qg / qe: extra quest givers / enders. note: a short tip shown by questing addons.",
+  "_about": "Hand-checked corrections, applied last (they win over every source and recording). spm: replaces an npc/object's map spots (uiMap -> [x, y, ...] in 0-1000). qg / qe: extra quest givers / enders. note: a short tip shown by questing addons. pre: prerequisite quests (any one of them) when the data has none.",
   "spm": {
-    "c257001": { "2548": [771, 728] }
+    "c257001": {
+      "2548": [
+        771,
+        728
+      ]
+    }
   },
   "qg": {
-    "95120": ["c259961"]
+    "95120": [
+      "c259961"
+    ]
   },
   "qe": {},
   "note": {
     "c257001": "Stands in a rickety murloc hut next to three murlocs around a fire. Respawns in about 3 minutes."
-  }
+  },
+  "pre": {}
 }
