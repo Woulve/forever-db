@@ -30,6 +30,7 @@ FOREVER = {"questie", "recordings"}
 ENTITY = ["npc", "obj", "item", "quest"]
 UNION = ["qg", "qe", "vend", "rew"]
 DROPS = ["drop", "odrop", "idrop"]
+PASS = ["qx", "nfac"]   # single-source detail tables (QuestieDB): first source that has a key wins
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel"], "quest": ["title", "level", "minLevel"]}
 SPAWN_CAP = 120
@@ -80,7 +81,7 @@ def merge(sources):
     global NAMES
     NAMES = [n for n, _ in sources]
     data = [d for _, d in sources]
-    out = {t: {} for t in ENTITY + UNION + DROPS + ["start", "world", "spw", "spz", "loc", "src"]}
+    out = {t: {} for t in ENTITY + UNION + DROPS + PASS + ["start", "world", "spw", "spz", "loc", "src"]}
     rep = {"sources": {}, "conflicts": {}, "rates": {"compared": 0, "disagree": 0, "examples": []},
            "forever_only": {}, "added_by": {}}
     conflicts = defaultdict(lambda: {"count": 0, "examples": []})
@@ -192,6 +193,11 @@ def merge(sources):
                     if not near_dupe(lst, pts[j], pts[j + 1], NEAR_MAP):
                         lst += [pts[j], pts[j + 1]]
                         total += 1
+    # ---------------- detail tables (pass through)
+    for t in PASS:
+        for d in data:
+            for k, v in (d.get(t) or {}).items():
+                out[t].setdefault(k, v)
     # ---------------- translations
     for d in data:
         for loc, tbls in (d.get("loc") or {}).items():

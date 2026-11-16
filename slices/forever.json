@@ -18,7 +18,10 @@
     "start",
     "world",
     "spw",
-    "spm"
+    "spm",
+    "qe",
+    "qx",
+    "nfac"
   ],
   "prune": true,
   "fields": {

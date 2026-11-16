@@ -76,6 +76,7 @@ def main():
         check("questie correction adds a Forever-only npc", qs["npc"].get("99999", [None])[0] == "Skyborne Scout")
         check("questie _add operation", "c100" in qs["qg"].get("50002", []))
         check("questie replacement", qs["npc"]["100"][2] == 12)
+        check("questie quest details (qx) for every quest", set(qs["qx"]) == set(qs["quest"]))
         check("questie authored fix", qs["npc"]["101"][0] == "Kobold Tunneler")
         check("questie dynamic (per character) fixes skipped", qs["npc"]["101"][0] != "SHOULD NOT APPLY")
         check("questie spawn on Forever map", qs["spz"]["c99999"] == {"1429": [255, 402]})

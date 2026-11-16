@@ -95,6 +95,9 @@ Tables:
 | `start` | item starts a quest |
 | `world` | world drops (minimum level) |
 | `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |
+| `qe` | quest enders (same keys as `qg`) |
+| `qx` | quest details from QuestieDB, per quest: 1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo, 6 breadcrumbFor, 7 nextInChain, 8 creature objectives, 9 object objectives, 10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill {id, value}, 15 reputation rewards {faction, value, ...}, 16 exploration spots {[uiMap] = {x, y, ...}}, 17 parentQuest, 18 sourceItem, 19 requiredMinRep, 20 breadcrumbs |
+| `nfac` | NPC friendly to: "A", "H" or "AH" |
 | `spm` | map spots (uiMap, 0-1000): Forever positions for things without world coordinates + recordings |
 
 The master `forever.json` (release asset) also has `spz` (all Forever map positions), `loc`

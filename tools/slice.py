@@ -77,6 +77,14 @@ def referenced(db, tables):
                 quests.update(rows)
     if "start" in tables:
         quests.update(db.get("start", {}).values())
+    if "qx" in tables:
+        # questing data: every quest, the creatures / objects / items its objectives need
+        quests.update(int(k) for k in db.get("qx", {}))
+        quests.update(int(k) for k in db.get("qg", {}))
+        for row in db.get("qx", {}).values():
+            for col, bucket in ((7, npcs), (8, objs), (9, items)):
+                if len(row) > col and row[col]:
+                    bucket.update(row[col])
     for f in ("qg", "qe"):
         if f in tables:
             for q, ws in db.get(f, {}).items():
@@ -99,7 +107,7 @@ def make_slice(db, spec):
     if spec.get("prune"):
         npcs, objs, quests, items = referenced(db, tables)
         keep = {"npc": npcs, "obj": objs, "quest": quests, "qg": quests, "qe": quests, "item": items,
-                "vp": npcs}
+                "vp": npcs, "qx": quests, "nfac": npcs}
     for t in tables:
         src = db.get(t, {})
         res = {}

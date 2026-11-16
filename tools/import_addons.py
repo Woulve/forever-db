@@ -109,7 +109,7 @@ def add_spots(spz, key, ui, x, y):
 
 def empty():
     return {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop",
-                            "vend", "rew", "start", "world", "spw", "spz", "loc"]}
+                            "vend", "rew", "start", "world", "spw", "spz", "loc", "qx", "nfac"]}
 
 
 def push(d, k, v):
@@ -199,6 +199,64 @@ def pfquest(p, a2u, coef):
     return out, unmapped
 
 
+def first_ints(v):
+    """[[id, text, ...], ...] -> [id, ...] (QuestieDB objective lists)."""
+    out = []
+    for e in obj_list(v):
+        e = obj_list(e)
+        if e:
+            if isinstance(e[0], (dict, list)):      # killCredit: {{ids}, baseId, text}
+                out += ints(e[0])
+                if len(e) > 1 and num(e[1]):
+                    out.append(num(e[1]))
+            elif num(e[0]) is not None:
+                out.append(num(e[0]))
+    return sorted(set(out))
+
+
+def quest_extra(r, qk, a2u):
+    """Quest details for questing addons (table qx, one row per quest; Lua index = position + 1):
+    1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo,
+    6 breadcrumbFor, 7 nextInChain, 8 kill/creature objectives, 9 object objectives,
+    10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill [id, value],
+    15 reputation rewards [faction, value, ...], 16 exploration spots {uiMap: [x, y, ...]} (0-1000),
+    17 parentQuest, 18 sourceItem, 19 requiredMinRep [faction, value], 20 breadcrumbs (quests that lead here)"""
+    o = obj_list(field(r, qk, "objectives"))
+    o = (o + [None] * 6)[:6]
+    creatures = first_ints(o[0]) + first_ints(o[4])
+    rep = []
+    for e in obj_list(field(r, qk, "reputationReward")):
+        e = obj_list(e)
+        if len(e) >= 2 and num(e[0]) is not None:
+            rep += [num(e[0]), num(e[1])]
+    trig = {}
+    te = obj_list(field(r, qk, "triggerEnd"))
+    if len(te) >= 2 and isinstance(te[1], dict):
+        for area, pts in te[1].items():
+            ui = a2u.get(num(area))
+            if ui is None:
+                continue
+            for pt in obj_list(pts):
+                pt = obj_list(pt)
+                if len(pt) >= 2:
+                    x, y = int(round(float(pt[0]) * 10)), int(round(float(pt[1]) * 10))
+                    if 0 <= x <= 1000 and 0 <= y <= 1000:
+                        trig.setdefault(str(ui), []).extend([x, y])
+    sk = ints(field(r, qk, "requiredSkill"))
+    mr = ints(field(r, qk, "requiredMinRep"))
+    row = [num(field(r, qk, "requiredRaces")), num(field(r, qk, "requiredClasses")),
+           ints(field(r, qk, "preQuestSingle")) or None, ints(field(r, qk, "preQuestGroup")) or None,
+           ints(field(r, qk, "exclusiveTo")) or None, num(field(r, qk, "breadcrumbForQuestId")),
+           num(field(r, qk, "nextQuestInChain")), sorted(set(creatures)) or None,
+           first_ints(o[1]) or None, first_ints(o[2]) or None, num(field(r, qk, "zoneOrSort")),
+           num(field(r, qk, "questFlags")), num(field(r, qk, "specialFlags")), sk[:2] or None,
+           rep or None, trig or None, num(field(r, qk, "parentQuest")), num(field(r, qk, "sourceItemId")),
+           mr[:2] or None, ints(field(r, qk, "breadcrumbs")) or None]
+    while row and row[-1] in (None, 0):
+        row.pop()
+    return row
+
+
 # ------------------------------------------------------------------ QuestieDB
 def questie(q, a2u):
     out, unmapped = empty(), set()
@@ -221,6 +279,9 @@ def questie(q, a2u):
         out["npc"][sid] = [field(r, nk, "name"), field(r, nk, "subName"), num(field(r, nk, "minLevel")),
                            num(field(r, nk, "maxLevel")), num(field(r, nk, "rank"))]
         spawns("c", sid, field(r, nk, "spawns"))
+        fac = field(r, nk, "friendlyToFaction")
+        if fac in ("A", "H", "AH"):
+            out["nfac"][sid] = fac
         for qid in ints(field(r, nk, "questStarts")):
             push(out["qg"], qid, "c%d" % sid)
         for qid in ints(field(r, nk, "questEnds")):
@@ -257,6 +318,7 @@ def questie(q, a2u):
                 push(out["qe"], qid, pre + str(sid))
         for it in ints(sb.get("3") if isinstance(sb, dict) else None):
             out["start"].setdefault(it, qid)
+        out["qx"][qid] = quest_extra(r, qk, a2u)
     return out, unmapped
 
 
