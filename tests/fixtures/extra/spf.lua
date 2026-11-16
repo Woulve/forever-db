@@ -1,0 +1,3 @@
+local _, ns = ...
+ns.TaxiNodes = { [2] = { name = "Stormwind", map = 0 } }
+ns.Portals = { { from = 1, to = 2 } }

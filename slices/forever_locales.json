@@ -1,0 +1,10 @@
+{
+  "global": "ForeverDBLocale",
+  "files": "ForeverDB_Locales",
+  "toc": "ForeverDB_Locales.toc",
+  "target": "ForeverDB_Locales",
+  "tables": [
+    "loc"
+  ],
+  "prune": false
+}

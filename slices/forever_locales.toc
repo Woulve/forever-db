@@ -1,0 +1,10 @@
+## Interface: 16001, 120007
+## Title: ForeverDB (Locales)
+## Notes: Names of NPCs, objects, items and quests in 9 languages for ForeverDB. Loaded only when an addon asks for it (global ForeverDBLocale).
+## Author: Fatedfr
+## Version: 0
+## LoadOnDemand: 1
+## X-License: GPL-3.0 - sources and their licences in LICENSE-DATA.txt
+## X-Website: https://github.com/foreverfraddons/forever-db
+
+ForeverDB_Locales.lua

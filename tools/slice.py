@@ -19,6 +19,7 @@ and split over several files (MAX_FILE bytes each).
 import json, os, re, sys
 
 CHUNK = 3000
+CHUNK_BYTES = 400_000
 MAX_FILE = 3_500_000
 
 
@@ -158,16 +159,19 @@ def write_lua(sl, spec, folder):
     for t, rows in sl.items():
         keys = sorted(rows, key=lambda k: (0, k) if isinstance(k, int) else (1, str(k)))
         cur.append("D.%s = D.%s or {}" % (t, t))
-        for n in range(0, max(1, len(keys)), CHUNK):
-            part = keys[n:n + CHUNK]
-            if not part:
-                continue
-            body = [";(function() local t = D.%s" % t]
-            for k in part:
-                ks = "[%d]" % k if isinstance(k, int) else "[%s]" % lua_str(k)
-                body.append("t%s=%s" % (ks, lua(rows[k])))
-            body.append("end)()")
-            text = "\n".join(body)
+        # one function per CHUNK rows or ~CHUNK_BYTES of text, whichever comes first: Lua 5.1 (the
+        # game) allows about 262k constants per function, and big nested rows (map outlines) add up
+        parts, part, psize = [], [], 0
+        for k in keys:
+            ks = "[%d]" % k if isinstance(k, int) else "[%s]" % lua_str(k)
+            line = "t%s=%s" % (ks, lua(rows[k]))
+            if part and (len(part) >= CHUNK or psize + len(line) > CHUNK_BYTES):
+                parts.append(part); part, psize = [], 0
+            part.append(line); psize += len(line)
+        if part:
+            parts.append(part)
+        for part in parts:
+            text = "\n".join([";(function() local t = D.%s" % t] + part + ["end)()"])
             if size + len(text) > MAX_FILE and size > 0:
                 flush()
                 cur.append("D.%s = D.%s or {}" % (t, t))

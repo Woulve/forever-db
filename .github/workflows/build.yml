@@ -76,19 +76,34 @@ jobs:
             git -C work/src/questie sparse-checkout set --no-cone '/data/Forever/' '/src/corrections/' '/support/' '/LICENSE.md' '/gpl-3.0.md'
             echo "REF_QUESTIE=$(git -C work/src/questie rev-parse --short HEAD)" >> "$GITHUB_ENV"
           else echo "::warning::QuestieDB could not be fetched"; fi
+          # AllTheThings (MIT): its WoW Forever database sources + the Forever client tables (wago.tools CSV)
+          if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/ATTWoWAddon/AllTheThings.git work/src/att; then
+            git -C work/src/att sparse-checkout set --no-cone '/.contrib/.db/shared/' '/.contrib/.db/forever/' '/LICENSE'
+            echo "REF_ATT=$(git -C work/src/att rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          else echo "::warning::AllTheThings could not be fetched"; fi
+          # LegacyForever (GPL-3.0-or-later): Legacy challenges, exploration areas, criterion locations
+          if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/cjber/legacy-forever.git work/src/legacy; then
+            git -C work/src/legacy sparse-checkout set --no-cone '/Data/' '/tools/locations.json' '/LICENSE'
+            echo "REF_LEGACY=$(git -C work/src/legacy rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          else echo "::warning::LegacyForever could not be fetched"; fi
+          # Shortest Path Forever (GPL-3.0-or-later): flight paths, boats, portals, teleports, town services
+          if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/cjber/shortest-path-forever.git work/src/spf; then
+            git -C work/src/spf sparse-checkout set --no-cone '/Data/' '/LICENSE'
+            echo "REF_SPF=$(git -C work/src/spf rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          else echo "::warning::Shortest Path Forever could not be fetched"; fi
 
       - name: Cache source imports
         uses: actions/cache@v4
         with:
           path: work/cache
-          key: src-${{ env.REF_CMANGOS }}-${{ env.REF_VMANGOS }}-${{ env.REF_PFQUEST }}-${{ env.REF_QUESTIE }}-${{ env.QUESTIE_GENERATED }}-${{ hashFiles('tools/*.py', 'tools/lua/*.lua') }}
+          key: src-${{ env.REF_CMANGOS }}-${{ env.REF_VMANGOS }}-${{ env.REF_PFQUEST }}-${{ env.REF_QUESTIE }}-${{ env.REF_ATT }}-${{ env.REF_LEGACY }}-${{ env.REF_SPF }}-${{ env.QUESTIE_GENERATED }}-${{ hashFiles('tools/*.py', 'tools/lua/*.lua', 'tools/att/*.py', 'tools/att/*.lua') }}
           restore-keys: src-
 
       - name: Import every source
         run: |
           mkdir -p work/cache
           # re-import a source when its version OR the import tools changed
-          TOOLS=$(cat tools/*.py tools/lua/*.lua | sha256sum | cut -c1-12)
+          TOOLS=$(cat tools/*.py tools/lua/*.lua tools/att/*.py tools/att/*.lua | sha256sum | cut -c1-12)
           imp() {  # name ref command...
             local name=$1 ref=$2; shift 2
             [ -n "$ref" ] && ref="$ref-$TOOLS"
@@ -104,19 +119,25 @@ jobs:
           imp questie "$REF_QUESTIE-$QUESTIE_GENERATED" sh -c "lua5.1 tools/lua/export.lua questie work/src/questie Forever work/cache/questie.json $GEN && python tools/import_addons.py questie work/cache/questie.json work/cache/src-questie.json --conversion $CONV --dungeons work/src/questie/support/Forever/Zones/dungeons.lua"
           # pfQuest positions are moved onto Forever's maps with QuestieDB's zone tables
           imp pfquest "$REF_PFQUEST-$REF_QUESTIE" sh -c "lua5.1 tools/lua/export.lua pfquest work/src/pfquest work/cache/pfquest.json && python tools/import_addons.py pfquest work/cache/pfquest.json work/cache/src-pfquest.json --zones work/cache/questie.json --conversion $CONV"
+          # AllTheThings: its own Lua runs (tools/att), then the Forever client tables it ships
+          imp att "$REF_ATT" sh -c "python tools/att/prepare.py work/src/att/.contrib/.db work/att && lua5.1 tools/att/run.lua work/att/order.txt work/cache/att.json && python tools/import_att.py work/cache/att.json work/cache/src-att.json"
+          imp client "$REF_ATT" python tools/import_client.py work/src/att/.contrib/.db/forever/.config/.wago work/cache/src-client.json
+          imp legacy "$REF_LEGACY" sh -c "lua5.1 tools/lua/export.lua ns work/cache/legacy.json work/src/legacy/Data/Legacy.lua work/src/legacy/Data/Explore.lua && python tools/import_extra.py legacy work/cache/legacy.json work/cache/src-legacy.json --locations work/src/legacy/tools/locations.json"
+          imp spf "$REF_SPF" sh -c "lua5.1 tools/lua/export.lua ns work/cache/spf.json \$(ls work/src/spf/Data/*.lua | grep -vE 'Credits|Heights|RoadCells|RoadEdges') && python tools/import_extra.py spf work/cache/spf.json work/cache/src-spf.json"
 
       - name: Merge and cross-check the sources
         run: |
           mkdir -p dist
           # never publish a smaller database because a source failed: every source must be there
           # (a failed import keeps the last good one from the cache)
-          for s in questie vmangos cmangos pfquest; do
+          for s in client questie att vmangos cmangos pfquest legacy spf; do
             [ -f "work/cache/src-$s.json" ] || { echo "::error::source $s is missing - not publishing"; exit 1; }
           done
           # priority order: Forever data first, then the most accurate vanilla databases
           python tools/merge.py --out work/base.json --report dist/report.json \
-            questie=work/cache/src-questie.json vmangos=work/cache/src-vmangos.json \
-            cmangos=work/cache/src-cmangos.json pfquest=work/cache/src-pfquest.json
+            client=work/cache/src-client.json questie=work/cache/src-questie.json att=work/cache/src-att.json \
+            vmangos=work/cache/src-vmangos.json cmangos=work/cache/src-cmangos.json pfquest=work/cache/src-pfquest.json \
+            legacy=work/cache/src-legacy.json spf=work/cache/src-spf.json
           python - <<'PY'
           import json, os
           src = json.load(open("sources.json"))
@@ -152,7 +173,7 @@ jobs:
           mkdir -p addon-src/collected
           python tools/build.py --base work/base.json --collected collected addon-src/collected --out dist/forever.json \
             --sources-json work/sources.json \
-            --source-note "QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest, cross-checked, + WoW Forever in-game recordings"
+            --source-note "WoW Forever client tables + AllTheThings + QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest + LegacyForever + Shortest Path Forever, cross-checked, + WoW Forever in-game recordings"
 
       - name: Changed?
         id: diff
@@ -175,6 +196,7 @@ jobs:
             cp LICENSE-DATA.txt "out/$name/$target/"
             for lic in work/src/cmangos/LICENSE.md work/src/questie/gpl-3.0.md; do if [ -f "$lic" ]; then cp "$lic" "out/$name/$target/LICENSE-GPL.txt"; break; fi; done
             if [ -f work/src/pfquest/LICENSE ]; then cp work/src/pfquest/LICENSE "out/$name/$target/LICENSE-pfQuest.txt"; fi
+            if [ -f work/src/att/LICENSE ]; then cp work/src/att/LICENSE "out/$name/$target/LICENSE-AllTheThings.txt"; fi
             (cd "out/$name" && zip -qr "../../dist/$name.zip" "$target")
           done
           gzip -kf dist/forever.json
@@ -190,21 +212,25 @@ jobs:
           json.dump(m, open("manifest.json", "w"), indent=1, sort_keys=True)
           PY
           # the ForeverDB addon folder lives in the repo so the CurseForge packager can ship it
-          rm -rf ForeverDB
-          cp -r out/forever/ForeverDB ForeverDB
           VERSION="$(date -u +%Y.%m.%d).${{ github.run_number }}"
-          sed -i "s/^## Version:.*/## Version: $VERSION/" ForeverDB/ForeverDB.toc
+          # one CurseForge package, three LoadOnDemand folders: ForeverDB (everything addons use),
+          # ForeverDB_Full (uncapped drop lists, every map position, source of each entry), ForeverDB_Locales
+          for d in ForeverDB ForeverDB_Full ForeverDB_Locales; do
+            src=$(ls -d out/*/"$d" | head -1)
+            rm -rf "$d"; cp -r "$src" "$d"
+            sed -i "s/^## Version:.*/## Version: $VERSION/" "$d/$d.toc"
+          done
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           git config user.name "forever-db bot"
           git config user.email "actions@users.noreply.github.com"
           cp dist/report.md REPORT.md
-          git add manifest.json ForeverDB REPORT.md
+          git add manifest.json ForeverDB ForeverDB_Full ForeverDB_Locales REPORT.md
           git commit -m "ForeverDB $VERSION (data ${{ steps.diff.outputs.new }})" || true
           git tag "v$VERSION"
           git push origin HEAD "v$VERSION"
           gh release delete latest --yes --cleanup-tag || true
           gh release create latest dist/forever.json.gz dist/*.zip dist/report.md dist/report.json --title "Forever database (latest)" \
-            --notes "ForeverDB $VERSION, built $(date -u +%F) from QuestieDB ${REF_QUESTIE}, VMaNGOS ${REF_VMANGOS}, cMaNGOS ${REF_CMANGOS}, pfQuest ${REF_PFQUEST} + recordings. Hash ${{ steps.diff.outputs.new }}. See report.md for the cross-check."
+            --notes "ForeverDB $VERSION, built $(date -u +%F) from the Forever client tables + AllTheThings ${REF_ATT}, QuestieDB ${REF_QUESTIE}, VMaNGOS ${REF_VMANGOS}, cMaNGOS ${REF_CMANGOS}, pfQuest ${REF_PFQUEST}, LegacyForever ${REF_LEGACY}, Shortest Path Forever ${REF_SPF} + recordings. Hash ${{ steps.diff.outputs.new }}. See report.md for the cross-check."
 
       - name: Upload ForeverDB to CurseForge
         if: steps.diff.outputs.changed == 'true'

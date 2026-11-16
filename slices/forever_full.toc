@@ -1,0 +1,10 @@
+## Interface: 16001, 120007
+## Title: ForeverDB (Full)
+## Notes: The complete ForeverDB: every drop source of every item (uncapped), every map position and which source each entry came from. Loaded only when an addon asks for it (global ForeverDBFull).
+## Author: Fatedfr
+## Version: 0
+## LoadOnDemand: 1
+## X-License: GPL-3.0 - sources and their licences in LICENSE-DATA.txt
+## X-Website: https://github.com/foreverfraddons/forever-db
+
+ForeverDB_Full.lua

@@ -1,0 +1,17 @@
+{
+  "global": "ForeverDBFull",
+  "files": "ForeverDB_Full",
+  "toc": "ForeverDB_Full.toc",
+  "target": "ForeverDB_Full",
+  "tables": [
+    "drop",
+    "odrop",
+    "idrop",
+    "vend",
+    "rew",
+    "spw",
+    "spz",
+    "src"
+  ],
+  "prune": false
+}

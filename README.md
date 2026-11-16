@@ -6,13 +6,19 @@ A World of Warcraft: Forever database that rebuilds itself and feeds any number 
 
 | Source | What it brings | Licence |
 |---|---|---|
+| WoW Forever client tables (wago.tools CSV exports, shipped by AllTheThings) | Exact game data: every item (name, quality, item level, required level, class, slot, icon), flight masters, UI maps and their world bounds, zones, achievements and criteria, holidays, recipes/skill spells, item use effects, transmog sets, battle pets | Blizzard Entertainment's game data |
+| [AllTheThings](https://github.com/ATTWoWAddon/AllTheThings) (its WoW Forever database, run with `tools/att`) | Hand-curated Forever quests: givers, levels, positions on Forever's maps, rewards, vendors, drops | MIT |
 | [QuestieDB](https://github.com/Questie/QuestieDB) (Forever flavor + its Forever corrections) | The only open data with **WoW Forever** content: Forever-only quests, NPCs, items and objects, new zones (Zephras Isle, Riverglades, Mount Hyjal...), Forever map positions, links from player traces | GPL-3.0 (see LICENSE-DATA.txt) |
 | [VMaNGOS](https://github.com/vmangos/core) nightly dump | Very accurate 1.12 drop rates, vendors, quests, spawns | GPL-2.0-or-later |
 | [cMaNGOS classic-db](https://github.com/cmangos/classic-db) | Same kinds of data, independently maintained | GPL-3.0 |
 | [pfQuest](https://github.com/shagu/pfQuest) | Drop rates, map positions, names in 9 languages | MIT |
+| [LegacyForever](https://github.com/cjber/legacy-forever) | Forever's Legacy challenges, exploration area outlines, where each criterion happens | GPL-3.0-or-later |
+| [Shortest Path Forever](https://github.com/cjber/shortest-path-forever) | Travel network: flight paths and times, boats/zeppelins with timetables, portals, teleports, dungeon entrances, trainers, food/drink vendors, town areas | GPL-3.0-or-later |
 | Command Center + Questicus recordings (`CommandCenterCollect`, `QuesticusCollect`) | What players actually see in Forever; replaces a drop rate once something was looted 20+ times | - |
 
-Left out on purpose: MaNGOS Zero (CC BY-NC-SA, not compatible with GPL or CurseForge rewards).
+Left out on purpose: MaNGOS Zero (CC BY-NC-SA, not compatible with GPL or CurseForge rewards), and every addon or
+website that does not allow reuse (all-rights-reserved addons such as Blackthornes Farmer,
+ForeverGold and GatherMate2; addons without a licence; data websites such as metaforge.app).
 Wowhead is **not** scraped (their terms forbid it). Note: QuestieDB's *generated delta-base*
 was built by the Questie team from Wowhead's Forever pages; set the repository variable
 `QUESTIE_GENERATED` to `off` to leave that part out (traces and hand-written fixes stay).
@@ -48,6 +54,14 @@ quest givers / enders, `note` adds a short tip. Add a line there whenever a loca
      - refreshes the `latest` GitHub release (full `forever.json.gz` with translations, the report, slices).
 2. Your PC's scheduled task pushes new recordings to the addon repo (`collected/`), which pings this repo.
 3. Repos listed in `DB_CONSUMERS` get a `db-updated` ping.
+
+The **ForeverDB** CurseForge package holds three LoadOnDemand addon folders:
+
+| Folder | Global | What |
+|---|---|---|
+| `ForeverDB` | `ForeverDB` | everything addons use: all entities and relations, quest details, the client tables, Legacy and travel data (drop lists capped at the best 40 sources per item) |
+| `ForeverDB_Full` | `ForeverDBFull` | uncapped drop/vendor/reward lists, every world and map position, and `src` (which source has each entry) |
+| `ForeverDB_Locales` | `ForeverDBLocale` | names in 9 languages: `loc[locale][npc/obj/item/quest][id]` |
 
 The **ForeverDB** addon is published on its own. Addons that use it list it as a required dependency on CurseForge, and the CurseForge app installs it for players. It is LoadOnDemand: an addon calls `C_AddOns.LoadAddOn("ForeverDB")`, then reads the global `ForeverDB`. Command Center does this.
 
@@ -91,7 +105,7 @@ Tables:
 |---|---|
 | `npc` | name, sub, minLv, maxLv, rank |
 | `obj` | name |
-| `item` | name, quality, reqLevel |
+| `item` | name, quality, reqLevel, itemLevel, class, subclass, inventoryType, icon, allowableClass, requiredSkill, requiredSkillRank, allowableRaces |
 | `quest` | title, level, minLevel |
 | `qg` / `qe` | quest givers / enders ("c123" creature, "o45" object) |
 | `drop` / `odrop` / `idrop` | per item: {source, chance per 10000, ...} (0 = rate unknown) |
@@ -100,6 +114,15 @@ Tables:
 | `rew` | quest rewards |
 | `start` | item starts a quest |
 | `world` | world drops (minimum level) |
+| `taxi` | flight masters: name, continent, x, y, z, flags, Horde/Alliance mount |
+| `umap` / `umaa` | UI maps (name, parent, type) / their placement in the world (bounds) |
+| `area` | zones: name, continent, parent, exploration level, faction mask, flags |
+| `ach` / `ctree` / `crit` / `mtree` | achievements and Legacy challenges, criteria trees, criteria, modifier trees |
+| `hol` | holidays: name, looping, region, priority, filter, flags, durations, dates |
+| `sla` / `ieff` / `seff` | skill line spells (recipes) / item use effects / spell effects |
+| `tset` / `bpet` / `ctun` / `wmo` | transmog sets / battle pet species / content tuning (levels) / map overlays |
+| `legacy` / `lcrit` / `explore` | LegacyForever: challenge data, criterion locations, exploration areas |
+| `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |
 | `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |
 | `qe` | quest enders (same keys as `qg`) |
 | `qx` | quest details from QuestieDB, per quest: 1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo, 6 breadcrumbFor, 7 nextInChain, 8 creature objectives, 9 object objectives, 10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill {id, value}, 15 reputation rewards {faction, value, ...}, 16 exploration spots {[uiMap] = {x, y, ...}}, 17 parentQuest, 18 sourceItem, 19 requiredMinRep, 20 breadcrumbs, 21 requiredSourceItems, 22 extra objective spots {[uiMap] = {x, y, ...}}, 23 extra objective targets {"c123", "o45"} |

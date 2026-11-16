@@ -398,8 +398,33 @@ local function questie(root, flavor, outpath, skip_generated)
   write_json(outpath, res)
 end
 
+-- plain addon data files (LegacyForever, Shortest Path Forever ...): each file runs as
+-- `local _, ns = ...` and fills ns; the whole ns is written out
+local function nsdump(outpath, files)
+  local ns = {}
+  local env = setmetatable({}, { __index = _G })
+  env._G = env
+  for _, f in ipairs(files) do
+    local src = readfile(f)
+    if src then
+      local fn, err
+      if setfenv then fn, err = loadstring(src, "@" .. f); if fn then setfenv(fn, env) end
+      else fn, err = load(src, "@" .. f, "t", env) end
+      if fn then
+        local ok, e = pcall(fn, "ForeverDBExport", ns)
+        if not ok then io.stderr:write("warning: " .. f .. ": " .. tostring(e) .. "\n") end
+      else io.stderr:write("warning: " .. f .. ": " .. tostring(err) .. "\n") end
+    end
+  end
+  write_json(outpath, ns)
+end
+
 local mode = arg[1]
-if mode == "pfquest" then
+if mode == "ns" then
+  local files = {}
+  for k = 3, #arg do files[#files + 1] = arg[k] end
+  nsdump(arg[2], files)
+elseif mode == "pfquest" then
   pfquest(arg[2], arg[3])
 elseif mode == "questie" then
   questie(arg[2], arg[3], arg[4], arg[5] == "no-generated")

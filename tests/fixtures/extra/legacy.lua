@@ -1,0 +1,3 @@
+local _, ns = ...
+ns.Data = { build = "1.60.1.1", rewards = { [684] = true }, feeds = { [627] = { 62382 } } }
+ns.Explore = { build = "1.60.1.1", zones = { [1411] = { width = 100, height = 50, areas = { ["1:0:1:1"] = { { 0, 0, 1, 1 } } } } } }

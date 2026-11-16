@@ -114,6 +114,40 @@ def main():
         check("merge: source mask", m["src"]["npc"]["100"] & 1 == 1)
         check("merge report", rep["forever_only"]["npc"] >= 1 and "npc.minLv" in rep["conflicts"])
         check("report markdown", os.path.exists(os.path.join(tmp, "report.md")))
+    # ---- AllTheThings preprocessor (Forever build: classic tags on, later expansions off)
+    sys.path.insert(0, os.path.join(ROOT, "tools", "att"))
+    from preprocess import preprocess, evaluate
+    check("att: #if FOREVER on, AFTER TBC off", evaluate("FOREVER") and not evaluate("AFTER TBC") and evaluate("BEFORE 7.3.0"))
+    check("att: NOT ANYCLASSIC off", not evaluate("NOT ANYCLASSIC"))
+    pp = preprocess("a\n-- #if AFTER WRATH\nb\n-- #else\nc\n-- #endif\nd").split("\n")
+    check("att: preprocess keeps the active branch and line numbers", pp == ["a", "", "", "", "c", "", "d"])
+    run("tools/import_att.py", os.path.join(HERE, "fixtures", "att.json"), os.path.join(tmp, "src-att.json"))
+    at = json.load(open(os.path.join(tmp, "src-att.json")))
+    check("att: quest giver + level + reward + drop", at["qg"]["794"] == ["c3145"] and at["quest"]["794"][2] == 5
+          and at["rew"]["4921"] == [794] and at["drop"]["4859"] == [[3183, 0]] and at["spz"]["c3145"] == {"1411": [428, 690]})
+    # ---- Forever client tables
+    run("tools/import_client.py", os.path.join(HERE, "fixtures", "client"), os.path.join(tmp, "src-client.json"))
+    cl = json.load(open(os.path.join(tmp, "src-client.json")))
+    check("client: item row (name, quality, reqLevel, ilvl, class)", cl["item"]["5523"][:5] == ["Small Barnacled Clam", 1, 7, 10, 0])
+    check("client: item without a search name keeps class/icon", cl["item"]["9000"][4] == 7 and cl["item"]["9000"][7] == 134000)
+    check("client: flight master", cl["taxi"]["1"][0] == "Northshire Abbey" and cl["taxi"]["1"][1] == 0)
+    if exe:
+        lj, sj = os.path.join(tmp, "legacy.json"), os.path.join(tmp, "spf.json")
+        subprocess.run([exe, "tools/lua/export.lua", "ns", lj, os.path.join(HERE, "fixtures", "extra", "legacy.lua")], check=True, cwd=ROOT)
+        subprocess.run([exe, "tools/lua/export.lua", "ns", sj, os.path.join(HERE, "fixtures", "extra", "spf.lua")], check=True, cwd=ROOT)
+        run("tools/import_extra.py", "legacy", lj, os.path.join(tmp, "src-legacy.json"))
+        run("tools/import_extra.py", "spf", sj, os.path.join(tmp, "src-spf.json"))
+        lg = json.load(open(os.path.join(tmp, "src-legacy.json")))
+        sp = json.load(open(os.path.join(tmp, "src-spf.json")))
+        check("legacy: rewards + exploration outlines", lg["legacy"]["rewards"]["684"] is True and "1411" in lg["explore"])
+        check("spf: travel tables", sp["spf"]["TaxiNodes"]["2"]["name"] == "Stormwind" and "Portals" in sp["spf"])
+        # client item fields win the vote (Forever source first)
+        run("tools/merge.py", "--out", os.path.join(tmp, "m2.json"), "client=" + os.path.join(tmp, "src-client.json"),
+            "questie=" + os.path.join(tmp, "src-questie.json"), "att=" + os.path.join(tmp, "src-att.json"),
+            "legacy=" + os.path.join(tmp, "src-legacy.json"), "spf=" + os.path.join(tmp, "src-spf.json"))
+        m2 = json.load(open(os.path.join(tmp, "m2.json")))
+        check("merge: client item row wins and is 12 columns", m2["item"]["5523"][2] == 7 and len(m2["item"]["5523"]) == 12)
+        check("merge: pass-through tables", "1" in m2["taxi"] and "rewards" in m2["legacy"] and "TaxiNodes" in m2["spf"])
     sys.exit(0 if ok else 1)
 
 

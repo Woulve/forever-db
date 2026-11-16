@@ -26,16 +26,29 @@
     "qsp",
     "qsrc",
     "ind",
-    "note"
+    "note",
+    "taxi",
+    "umap",
+    "umaa",
+    "area",
+    "ach",
+    "ctree",
+    "crit",
+    "mtree",
+    "hol",
+    "sla",
+    "ieff",
+    "seff",
+    "tset",
+    "bpet",
+    "ctun",
+    "wmo",
+    "legacy",
+    "lcrit",
+    "explore",
+    "spf"
   ],
-  "prune": true,
-  "fields": {
-    "item": [
-      0,
-      1,
-      2
-    ]
-  },
+  "prune": false,
   "max_rows": {
     "drop": 40,
     "odrop": 30,

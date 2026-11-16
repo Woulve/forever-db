@@ -2,6 +2,8 @@ package-as: ForeverDB
 
 move-folders:
   ForeverDB/ForeverDB: ForeverDB
+  ForeverDB/ForeverDB_Full: ForeverDB_Full
+  ForeverDB/ForeverDB_Locales: ForeverDB_Locales
 
 ignore:
   - tools

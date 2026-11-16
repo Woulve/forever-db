@@ -26,13 +26,20 @@ where sources disagreed (with examples), so the data can be checked.
 import argparse, json, os, statistics
 from collections import Counter, defaultdict
 
-FOREVER = {"questie", "recordings"}
+FOREVER = {"client", "questie", "att", "recordings"}   # WoW Forever data: wins any field it has
 ENTITY = ["npc", "obj", "item", "quest"]
 UNION = ["qg", "qe", "vend", "rew"]
 DROPS = ["drop", "odrop", "idrop"]
-PASS = ["qx", "nfac", "dng", "ind"]   # single-source detail tables (QuestieDB): first source that has a key wins
+PASS = ["qx", "nfac", "dng", "ind",    # single-source detail tables: first source that has a key wins
+        # Forever client tables (tools/import_client.py)
+        "taxi", "umap", "umaa", "area", "ach", "ctree", "crit", "mtree", "hol", "sla", "ieff", "seff", "tset",
+        "bpet", "ctun", "wmo",
+        # LegacyForever and Shortest Path Forever data (tools/import_extra.py)
+        "legacy", "lcrit", "explore", "spf"]
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
-          "item": ["name", "quality", "reqLevel"], "quest": ["title", "level", "minLevel"]}
+          "item": ["name", "quality", "reqLevel", "ilvl", "class", "subclass", "slot", "icon", "classes", "skill",
+                   "skillRank", "races"],
+          "quest": ["title", "level", "minLevel"]}
 SPAWN_CAP = 120
 NEAR_WORLD = 8          # yards: world spawn points closer than this are one point
 NEAR_MAP = 6            # 0-1000 map units
@@ -44,7 +51,7 @@ def load(path):
     with open(path, encoding="utf-8") as f:
         d = json.load(f)
     return {t: {(int(k) if isinstance(k, str) and k.lstrip("-").isdigit() else k): v for k, v in (d.get(t) or {}).items()}
-            for t in d}
+            for t in d if isinstance(d.get(t), dict)}
 
 
 def norm(v):
