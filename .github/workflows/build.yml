@@ -87,8 +87,11 @@ jobs:
       - name: Import every source
         run: |
           mkdir -p work/cache
-          imp() {  # name ref command...  (re-import only when the source's version changed)
+          # re-import a source when its version OR the import tools changed
+          TOOLS=$(cat tools/*.py tools/lua/*.lua | sha256sum | cut -c1-12)
+          imp() {  # name ref command...
             local name=$1 ref=$2; shift 2
+            [ -n "$ref" ] && ref="$ref-$TOOLS"
             [ -n "$ref" ] || { echo "skip $name (not fetched)"; return 0; }
             if [ -f "work/cache/$name.ref" ] && [ "$(cat work/cache/$name.ref)" = "$ref" ] && [ -f "work/cache/src-$name.json" ]; then
               echo "$name $ref: cached"; return 0; fi
