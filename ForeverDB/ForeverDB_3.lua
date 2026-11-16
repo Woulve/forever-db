@@ -18138,7 +18138,7 @@ t[95162]={8589934770,nil,nil,nil,nil,nil,nil,nil,nil,{769},16591}
 t[95163]={8589934770,nil,nil,nil,nil,nil,nil,{258331},nil,nil,16591,nil,nil,nil,nil,nil,nil,268521}
 t[95165]={0,nil,{95123},nil,nil,nil,nil,nil,nil,nil,16591,nil,nil,nil,{21,50,169,50,369,50,470,50,577,50,2827,100},nil,nil,268505}
 t[95181]={8589934770,nil,nil,nil,nil,nil,nil,nil,nil,nil,16591,nil,nil,nil,{72,75},nil,nil,268516}
-t[95183]={8589934770,nil,nil,nil,nil,nil,96026,nil,nil,{271892},16591,nil,nil,nil,{2782,100}}
+t[95183]={8589934770,nil,{95433},nil,nil,nil,96026,nil,nil,{271892},16591,nil,nil,nil,{2782,100}}
 t[95184]={4294967373,nil,{95156},nil,nil,nil,nil,nil,nil,{7964},16591,nil,nil,nil,{2826,100}}
 t[95189]={4294967373,nil,nil,nil,{95204},nil,nil,nil,nil,nil,16611,nil,nil,nil,nil,nil,nil,268579}
 t[95194]={4294967373,nil,nil,nil,nil,nil,95196,nil,nil,nil,15,nil,nil,nil,{47,6,54,6,69,6,72,25,469,6}}
@@ -26707,6 +26707,7 @@ end)()
 D.note = D.note or {}
 ;(function() local t = D.note
 t["c257001"]="Stands in a rickety murloc hut next to three murlocs around a fire. Respawns in about 3 minutes."
+t["c259988"]="Gorgegut only offers Step One: Rock after the whole Clugfist chain: Clugfist's Decree, The Wayward Warrior, Rumblings of Discontent, Rise Up! and Death to the Executioner."
 end)()
 D.qrw = D.qrw or {}
 ;(function() local t = D.qrw
@@ -30845,6 +30846,8 @@ t[9556]={0,49500}
 t[9664]={9000,66000}
 t[9665]={9000,66000}
 end)()
+D.qwk = D.qwk or {}
+D.ptl = D.ptl or {}
 D.taxi = D.taxi or {}
 ;(function() local t = D.taxi
 t[1]={"Northshire Abbey",0,-8888.98,-0.54,94.39,1024,308,0}
