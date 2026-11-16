@@ -12,6 +12,8 @@ Master format = import_base.py format plus:
   seen {"c123": {item: [count, outOf]}}     raw loot counts (for future rate refinement)
   qsp  {quest: {uiMap: [x, y, ...]}}        where players made progress on a quest's objectives (Questicus)
   qsrc {quest: ["o645516", "c123", ...]}    what players looted right before an objective counted up (Questicus)
+  ptl  {"c123": {uiMap: [x, y, ...]}}       a patrolling mob's path, in walking order (Questicus /qc patrol)
+  qwk  {quest: [seconds, runs]}             how long the quest really takes (active time, Questicus)
   meta {build, sources, counts}
 """
 import argparse, glob, json, os, sys, hashlib, datetime
@@ -49,7 +51,8 @@ def load_recordings(folders):
 
 
 def merge_recordings(recs):
-    agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}, "qsp": {}, "qsrc": {}}
+    agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}, "qsp": {}, "qsrc": {},
+           "ptl": {}, "qwk": {}}
     for _, r in recs:
         for key, e in as_dict(r.get("loot")).items():
             e = as_dict(e)
@@ -116,6 +119,22 @@ def merge_recordings(recs):
             for key, c in as_dict(srcs).items():
                 key = str(key).replace(":", "")
                 a[key] = a.get(key, 0) + int(c or 0)
+        # patrol paths: the longest recording of each mob wins (they're walked in order, not merged)
+        for key, maps in as_dict(r.get("patrol")).items():
+            key = str(key).replace(":", "")
+            for m, pts in as_dict(maps).items():
+                pts = [int(v) for v in (pts if isinstance(pts, list) else list(as_dict(pts).values()))]
+                cur = agg["ptl"].setdefault(key, {})
+                if len(pts) >= 6 and len(pts) > len(cur.get(int(m), [])):
+                    cur[int(m)] = pts[:400]
+        # active work time per quest: averaged over every run
+        for qid, w in as_dict(r.get("qwork")).items():
+            w = as_dict(w)
+            s, n = float(w.get("s") or 0), int(w.get("n") or 0)
+            if s > 5 and n > 0:
+                a = agg["qwk"].setdefault(int(qid), [0.0, 0])
+                a[0] += s * n
+                a[1] += n
         for it, e in as_dict(r.get("item")).items():
             e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
             if e and e[0]:
@@ -203,6 +222,8 @@ def build(base, agg):
         keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1]) if c >= 2][:6]
         if keep:
             db["qsrc"][q] = keep
+    db["ptl"] = {k: v for k, v in agg["ptl"].items() if v}
+    db["qwk"] = {q: [round(a[0] / a[1]), a[1]] for q, a in agg["qwk"].items() if a[1] > 0}
     # map spots
     for key, maps in agg["sp"].items():
         kind, sid = who(key)

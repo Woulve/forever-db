@@ -36,10 +36,10 @@ PASS = ["qx", "nfac", "dng", "ind",    # single-source detail tables: first sour
         "bpet", "ctun", "wmo",
         # LegacyForever and Shortest Path Forever data (tools/import_extra.py)
         "legacy", "lcrit", "explore", "spf",
-        "qrw"]                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
+        "qrw", "ptl", "qwk"]                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel", "ilvl", "class", "subclass", "slot", "icon", "classes", "skill",
-                   "skillRank", "races"],
+                   "skillRank", "races", "minFaction", "minRep"],
           "quest": ["title", "level", "minLevel"]}
 SPAWN_CAP = 120
 NEAR_WORLD = 8          # yards: world spawn points closer than this are one point

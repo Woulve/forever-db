@@ -113,7 +113,7 @@ def make_slice(db, spec):
     if spec.get("prune"):
         npcs, objs, quests, items = referenced(db, tables)
         keep = {"npc": npcs, "obj": objs, "quest": quests, "qg": quests, "qe": quests, "item": items,
-                "vp": npcs, "qx": quests, "nfac": npcs, "qsp": quests, "qsrc": quests}
+                "vp": npcs, "qx": quests, "nfac": npcs, "qsp": quests, "qsrc": quests, "qwk": quests}
     for t in tables:
         src = db.get(t, {})
         res = {}
@@ -121,7 +121,7 @@ def make_slice(db, spec):
             ik = int(k) if str(k).lstrip("-").isdigit() else k
             if keep and t in keep and ik not in keep[t]:
                 continue
-            if keep and t in ("spw", "spm", "seen", "ind", "note"):
+            if keep and t in ("spw", "spm", "seen", "ind", "note", "ptl"):
                 kind, num = str(k)[0], int(str(k)[1:])
                 if (kind == "c" and num not in keep["npc"]) or (kind == "o" and num not in keep["obj"]):
                     continue

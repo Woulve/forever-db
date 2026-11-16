@@ -15,7 +15,12 @@
   },
   "qe": {},
   "note": {
-    "c257001": "Stands in a rickety murloc hut next to three murlocs around a fire. Respawns in about 3 minutes."
+    "c257001": "Stands in a rickety murloc hut next to three murlocs around a fire. Respawns in about 3 minutes.",
+    "c259988": "Gorgegut only offers Step One: Rock after the whole Clugfist chain: Clugfist's Decree, The Wayward Warrior, Rumblings of Discontent, Rise Up! and Death to the Executioner."
   },
-  "pre": {}
+  "pre": {
+    "95183": [
+      95433
+    ]
+  }
 }

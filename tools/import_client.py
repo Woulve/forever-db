@@ -24,7 +24,7 @@ adds tables no other source has:
   ctun   content tuning      {id: [lfgMinLevel, lfgMaxLevel, minLevelSquish, maxLevelSquish, ilvl, xpMultQuest]}
   wmo    map overlays        {id: [uiMapArt, width, height, offX, offY, areas[]]}
 Item rows: [name, quality, reqLevel, itemLevel, class, subclass, inventoryType, icon,
-            allowableClass, requiredSkill, requiredSkillRank, allowableRaces].
+            allowableClass, requiredSkill, requiredSkillRank, allowableRaces, minFaction, minReputation].
 """
 import csv, glob, json, os, re, sys
 
@@ -67,13 +67,18 @@ def main():
     items, b = table(folder, "Item"); builds.add(b)
     for r in items:
         out["item"][n(r["ID"])] = [None, None, None, None, n(r["ClassID"]), n(r["SubclassID"]), n(r["InventoryType"]),
-                                   n(r["IconFileDataID"]), None, None, None, None]
+                                   n(r["IconFileDataID"]), None, None, None, None, None, None]
     names, b = table(folder, "ItemSearchName"); builds.add(b)
     for r in names:
-        row = out["item"].setdefault(n(r["ID"]), [None] * 12)
+        row = out["item"].setdefault(n(r["ID"]), [None] * 14)
+        while len(row) < 14:
+            row.append(None)
         row[0], row[1], row[2], row[3] = s(r["Display_lang"]), n(r["OverallQualityID"]), n(r["RequiredLevel"]), n(r["ItemLevel"])
         row[8], row[9], row[10] = n(r["AllowableClass"]), n(r["RequiredSkill"]), n(r["RequiredSkillRank"])
         row[11] = n(r.get("AllowableRaces_0"))
+        # reputation needed to buy / use it: faction id + standing (0 Hated ... 7 Exalted)
+        if n(r.get("MinFactionID")):
+            row[12], row[13] = n(r.get("MinFactionID")), n(r.get("MinReputation"))
 
     rows, b = table(folder, "TaxiNodes"); builds.add(b)
     for r in rows:

@@ -41,6 +41,8 @@ def main():
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
     check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
     check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
+    check("Questicus patrol path kept in walking order", db["ptl"]["c263380"]["2548"] == [100, 100, 120, 110, 140, 130, 160, 150])
+    check("Questicus real quest time (active seconds, runs)", db["qwk"]["50001"] == [300, 2])
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import build as _b
     t = {"qx": {1: [0, 0, None, None, None, None, 3], 2: [0, 0, None, None, None, None, 3], 3: [0], 4: [0, 0, [9], None, None, None, 5], 5: [0, 0, [7]]}}
@@ -132,6 +134,7 @@ def main():
     cl = json.load(open(os.path.join(tmp, "src-client.json")))
     check("client: item row (name, quality, reqLevel, ilvl, class)", cl["item"]["5523"][:5] == ["Small Barnacled Clam", 1, 7, 10, 0])
     check("client: item without a search name keeps class/icon", cl["item"]["9000"][4] == 7 and cl["item"]["9000"][7] == 134000)
+    check("client: reputation needed for an item (faction, standing)", cl["item"]["99001"][12:14] == [609, 5])
     check("client: flight master", cl["taxi"]["1"][0] == "Northshire Abbey" and cl["taxi"]["1"][1] == 0)
     if exe:
         lj, sj = os.path.join(tmp, "legacy.json"), os.path.join(tmp, "spf.json")
@@ -148,7 +151,7 @@ def main():
             "questie=" + os.path.join(tmp, "src-questie.json"), "att=" + os.path.join(tmp, "src-att.json"),
             "legacy=" + os.path.join(tmp, "src-legacy.json"), "spf=" + os.path.join(tmp, "src-spf.json"))
         m2 = json.load(open(os.path.join(tmp, "m2.json")))
-        check("merge: client item row wins and is 12 columns", m2["item"]["5523"][2] == 7 and len(m2["item"]["5523"]) == 12)
+        check("merge: client item row wins and is 14 columns", m2["item"]["5523"][2] == 7 and len(m2["item"]["5523"]) == 14)
         check("merge: pass-through tables", "1" in m2["taxi"] and "rewards" in m2["legacy"] and "TaxiNodes" in m2["spf"])
     sys.exit(0 if ok else 1)
 

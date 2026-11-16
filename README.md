@@ -105,7 +105,7 @@ Tables:
 |---|---|
 | `npc` | name, sub, minLv, maxLv, rank |
 | `obj` | name |
-| `item` | name, quality, reqLevel, itemLevel, class, subclass, inventoryType, icon, allowableClass, requiredSkill, requiredSkillRank, allowableRaces |
+| `item` | name, quality, reqLevel, itemLevel, class, subclass, inventoryType, icon, allowableClass, requiredSkill, requiredSkillRank, allowableRaces, minFaction, minReputation (reputation needed to buy / use it: faction id + standing 0 Hated ... 7 Exalted) |
 | `quest` | title, level, minLevel |
 | `qg` / `qe` | quest givers / enders ("c123" creature, "o45" object) |
 | `drop` / `odrop` / `idrop` | per item: {source, chance per 10000, ...} (0 = rate unknown) |
@@ -130,6 +130,8 @@ Tables:
 | `nfac` | NPC friendly to: "A", "H" or "AH" |
 | `dng` | dungeon entrances (QuestieDB): [areaId] = {name, parentArea, {uiMap, x, y, ...}} (also under alternative area ids) |
 | `ind` | npcs / objects that live inside a dungeon: ["c123"] = {areaId, ...} (route to its `dng` entrance) |
+| `ptl` | patrol paths of moving mobs, recorded in game with Questicus `/qc patrol` (the longest recording wins): ["c123"] = {[uiMap] = {x, y, ...} in walking order} |
+| `qwk` | how long quests really take (active time while working on them, averaged over everyone's runs, Questicus): [quest] = {seconds, runs} |
 | `qsp` | quest objective areas players made progress in (Questicus recordings): [quest] = {[uiMap] = {x, y, ...}} |
 | `note` | short hand-written tips for npcs / objects (from `fixes.json`): ["c257001"] = "Stands in a murloc hut..." |
 | `qsrc` | what players looted right before a quest objective counted up (Questicus recordings): [quest] = {"o645516", ...} |
