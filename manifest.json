@@ -1,25 +1,58 @@
 {
- "build": "2026-11-15",
+ "build": "2026-11-16",
  "counts": {
-  "drop": 7239,
-  "idrop": 2273,
-  "item": 17718,
-  "npc": 10384,
-  "obj": 10743,
-  "odrop": 2990,
-  "qe": 4154,
-  "qg": 3956,
-  "quest": 4245,
-  "rew": 2138,
+  "drop": 9818,
+  "idrop": 2746,
+  "item": 26814,
+  "npc": 15830,
+  "obj": 11920,
+  "odrop": 3718,
+  "qe": 5744,
+  "qg": 5410,
+  "quest": 6095,
+  "rew": 2563,
   "seen": 0,
-  "spm": 0,
-  "spw": 15118,
-  "start": 216,
-  "vend": 1765,
+  "spm": 3257,
+  "spw": 15877,
+  "spz": 16320,
+  "start": 653,
+  "vend": 3923,
   "vp": 0,
-  "world": 2995
+  "world": 3136
  },
- "hash": "11c7d6137731cbd1",
+ "hash": "b00104f2b3b0a66d",
  "recordings": 0,
- "sources": "cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings"
+ "sourceList": [
+  {
+   "forever": true,
+   "licence": "GPL-3.0 (see LICENSE-DATA.txt)",
+   "name": "questie",
+   "ref": "4dbb824",
+   "repo": "Questie/QuestieDB",
+   "title": "QuestieDB (WoW Forever)"
+  },
+  {
+   "licence": "GPL-2.0-or-later",
+   "name": "vmangos",
+   "ref": "13a411e",
+   "release": "db_latest",
+   "repo": "vmangos/core",
+   "title": "VMaNGOS world database"
+  },
+  {
+   "licence": "GPL-3.0",
+   "name": "cmangos",
+   "ref": "e4825cf",
+   "repo": "cmangos/classic-db",
+   "title": "cMaNGOS classic-db"
+  },
+  {
+   "licence": "MIT",
+   "name": "pfquest",
+   "ref": "104f356",
+   "repo": "shagu/pfQuest",
+   "title": "pfQuest database"
+  }
+ ],
+ "sources": "QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest, cross-checked, + WoW Forever in-game recordings"
 }
