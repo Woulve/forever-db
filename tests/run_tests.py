@@ -46,6 +46,8 @@ def main():
     t = {"qx": {1: [0, 0, None, None, None, None, 3], 2: [0, 0, None, None, None, None, 3], 3: [0], 4: [0, 0, [9], None, None, None, 5], 5: [0, 0, [7]]}}
     check("chain prerequisites from 'next' links (only where none exist)",
           _b.chain_prereqs(t) == 1 and t["qx"][3][2] == [1, 2] and t["qx"][5][2] == [7])
+    check("quest rewards: money, XP from RewMoneyMaxLevel (/0.6 up to level 60), choice items",
+          db["qrw"]["400"][:3] == [350, 2400, [5523]] and "401" not in db["qrw"])
     check("fixes.json applied (Old Rot-Chum spot + note, extra quest giver)",
           db["spm"]["c257001"]["2548"] == [771, 728] and "murloc hut" in db["note"]["c257001"]
           and "c259961" in db["qg"]["95120"])

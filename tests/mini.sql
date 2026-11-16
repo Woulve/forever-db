@@ -53,8 +53,8 @@ CREATE TABLE `npc_vendor_template` (`entry` int, `item` int, `maxcount` int, `in
 INSERT INTO `npc_vendor_template` VALUES (5,5523,0,0);
 CREATE TABLE `npc_vendor` (`entry` int, `item` int, `maxcount` int, `incrtime` int);
 INSERT INTO `npc_vendor` VALUES (200,8000,0,0);
-CREATE TABLE `quest_template` (`entry` int, `ZoneOrSort` int, `MinLevel` int, `QuestLevel` int, `Title` text, `RewChoiceItemId1` int, `RewChoiceItemId2` int, `RewItemId1` int);
-INSERT INTO `quest_template` VALUES (400,12,8,12,'The Clam Quest',5523,0,0),(401,12,1,5,'A Scroll',0,0,0);
+CREATE TABLE `quest_template` (`entry` int, `ZoneOrSort` int, `MinLevel` int, `QuestLevel` int, `Title` text, `RewChoiceItemId1` int, `RewChoiceItemId2` int, `RewItemId1` int, `RewOrReqMoney` int, `RewMoneyMaxLevel` int);
+INSERT INTO `quest_template` VALUES (400,12,8,12,'The Clam Quest',5523,0,0,350,1440),(401,12,1,5,'A Scroll',0,0,0,-100,0);
 CREATE TABLE `creature_questrelation` (`id` int, `quest` int);
 INSERT INTO `creature_questrelation` VALUES (200,400);
 CREATE TABLE `creature_involvedrelation` (`id` int, `quest` int);

@@ -35,7 +35,8 @@ PASS = ["qx", "nfac", "dng", "ind",    # single-source detail tables: first sour
         "taxi", "umap", "umaa", "area", "ach", "ctree", "crit", "mtree", "hol", "sla", "ieff", "seff", "tset",
         "bpet", "ctun", "wmo",
         # LegacyForever and Shortest Path Forever data (tools/import_extra.py)
-        "legacy", "lcrit", "explore", "spf"]
+        "legacy", "lcrit", "explore", "spf",
+        "qrw"]                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel", "ilvl", "class", "subclass", "slot", "icon", "classes", "skill",
                    "skillRank", "races"],

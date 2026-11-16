@@ -112,6 +112,7 @@ Tables:
 | `vend` | per item: vendor ids |
 | `vp` | prices seen |
 | `rew` | quest rewards |
+| `qrw` | quest rewards in detail (MaNGOS dumps): [quest] = {money in copper, full XP (classic formula from RewMoneyMaxLevel, before the grey-quest penalty), {choice items}, {fixed items}} |
 | `start` | item starts a quest |
 | `world` | world drops (minimum level) |
 | `taxi` | flight masters: name, continent, x, y, z, flags, Horde/Alliance mount |

@@ -64,7 +64,7 @@ def final_patch(raw):
 
 def build(tables):
     T = {k: Table(final_patch(tables.get(k))) for k in TABLES}
-    out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw"]}
+    out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw", "qrw"]}
 
     # --- creatures
     ct = T["creature_template"]
@@ -192,8 +192,28 @@ def build(tables):
     q_e, q_t, q_lv, q_min = qt.col("entry"), qt.col("title"), qt.col("questlevel"), qt.col("minlevel")
     rew_cols = [qt.col("rewchoiceitemid%d" % k) for k in range(1, 7)] + [qt.col("rewitemid%d" % k) for k in range(1, 5)]
     rew_cols = [c for c in rew_cols if c is not None]
+    # rewards: money, full XP (classic formula from RewMoneyMaxLevel), choice items, fixed items
+    q_money, q_maxmoney = qt.col("reworreqmoney"), qt.col("rewmoneymaxlevel")
+    ch_cols = [(qt.col("rewchoiceitemid%d" % k), qt.col("rewchoiceitemcount%d" % k)) for k in range(1, 7)]
+    fx_cols = [(qt.col("rewitemid%d" % k), qt.col("rewitemcount%d" % k)) for k in range(1, 5)]
+
+    def full_xp(qlvl, maxmoney):
+        """XP at full value (no grey penalty), cMaNGOS classic Quest::XPValue."""
+        if not maxmoney:
+            return 0
+        qlvl = qlvl or 1          # quests up to level 60 give RewMoneyMaxLevel / 0.6 (higher levels scale down)
+        div = 6.0 if qlvl >= 65 else {64: 4.8, 63: 3.6, 62: 2.4, 61: 1.2}.get(qlvl, 0.6)
+        return int(round(maxmoney / div))
+
     for r in qt:
         out["quest"][r[q_e]] = [r[q_t], r[q_lv] if q_lv is not None else None, r[q_min] if q_min is not None else None]
+        money = r[q_money] if q_money is not None else 0
+        maxm = r[q_maxmoney] if q_maxmoney is not None else 0
+        ch = [r[a] for a, _ in ch_cols if a is not None and r[a]]
+        fixed = [r[a] for a, _ in fx_cols if a is not None and r[a]]
+        xp = full_xp(r[q_lv] if q_lv is not None else None, maxm)
+        if money > 0 or xp or ch or fixed:
+            out["qrw"][r[q_e]] = [max(0, money or 0), xp, ch or None, fixed or None]
         for c in rew_cols:
             if r[c]:
                 lst = out["rew"].setdefault(r[c], [])
