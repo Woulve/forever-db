@@ -4,14 +4,14 @@
   "drop": 9818,
   "idrop": 2746,
   "item": 26814,
-  "nfac": 0,
+  "nfac": 7458,
   "npc": 15830,
   "obj": 11920,
   "odrop": 3718,
   "qe": 5744,
   "qg": 5410,
   "quest": 6095,
-  "qx": 0,
+  "qx": 5914,
   "rew": 2563,
   "seen": 0,
   "spm": 3257,
@@ -22,7 +22,7 @@
   "vp": 0,
   "world": 3136
  },
- "hash": "deeac77701e62340",
+ "hash": "5efdf9490a6ddf4f",
  "recordings": 0,
  "sourceList": [
   {
