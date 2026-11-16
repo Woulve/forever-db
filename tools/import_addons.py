@@ -1,0 +1,286 @@
+"""Turn the JSON written by tools/lua/export.lua (pfQuest, QuestieDB) into the source format
+that tools/merge.py reads (same tables as import_base.py, plus spz and loc).
+
+  python tools/import_addons.py pfquest  work/pfquest.json  work/src-pfquest.json  [--zones work/questie-forever.json]
+  python tools/import_addons.py questie  work/questie-forever.json  work/src-questie.json
+
+Extra tables:
+  spz  {"c123": {uiMap: [x, y, x, y, ...]}}   map positions 0-1000 on Forever's maps
+  loc  {locale: {"npc"|"obj"|"item"|"quest": {id: name}}}
+Drops known without a rate (QuestieDB) get chance 0 = "drops here, rate unknown".
+
+Map positions: pfQuest stores Classic zone percentages; QuestieDB stores Forever ones.
+Zones are AreaTable ids, mapped to uiMap ids with QuestieDB's Forever zone tables, and Classic
+positions are moved onto Forever's maps with QuestieDB's per-zone conversion factors (Forever
+redrew a few zone maps, e.g. Mulgore).
+"""
+import json, os, re, sys
+
+SPAWN_CAP = 120
+
+
+def obj_list(v):
+    """{'1': a, '2': b} -> [a, b] (sorted by numeric key); lists pass through."""
+    if isinstance(v, list):
+        return v
+    if not isinstance(v, dict):
+        return [] if v is None else [v]
+    try:
+        return [v[k] for k in sorted(v, key=lambda k: float(k))]
+    except ValueError:
+        return list(v.values())
+
+
+def ints(v):
+    out = []
+    for x in obj_list(v):
+        try:
+            out.append(int(x))
+        except (TypeError, ValueError):
+            pass
+    return out
+
+
+def field(rec, keys, name):
+    k = keys.get(name)
+    return rec.get(str(k)) if k is not None else None
+
+
+def num(v):
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        try:
+            return int(float(v))
+        except (TypeError, ValueError):
+            return None
+
+
+# ------------------------------------------------------------------ zones
+def zone_tables(qjson_path, conversion_path=None):
+    """area id -> uiMap id, and area id -> (scale_x, off_x, scale_y, off_y) Classic->Forever."""
+    a2u, coef = {}, {}
+    if qjson_path and os.path.exists(qjson_path):
+        q = json.load(open(qjson_path, encoding="utf-8"))
+        for src in ("classicUiMapToArea", "uiMapToArea"):
+            for u, a in (q.get(src) or {}).items():
+                if num(a) and num(u):
+                    a2u.setdefault(num(a), num(u))
+        for src in ("classicAreaToUiMap", "areaToUiMap"):
+            for a, u in (q.get(src) or {}).items():
+                if num(u):
+                    a2u[num(a)] = num(u)
+    zone_ids = {}
+    if qjson_path and os.path.exists(qjson_path):
+        zone_ids = {k: num(v) for k, v in (q.get("zoneIDs") or {}).items() if num(v)}
+    if conversion_path and os.path.exists(conversion_path):
+        g = json.load(open(conversion_path, encoding="utf-8")).get("geometry", {})
+        for t in g.get("transforms", []):
+            if t.get("area_id") and t.get("ui_map_id"):
+                a2u[int(t["area_id"])] = int(t["ui_map_id"])
+        # maps Forever added (Zephras Isle, Riverglades, ...) carry only a name: match it to
+        # QuestieDB's zone symbols (ZEPHRAS_ISLE = 16593 ...); the first map of a name wins
+        for m in g.get("added_maps", []):
+            sym = re.sub(r"[^A-Z0-9]+", "_", (m.get("target_name") or "").upper().replace("'", "")).strip("_")
+            area = zone_ids.get(sym)
+            if area and m.get("ui_map_id") and area not in a2u:
+                a2u[area] = int(m["ui_map_id"])
+        for a, c in (g.get("area_coefficients") or {}).items():
+            coef[int(a)] = (c["scale_x"], c["offset_x"], c["scale_y"], c["offset_y"])
+    a2u = {a: u for a, u in a2u.items() if u}
+    return a2u, coef
+
+
+def add_spots(spz, key, ui, x, y):
+    if x is None or y is None or ui is None:
+        return
+    x, y = int(round(float(x) * 10)), int(round(float(y) * 10))
+    if not (0 <= x <= 1000 and 0 <= y <= 1000):
+        return
+    m = spz.setdefault(key, {})
+    pts = m.setdefault(ui, [])
+    if sum(len(p) for p in m.values()) // 2 >= SPAWN_CAP:
+        return
+    for j in range(0, len(pts), 2):
+        if abs(pts[j] - x) <= 5 and abs(pts[j + 1] - y) <= 5:
+            return
+    pts += [x, y]
+
+
+def empty():
+    return {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop",
+                            "vend", "rew", "start", "world", "spw", "spz", "loc"]}
+
+
+def push(d, k, v):
+    lst = d.setdefault(k, [])
+    if v not in lst:
+        lst.append(v)
+
+
+# ------------------------------------------------------------------ pfQuest
+def pfquest(p, a2u, coef):
+    out, unmapped = empty(), set()
+    names = p.get("names", {})
+    en = names.get("enUS", {})
+    units, objs = en.get("units") or {}, en.get("objects") or {}
+    items, quests = en.get("items") or {}, en.get("quests") or {}
+
+    def lvl(s):
+        if s is None:
+            return None, None
+        parts = str(s).replace(" ", "").split("-")
+        a, b = num(parts[0]), num(parts[-1])
+        return a, b
+
+    def spots(kind, sid, coords):
+        for c in obj_list(coords):
+            c = obj_list(c)
+            if len(c) < 3:
+                continue
+            x, y, area = c[0], c[1], num(c[2])
+            ui = a2u.get(area)
+            if ui is None:
+                unmapped.add(area)
+                continue
+            if area in coef:
+                sx, ox, sy, oy = coef[area]
+                x, y = float(x) * sx + ox, float(y) * sy + oy
+            add_spots(out["spz"], "%s%d" % (kind, sid), ui, x, y)
+
+    for sid, u in p.get("units", {}).items():
+        sid = int(sid)
+        mn, mx = lvl(u.get("lvl"))
+        out["npc"][sid] = [units.get(str(sid)), None, mn, mx, None]
+        spots("c", sid, u.get("coords"))
+    for sid, o in p.get("objects", {}).items():
+        sid = int(sid)
+        out["obj"][sid] = [objs.get(str(sid))]
+        spots("o", sid, o.get("coords"))
+    for iid, nm in items.items():
+        out["item"][int(iid)] = [nm, None, None]
+    refloot = p.get("refloot", {})
+    for iid, it in p.get("items", {}).items():
+        iid = int(iid)
+        out["item"].setdefault(iid, [items.get(str(iid)), None, None])
+        for src, f in (("U", "drop"), ("O", "odrop"), ("I", "idrop")):
+            for sid, ch in (it.get(src) or {}).items():
+                out[f].setdefault(iid, []).append([int(sid), int(round(float(ch or 0) * 100))])
+        for rid, ch in (it.get("R") or {}).items():          # reference loot -> its users
+            ref = refloot.get(str(rid)) or {}
+            for src, f in (("U", "drop"), ("O", "odrop")):
+                for sid, _ in (ref.get(src) or {}).items():
+                    out[f].setdefault(iid, []).append([int(sid), int(round(float(ch or 0) * 100))])
+        for sid in (it.get("V") or {}):
+            push(out["vend"], iid, int(sid))
+    for qid, q in p.get("quests", {}).items():
+        qid = int(qid)
+        out["quest"][qid] = [quests.get(str(qid)), num(q.get("lvl")), num(q.get("min"))]
+        for part, dst in (("start", "qg"), ("end", "qe")):
+            rel = q.get(part) or {}
+            for kind, pre in (("U", "c"), ("O", "o")):
+                for sid in ints(rel.get(kind)):
+                    push(out[dst], qid, pre + str(sid))
+            if part == "start":
+                for it in ints(rel.get("I")):
+                    out["start"][it] = qid
+    for f in ("drop", "odrop", "idrop"):
+        for iid, lst in out[f].items():
+            best = {}
+            for sid, ch in lst:
+                best[sid] = max(best.get(sid, 0), ch)
+            out[f][iid] = sorted(([s, c] for s, c in best.items()), key=lambda e: -e[1])
+    kinds = {"units": "npc", "objects": "obj", "items": "item", "quests": "quest"}
+    for loc, tbls in names.items():
+        for src, dst in kinds.items():
+            t = tbls.get(src) or {}
+            if t:
+                out["loc"].setdefault(loc, {})[dst] = {int(k): v for k, v in t.items() if isinstance(v, str)}
+    return out, unmapped
+
+
+# ------------------------------------------------------------------ QuestieDB
+def questie(q, a2u):
+    out, unmapped = empty(), set()
+    nk, ok, ik, qk = q["npcKeys"], q["objectKeys"], q["itemKeys"], q["questKeys"]
+
+    def spawns(kind, sid, sp):
+        for area, pts in (sp or {}).items():
+            area = num(area)
+            ui = a2u.get(area)
+            if ui is None:
+                unmapped.add(area)
+                continue
+            for pt in obj_list(pts):
+                pt = obj_list(pt)
+                if len(pt) >= 2:
+                    add_spots(out["spz"], "%s%d" % (kind, sid), ui, pt[0], pt[1])
+
+    for sid, r in (q.get("npc") or {}).items():
+        sid = int(sid)
+        out["npc"][sid] = [field(r, nk, "name"), field(r, nk, "subName"), num(field(r, nk, "minLevel")),
+                           num(field(r, nk, "maxLevel")), num(field(r, nk, "rank"))]
+        spawns("c", sid, field(r, nk, "spawns"))
+        for qid in ints(field(r, nk, "questStarts")):
+            push(out["qg"], qid, "c%d" % sid)
+        for qid in ints(field(r, nk, "questEnds")):
+            push(out["qe"], qid, "c%d" % sid)
+    for sid, r in (q.get("obj") or {}).items():
+        sid = int(sid)
+        out["obj"][sid] = [field(r, ok, "name")]
+        spawns("o", sid, field(r, ok, "spawns"))
+        for qid in ints(field(r, ok, "questStarts")):
+            push(out["qg"], qid, "o%d" % sid)
+        for qid in ints(field(r, ok, "questEnds")):
+            push(out["qe"], qid, "o%d" % sid)
+    for iid, r in (q.get("item") or {}).items():
+        iid = int(iid)
+        out["item"][iid] = [field(r, ik, "name"), None, num(field(r, ik, "requiredLevel"))]
+        for name, f in (("npcDrops", "drop"), ("objectDrops", "odrop"), ("itemDrops", "idrop")):
+            for sid in ints(field(r, ik, name)):
+                out[f].setdefault(iid, []).append([sid, 0])
+        for sid in ints(field(r, ik, "vendors")):
+            push(out["vend"], iid, sid)
+        for qid in ints(field(r, ik, "questRewards")):
+            push(out["rew"], iid, qid)
+        sq = num(field(r, ik, "startQuest"))
+        if sq:
+            out["start"][iid] = sq
+    for qid, r in (q.get("quest") or {}).items():
+        qid = int(qid)
+        out["quest"][qid] = [field(r, qk, "name"), num(field(r, qk, "questLevel")), num(field(r, qk, "requiredLevel"))]
+        sb, fb = field(r, qk, "startedBy") or {}, field(r, qk, "finishedBy") or {}
+        for idx, pre in (("1", "c"), ("2", "o")):
+            for sid in ints(sb.get(idx) if isinstance(sb, dict) else None):
+                push(out["qg"], qid, pre + str(sid))
+            for sid in ints(fb.get(idx) if isinstance(fb, dict) else None):
+                push(out["qe"], qid, pre + str(sid))
+        for it in ints(sb.get("3") if isinstance(sb, dict) else None):
+            out["start"].setdefault(it, qid)
+    return out, unmapped
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("kind", choices=["pfquest", "questie"])
+    ap.add_argument("src")
+    ap.add_argument("dst")
+    ap.add_argument("--zones", help="questie export json with the zone tables (for pfquest)")
+    ap.add_argument("--conversion", help="QuestieDB data/Forever/conversion.json")
+    a = ap.parse_args()
+    src = json.load(open(a.src, encoding="utf-8"))
+    if a.kind == "pfquest":
+        a2u, coef = zone_tables(a.zones, a.conversion)
+        out, unmapped = pfquest(src, a2u, coef)
+    else:
+        a2u, _ = zone_tables(a.src, a.conversion)
+        out, unmapped = questie(src, a2u)
+    print(a.kind, {k: len(v) for k, v in out.items()}, "zones without a map:", len(unmapped))
+    os.makedirs(os.path.dirname(a.dst) or ".", exist_ok=True)
+    with open(a.dst, "w", encoding="utf-8") as f:
+        json.dump(out, f, separators=(",", ":"), ensure_ascii=False, sort_keys=True)
+
+
+if __name__ == "__main__":
+    main()

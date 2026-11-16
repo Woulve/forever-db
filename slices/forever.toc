@@ -1,10 +1,10 @@
 ## Interface: 16001, 120007
 ## Title: ForeverDB
-## Notes: World of Warcraft: Forever database - item sources with drop chances, vendors, quests, NPCs and map spots. Shared by any addon that wants it (Command Center uses it). Loaded only when an addon asks for it. Rebuilt automatically from the open vanilla database plus in-game recordings.
+## Notes: World of Warcraft: Forever database - item sources with drop chances, vendors, quests, NPCs and map spots. Merged from QuestieDB (Forever), VMaNGOS, cMaNGOS and pfQuest, cross-checked, plus in-game recordings. Shared by any addon that wants it (Command Center uses it). Loaded only when an addon asks for it.
 ## Author: Fatedfr
 ## Version: 0
 ## LoadOnDemand: 1
-## X-License: GPL-3.0 (data derived from cMaNGOS classic-db) - see LICENSE-DATA.txt
+## X-License: GPL-3.0 - sources and their licences in LICENSE-DATA.txt
 ## X-Website: https://github.com/foreverfraddons/forever-db
 
 ForeverDB.lua

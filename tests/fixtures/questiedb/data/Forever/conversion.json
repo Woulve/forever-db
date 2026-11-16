@@ -1,0 +1,3 @@
+{"geometry": {"transforms": [{"area_id": 12, "ui_map_id": 1429}, {"area_id": 215, "ui_map_id": 1412}],
+ "area_coefficients": {"12": {"scale_x": 1.0, "offset_x": 0.0, "scale_y": 1.0, "offset_y": 0.0},
+                       "215": {"scale_x": 0.5, "offset_x": 10.0, "scale_y": 0.5, "offset_y": 10.0}}}}

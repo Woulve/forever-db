@@ -114,7 +114,9 @@ def build(base, agg):
     db = {k: keyed(v) for k, v in base.items() if k != "meta"}
     for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw"]:
         db.setdefault(k, {})
-    db["spm"], db["vp"], db["seen"] = {}, {}, {}
+    # map positions from the addon databases (Forever maps) for anything without world coordinates
+    db["spm"] = {k: v for k, v in (db.get("spz") or {}).items() if k not in db["spw"]}
+    db["vp"], db["seen"] = {}, {}
     # names / levels
     for npc, e in agg["npc"].items():
         b = db["npc"].get(npc)
@@ -178,7 +180,12 @@ def build(base, agg):
     # map spots
     for key, maps in agg["sp"].items():
         kind, sid = who(key)
-        db["spm"][kind + str(sid)] = maps
+        cur = db["spm"].setdefault(kind + str(sid), {})
+        for m, pts in maps.items():
+            lst = cur.setdefault(str(m), [])
+            for k in range(0, len(pts) - 1, 2):
+                if not any(abs(lst[j] - pts[k]) <= SPOT_NEAR and abs(lst[j + 1] - pts[k + 1]) <= SPOT_NEAR for j in range(0, len(lst) - 1, 2)):
+                    lst += [pts[k], pts[k + 1]]
     return db
 
 
@@ -192,6 +199,7 @@ def main():
     ap.add_argument("--collected", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings")
+    ap.add_argument("--sources-json", help="JSON list of {name, repo, ref, licence} for meta.sourceList")
     a = ap.parse_args()
     with open(a.base, encoding="utf-8") as f:
         base = json.load(f)
@@ -204,7 +212,8 @@ def main():
         "hash": h[:16],
         "sources": a.source_note,
         "recordings": len(recs),
-        "counts": {k: len(v) for k, v in db.items() if isinstance(v, dict)},
+        "sourceList": json.load(open(a.sources_json)) if a.sources_json and os.path.exists(a.sources_json) else [],
+        "counts": {k: len(v) for k, v in db.items() if isinstance(v, dict) and k not in ("loc", "src")},
     }
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:

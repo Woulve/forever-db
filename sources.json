@@ -1,0 +1,6 @@
+[
+  {"name": "questie", "title": "QuestieDB (WoW Forever)", "repo": "Questie/QuestieDB", "licence": "GPL-3.0 (see LICENSE-DATA.txt)", "forever": true},
+  {"name": "vmangos", "title": "VMaNGOS world database", "repo": "vmangos/core", "release": "db_latest", "licence": "GPL-2.0-or-later"},
+  {"name": "cmangos", "title": "cMaNGOS classic-db", "repo": "cmangos/classic-db", "licence": "GPL-3.0"},
+  {"name": "pfquest", "title": "pfQuest database", "repo": "shagu/pfQuest", "licence": "MIT"}
+]

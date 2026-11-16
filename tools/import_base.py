@@ -1,5 +1,8 @@
-"""Import the open vanilla world database (cMaNGOS classic-db, or any MaNGOS-family dump)
-into the master format (data/base.json).
+"""Import a MaNGOS-family world database dump (cMaNGOS classic-db, VMaNGOS, ...) into the
+source format (one JSON per source; tools/merge.py combines them).
+
+VMaNGOS keeps one row per patch (column `patch`) or a patch range (`patch_min`/`patch_max`);
+only rows valid in the final patch (1.12) are used.
 
   python tools/import_base.py <folder with .sql/.sql.gz/.zip dumps> data/base.json
 
@@ -36,15 +39,38 @@ SPAWN_CAP = 120           # spawn points kept per creature/object
 MIN_CHANCE = 1            # per 10000; smaller drops are dropped
 
 
+FINAL_PATCH = 10          # VMaNGOS patch index of 1.12
+
+
+def final_patch(raw):
+    """Keep only rows valid in the last patch: newest `patch` row per entry, patch_max >= 1.12."""
+    if not raw or not raw.get("cols"):
+        return raw
+    cols = raw["cols"]
+    rows = raw["rows"]
+    if "patch_max" in cols:
+        k = cols.index("patch_max")
+        rows = [r for r in rows if r[k] is None or r[k] >= FINAL_PATCH]
+    if "patch" in cols and "entry" in cols:
+        kp, ke = cols.index("patch"), cols.index("entry")
+        best = {}
+        for r in rows:
+            p = r[kp] or 0
+            if p <= FINAL_PATCH and (r[ke] not in best or p >= (best[r[ke]][kp] or 0)):
+                best[r[ke]] = r
+        rows = list(best.values())
+    return {"cols": cols, "rows": rows}
+
+
 def build(tables):
-    T = {k: Table(tables.get(k)) for k in TABLES}
+    T = {k: Table(final_patch(tables.get(k))) for k in TABLES}
     out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw"]}
 
     # --- creatures
     ct = T["creature_template"]
     c_entry, c_name, c_sub = ct.col("entry"), ct.col("name"), ct.col("subname")
-    c_min, c_max, c_rank = ct.col("minlevel"), ct.col("maxlevel"), ct.col("rank")
-    c_loot, c_vtpl = ct.col("lootid"), ct.col("vendortemplateid")
+    c_min, c_max, c_rank = ct.col("minlevel", "level_min"), ct.col("maxlevel", "level_max"), ct.col("rank")
+    c_loot, c_vtpl = ct.col("lootid", "loot_id"), ct.col("vendortemplateid", "vendor_id")
     npc_loot, npc_vtpl, npc_level = {}, {}, {}
     for r in ct:
         e = r[c_entry]
@@ -70,7 +96,7 @@ def build(tables):
 
     # --- items
     it = T["item_template"]
-    i_entry, i_name, i_q, i_req, i_sq = it.col("entry"), it.col("name"), it.col("quality"), it.col("requiredlevel"), it.col("startquest")
+    i_entry, i_name, i_q, i_req, i_sq = it.col("entry"), it.col("name"), it.col("quality"), it.col("requiredlevel", "required_level"), it.col("startquest", "start_quest")
     for r in it:
         out["item"][r[i_entry]] = [r[i_name], r[i_q] if i_q is not None else None, r[i_req] if i_req is not None else None]
         if i_sq is not None and r[i_sq]:
@@ -196,10 +222,13 @@ def build(tables):
 
     # --- spawns
     def spawns(t, kind):
-        i, m, x, y = t.col("id"), t.col("map"), t.col("position_x"), t.col("position_y")
+        m, x, y = t.col("map"), t.col("position_x"), t.col("position_y")
+        ids = [c for c in (t.col("id"), t.col("id2"), t.col("id3"), t.col("id4"), t.col("id5")) if c is not None]
         grouped = defaultdict(lambda: defaultdict(list))
         for r in t:
-            grouped[r[i]][r[m]].append((int(round(r[x])), int(round(r[y]))))
+            for i in ids:                    # VMaNGOS: a spawn point can hold one of several creatures
+                if r[i]:
+                    grouped[r[i]][r[m]].append((int(round(r[x])), int(round(r[y]))))
         for ent, maps in grouped.items():
             res, total = [], 0
             for mp, pts in sorted(maps.items(), key=lambda kv: -len(kv[1])):

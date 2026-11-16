@@ -1,12 +1,24 @@
-WoW Forever database (forever-db)
+WoW Forever database (forever-db / ForeverDB)
 
-Parts of this data are derived from the cMaNGOS classic-db world database
-(https://github.com/cmangos/classic-db), licensed under the GNU General Public
-License v3.0. Those parts, and this generated data as a whole, are distributed
-under the same licence: see LICENSE-GPL.txt next to this file.
+This data is merged from several open World of Warcraft Classic / WoW Forever databases,
+cross-checked against each other, plus in-game recordings made by WoW Forever players
+with Command Center's recorder. The merged data as a whole is distributed under the
+GNU General Public License v3.0 (see LICENSE-GPL.txt next to this file).
 
-The rest comes from in-game recordings made by players of World of Warcraft: Forever
-with Command Center's recorder.
+Sources and their licences:
+
+- QuestieDB (https://github.com/Questie/QuestieDB) - WoW Forever quests, NPCs, items,
+  objects and map positions, including its Forever corrections. Offered by the Questie team
+  under the GNU GPL v3; their LICENSE.md notes that older Questie contributions were never
+  formally licensed. Questie's name and logo are not used.
+- VMaNGOS world database (https://github.com/vmangos/core) - GNU GPL v2 or (at your option)
+  any later version, used here under GPL v3.
+- cMaNGOS classic-db (https://github.com/cmangos/classic-db) - GNU GPL v3.
+- pfQuest database (https://github.com/shagu/pfQuest) - MIT licence, copyright (c)
+  2017-2021 Eric Mauser (Shagu); see LICENSE-pfQuest.txt.
+- WoW Forever in-game recordings (Command Center's recorder).
+
+Wowhead is not scraped by this project.
 
 World of Warcraft and all related names are trademarks of Blizzard Entertainment.
-This project is not affiliated with Blizzard Entertainment.
+This project is not affiliated with Blizzard Entertainment or with any of the projects above.

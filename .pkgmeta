@@ -9,6 +9,10 @@ ignore:
   - slices
   - collected
   - work
+  - dist
+  - out
+  - REPORT.md
+  - sources.json
   - README.md
   - LICENSE-DATA.txt
   - manifest.json
