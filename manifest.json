@@ -37,7 +37,7 @@
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
-  "spf": 18,
+  "spf": 22,
   "spm": 3276,
   "spw": 15877,
   "spz": 16348,
@@ -51,8 +51,8 @@
   "wmo": 1081,
   "world": 3136
  },
- "fixes": 5,
- "hash": "2aef34adff00739d",
+ "fixes": 6,
+ "hash": "772d1c3558d8a1b2",
  "recordings": 0,
  "sourceList": [
   {
@@ -113,7 +113,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "21dd523",
+   "ref": "64b14c8",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
