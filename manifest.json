@@ -31,7 +31,7 @@
   "qrw": 4132,
   "qsp": 0,
   "qsrc": 0,
-  "quest": 6145,
+  "quest": 6147,
   "qwk": 0,
   "qx": 5922,
   "rew": 3117,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "8a56a2b3bb884cd1",
+ "hash": "87c41cd3e34ba81d",
  "recordings": 0,
  "sourceList": [
   {
@@ -67,7 +67,7 @@
   {
    "licence": "GPL-2.0-or-later",
    "name": "vmangos",
-   "ref": "13a411e",
+   "ref": "70e38cd",
    "release": "db_latest",
    "repo": "vmangos/core",
    "title": "VMaNGOS world database"
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "c227be7",
+   "ref": "2770c9c",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "7b0f622",
+   "ref": "a42fe07",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "c82ccdf",
+   "ref": "6ee394e",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
