@@ -5,7 +5,7 @@
   "ach": 495,
   "area": 1404,
   "bpet": 122,
-  "crit": 3357,
+  "crit": 3358,
   "ctree": 6759,
   "ctun": 100,
   "dng": 232,
@@ -13,13 +13,13 @@
   "explore": 43,
   "hol": 23,
   "idrop": 2746,
-  "ieff": 9025,
+  "ieff": 9024,
   "ind": 129,
   "item": 32301,
   "lcrit": 6,
   "legacy": 5,
   "meta": 1,
-  "mtree": 2872,
+  "mtree": 2875,
   "nfac": 7471,
   "note": 2,
   "npc": 15830,
@@ -38,7 +38,7 @@
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
-  "spf": 23,
+  "spf": 25,
   "spm": 3276,
   "spw": 15877,
   "spz": 16348,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "fd6664bca6495618",
+ "hash": "8a56a2b3bb884cd1",
  "recordings": 0,
  "sourceList": [
   {
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "89e90a1",
+   "ref": "c227be7",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "c29c211",
+   "ref": "7b0f622",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "7dea1de",
+   "ref": "c82ccdf",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
