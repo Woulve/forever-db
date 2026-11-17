@@ -1,5 +1,5 @@
 {
- "build": "2026-11-16",
+ "build": "2026-11-17",
  "chainPrereqs": 151,
  "counts": {
   "ach": 495,
@@ -9,7 +9,7 @@
   "ctree": 6759,
   "ctun": 100,
   "dng": 232,
-  "drop": 11162,
+  "drop": 11163,
   "explore": 43,
   "hol": 23,
   "idrop": 2746,
@@ -34,7 +34,7 @@
   "quest": 6145,
   "qwk": 0,
   "qx": 5922,
-  "rew": 3111,
+  "rew": 3117,
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "f2fd6789f3884c6c",
+ "hash": "fd6664bca6495618",
  "recordings": 0,
  "sourceList": [
   {
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "3383a5c",
+   "ref": "89e90a1",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "8ff5752",
+   "ref": "c29c211",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
