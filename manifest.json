@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "392fa61cc6f88cdc",
+ "hash": "1773d837efcc338d",
  "recordings": 0,
  "sourceList": [
   {
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "09b8dcc",
+   "ref": "b9e3336",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "befd941",
+   "ref": "ae66ecc",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "834cc7c",
+   "ref": "3786d19",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }

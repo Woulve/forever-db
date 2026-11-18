@@ -8,7 +8,7 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 |---|---|---|---|---|
 | client | 0 (0 only here) | 0 (0 only here) | 32008 (5345 only here) | 0 (0 only here) |
 | questie | 15564 (5265 only here) | 7349 (626 only here) | 24225 (247 only here) | 6078 (243 only here) |
-| att | 1449 (0 only here) | 235 (2 only here) | 14269 (27 only here) | 5050 (25 only here) |
+| att | 1449 (0 only here) | 235 (2 only here) | 14271 (27 only here) | 5050 (25 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
