@@ -6,35 +6,35 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 
 | Source | npc | obj | item | quest |
 |---|---|---|---|---|
-| client | 0 (0 only here) | 0 (0 only here) | 32008 (5452 only here) | 0 (0 only here) |
-| questie | 15564 (5266 only here) | 7292 (570 only here) | 24112 (246 only here) | 5930 (116 only here) |
-| att | 1448 (0 only here) | 235 (2 only here) | 14261 (27 only here) | 5048 (44 only here) |
+| client | 0 (0 only here) | 0 (0 only here) | 32008 (5345 only here) | 0 (0 only here) |
+| questie | 15564 (5265 only here) | 7349 (626 only here) | 24225 (247 only here) | 6078 (243 only here) |
+| att | 1449 (0 only here) | 235 (2 only here) | 14269 (27 only here) | 5050 (25 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
 | legacy | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 | spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15830, obj 11924, item 32301, quest 6155, qg 5518, qe 5774, vend 3950, rew 3117, drop 11163, odrop 3734, idrop 2746, qx 5930, nfac 7471, dng 232, ind 129, taxi 101, umap 60, umaa 61, area 1404, ach 495, ctree 6759, crit 3358, mtree 2875, hol 23, sla 7389, ieff 9024, seff 3927, tset 9, bpet 122, ctun 100, wmo 1081, legacy 5, lcrit 6, explore 43, spf 25, qrw 4132, ptl 0, qwk 0, start 816, world 3136, spw 15877, spz 16345
+Merged: npc 15830, obj 11980, item 32302, quest 6284, qg 5644, qe 5982, vend 3933, rew 3130, drop 11193, odrop 3747, idrop 2750, qx 6078, nfac 7531, dng 232, ind 131, taxi 101, umap 60, umaa 61, area 1404, ach 495, ctree 6759, crit 3358, mtree 2875, hol 23, sla 7389, ieff 9024, seff 3927, tset 9, bpet 122, ctun 100, wmo 1081, legacy 5, lcrit 6, explore 43, spf 25, qrw 4132, ptl 0, qwk 0, start 821, world 3136, spw 15877, spz 16415
 
-Forever-only entries (only the Forever source has them): npc 5266, obj 572, item 5725, quest 160
+Forever-only entries (only the Forever source has them): npc 5265, obj 628, item 5619, quest 268
 
 ## Disagreements
 
 | Field | Entries where sources disagree |
 |---|---|
-| item.reqLevel | 671 |
-| npc.minLv | 641 |
-| npc.maxLv | 628 |
-| quest.minLevel | 291 |
+| item.reqLevel | 684 |
+| npc.minLv | 642 |
+| npc.maxLv | 629 |
+| quest.minLevel | 285 |
 | item.quality | 253 |
-| quest.level | 128 |
-| item.name | 83 |
+| quest.level | 130 |
+| item.name | 84 |
 | obj.name | 41 |
-| quest.title | 32 |
+| quest.title | 33 |
+| npc.rank | 18 |
 | npc.name | 12 |
 | npc.sub | 11 |
-| npc.rank | 1 |
 | start | 1 |
 
 Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
@@ -79,7 +79,7 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 303: {"questie": 22, "att": 25, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 22
 - 377: {"questie": 22, "att": 24, "vmangos": 22, "cmangos": 22, "pfquest": 22} -> chose 22
 - 378: {"questie": 22, "att": 25, "vmangos": 22, "cmangos": 22, "pfquest": 22} -> chose 22
-- 421: {"questie": 12, "att": 9, "vmangos": 9, "cmangos": 9, "pfquest": 9} -> chose 12
+- 618: {"questie": 40, "vmangos": 37, "cmangos": 40, "pfquest": 37} -> chose 40
 
 **item.quality**
 - 763: {"client": 2, "vmangos": 1, "cmangos": 1} -> chose 2
@@ -95,11 +95,11 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 172: {"questie": 60, "vmangos": 60, "cmangos": 60, "pfquest": 29} -> chose 60
 - 299: {"questie": 27, "vmangos": 28, "cmangos": 28, "pfquest": 28} -> chose 27
 - 349: {"questie": 45, "vmangos": 35, "cmangos": 45, "pfquest": 35} -> chose 45
+- 472: {"questie": 30, "vmangos": 25, "cmangos": 25, "pfquest": 25} -> chose 30
 - 490: {"questie": 8, "vmangos": 7, "pfquest": 7} -> chose 8
 - 544: {"questie": 33, "vmangos": 34, "cmangos": 34, "pfquest": 34} -> chose 33
 - 556: {"questie": 33, "vmangos": 32, "cmangos": 32, "pfquest": 32} -> chose 33
 - 557: {"questie": 33, "vmangos": 34, "cmangos": 34, "pfquest": 34} -> chose 33
-- 614: {"questie": 51, "vmangos": 47, "cmangos": 51, "pfquest": 47} -> chose 51
 
 **item.name**
 - 1262: {"questie": "Keg of Thunderbrew", "vmangos": "Keg of Thunderbrew Lager", "cmangos": "Keg of Thunderbrew Lager", "pfquest": "Keg of Thunderbrew Lager"} -> chose 'Keg of Thunderbrew'
@@ -131,6 +131,16 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 1658: {"questie": "Crashing the Wickerman Festival", "vmangos": "Crashing the Wickerman Festival", "cmangos": "Crashing the Wickerman Festival (PvP)", "pfquest": "Crashing the Wickerman Festival"} -> chose 'Crashing the Wickerman Festival'
 - 4002: {"questie": "The Eastern Kingdom", "vmangos": "The Eastern Kingdoms", "cmangos": "The Eastern Kingdom", "pfquest": "The Eastern Kingdoms"} -> chose 'The Eastern Kingdom'
 
+**npc.rank**
+- 219: {"questie": 1, "vmangos": 0, "cmangos": 0} -> chose 1
+- 471: {"questie": 0, "vmangos": 4, "cmangos": 4} -> chose 0
+- 639: {"questie": 0, "vmangos": 2, "cmangos": 2} -> chose 0
+- 1748: {"questie": 0, "vmangos": 3, "cmangos": 3} -> chose 0
+- 4438: {"questie": 0, "vmangos": 2, "cmangos": 2} -> chose 0
+- 7846: {"questie": 0, "vmangos": 3, "cmangos": 3} -> chose 0
+- 9024: {"questie": 0, "vmangos": 2, "cmangos": 2} -> chose 0
+- 9025: {"questie": 0, "vmangos": 2, "cmangos": 2} -> chose 0
+
 **npc.name**
 - 219: {"questie": "Groundskeeper Lomar", "vmangos": "[UNUSED] Logan Mar", "cmangos": "[UNUSED] Logan Mar", "pfquest": "[UNUSED] Logan Mar"} -> chose 'Groundskeeper Lomar'
 - 1233: {"vmangos": "Shaethis Darkoak", "cmangos": "[UNUSED] Shaethis Darkoak", "pfquest": "Shaethis Darkoak"} -> chose 'Shaethis Darkoak'
@@ -150,9 +160,6 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 4773: {"questie": "Undead Horse Riding Instructor", "vmangos": "Riding Trainer", "cmangos": "Undead Horse Riding Instructor"} -> chose 'Undead Horse Riding Instructor'
 - 5492: {"questie": "Church of the Holy Light", "vmangos": "Paladin Trainer", "cmangos": "Paladin Trainer"} -> chose 'Church of the Holy Light'
 - 6777: {"questie": "Specialty Engineer", "vmangos": "Speciality Engineer", "cmangos": "Speciality Engineer"} -> chose 'Specialty Engineer'
-
-**npc.rank**
-- 219: {"questie": 1, "vmangos": 0, "cmangos": 0} -> chose 1
 
 **start**
 - 11463: {"questie": 4281, "att": 4135, "vmangos": 4281, "cmangos": 4281, "pfquest": 4281} -> chose None
