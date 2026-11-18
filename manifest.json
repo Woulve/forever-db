@@ -1,5 +1,5 @@
 {
- "build": "2026-11-17",
+ "build": "2026-11-18",
  "chainPrereqs": 151,
  "counts": {
   "ach": 495,
@@ -26,22 +26,22 @@
   "obj": 11924,
   "odrop": 3734,
   "ptl": 0,
-  "qe": 5761,
-  "qg": 5513,
+  "qe": 5774,
+  "qg": 5518,
   "qrw": 4132,
   "qsp": 0,
   "qsrc": 0,
-  "quest": 6147,
+  "quest": 6155,
   "qwk": 0,
-  "qx": 5922,
+  "qx": 5930,
   "rew": 3117,
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
   "spf": 25,
-  "spm": 3276,
+  "spm": 3273,
   "spw": 15877,
-  "spz": 16348,
+  "spz": 16345,
   "start": 816,
   "taxi": 101,
   "tset": 9,
@@ -53,14 +53,14 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "87c41cd3e34ba81d",
+ "hash": "2362c2b1489b96f6",
  "recordings": 0,
  "sourceList": [
   {
    "forever": true,
    "licence": "GPL-3.0 (see LICENSE-DATA.txt)",
    "name": "questie",
-   "ref": "e1652ce",
+   "ref": "4a73dc6",
    "repo": "Questie/QuestieDB",
    "title": "QuestieDB (WoW Forever)"
   },
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "2770c9c",
+   "ref": "f2c9335",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "a42fe07",
+   "ref": "ca5796c",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "6ee394e",
+   "ref": "4c85b73",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
