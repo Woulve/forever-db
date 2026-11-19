@@ -34,7 +34,7 @@
   "quest": 6293,
   "qwk": 0,
   "qx": 6078,
-  "rew": 3154,
+  "rew": 3156,
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "fed8d5d9789f3ae2",
+ "hash": "71447a436e7db3c2",
  "recordings": 0,
  "sourceList": [
   {
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "9a6e3c1",
+   "ref": "147f216",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "ae66ecc",
+   "ref": "f7eb05d",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "0c488ea",
+   "ref": "427acc4",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
