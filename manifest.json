@@ -1,5 +1,5 @@
 {
- "build": "2026-11-18",
+ "build": "2026-11-19",
  "chainPrereqs": 153,
  "counts": {
   "ach": 495,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 6,
- "hash": "1773d837efcc338d",
+ "hash": "0b7f7c534d833f96",
  "recordings": 0,
  "sourceList": [
   {
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "b9e3336",
+   "ref": "c055ad1",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
