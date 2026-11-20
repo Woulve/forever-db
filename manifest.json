@@ -9,7 +9,7 @@
   "ctree": 6759,
   "ctun": 100,
   "dng": 232,
-  "drop": 11051,
+  "drop": 11043,
   "explore": 43,
   "hol": 23,
   "idrop": 2750,
@@ -27,14 +27,14 @@
   "odrop": 3757,
   "ptl": 0,
   "qe": 5994,
-  "qg": 5652,
+  "qg": 5655,
   "qrw": 4132,
   "qsp": 0,
   "qsrc": 0,
   "quest": 6293,
   "qwk": 0,
   "qx": 6078,
-  "rew": 3156,
+  "rew": 3139,
   "seen": 0,
   "seff": 3927,
   "sla": 7389,
@@ -53,7 +53,7 @@
   "world": 3136
  },
  "fixes": 7,
- "hash": "472aa1832a9932b5",
+ "hash": "f8610882175afe87",
  "recordings": 0,
  "sourceList": [
   {
@@ -67,7 +67,7 @@
   {
    "licence": "GPL-2.0-or-later",
    "name": "vmangos",
-   "ref": "70e38cd",
+   "ref": "a28c514",
    "release": "db_latest",
    "repo": "vmangos/core",
    "title": "VMaNGOS world database"
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "792e1a4",
+   "ref": "34b5e3b",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "653fc28",
+   "ref": "9709142",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -114,7 +114,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "9a87151",
+   "ref": "4d289aa",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   }
