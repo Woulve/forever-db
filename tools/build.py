@@ -342,6 +342,12 @@ def apply_fixes(db, path):
             row.append(None)
         row[2] = list(pre)
         n += 1
+    for q, mask in (fx.get("races") or {}).items():  # who can take the quest (race mask, 0 = everyone)
+        row = db.setdefault("qx", {}).setdefault(int(q), [])
+        while len(row) < 1:
+            row.append(None)
+        row[0] = int(mask)
+        n += 1
     note = db.setdefault("note", {})
     for key, text in (fx.get("note") or {}).items():
         note[key] = text

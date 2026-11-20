@@ -1,5 +1,5 @@
 {
-  "_about": "Hand-checked corrections, applied last (they win over every source and recording). spm: replaces an npc/object's map spots (uiMap -> [x, y, ...] in 0-1000). qg / qe: extra quest givers / enders. note: a short tip shown by questing addons. pre: prerequisite quests (any one of them) when the data has none.",
+  "_about": "Hand-checked corrections, applied last (they win over every source and recording). spm: replaces an npc/object's map spots (uiMap -> [x, y, ...] in 0-1000). qg / qe: extra quest givers / enders. note: a short tip shown by questing addons. pre: prerequisite quests (any one of them) when the data has none. races: who can take a quest (race mask, 0 = everyone).",
   "spm": {
     "c257001": {
       "2548": [
@@ -16,7 +16,8 @@
   "qe": {},
   "note": {
     "c257001": "Stands in a rickety murloc hut next to three murlocs around a fire. Respawns in about 3 minutes.",
-    "c259988": "Gorgegut only offers Step One: Rock after the whole chain that starts with Rise Up!: Rise Up!, Death to the Executioner, Twilight No More!, Spread the Word and Land of Giants."
+    "c259988": "Gorgegut only offers Step One: Rock after the whole chain that starts with Rise Up!: Rise Up!, Death to the Executioner, Twilight No More!, Spread the Word and Land of Giants.",
+    "c7996": "Qiaga the Keeper (Jintha'Alor, Hinterlands) drops the Sacred Mallet. Use it at the altar at the top of Jintha'Alor (59, 77) to get the Mallet of Zul'Farrak - it rings the gong in Zul'Farrak that summons Gahz'rilla."
   },
   "pre": {
     "95183": [
@@ -25,5 +26,8 @@
     "95427": [
       95433
     ]
+  },
+  "races": {
+    "2769": 0
   }
 }
