@@ -6,16 +6,16 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 
 | Source | npc | obj | item | quest |
 |---|---|---|---|---|
-| client | 0 (0 only here) | 0 (0 only here) | 32008 (5341 only here) | 0 (0 only here) |
-| questie | 15564 (5260 only here) | 7452 (724 only here) | 24227 (247 only here) | 6078 (201 only here) |
-| att | 1461 (0 only here) | 240 (2 only here) | 14110 (3 only here) | 5101 (34 only here) |
+| client | 0 (0 only here) | 0 (0 only here) | 32010 (5342 only here) | 0 (0 only here) |
+| questie | 15564 (5260 only here) | 7452 (724 only here) | 24227 (246 only here) | 6078 (198 only here) |
+| att | 1462 (0 only here) | 240 (2 only here) | 14225 (3 only here) | 5115 (37 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
 | legacy | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 | spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15830, obj 12083, item 32278, quest 6293, qg 5655, qe 5994, vend 3933, rew 3139, drop 11043, odrop 3757, idrop 2750, qx 6078, nfac 7542, dng 232, ind 150, taxi 101, umap 60, umaa 61, area 1404, ach 495, ctree 6759, crit 3358, mtree 2875, hol 23, sla 7389, ieff 9024, seff 3927, tset 9, bpet 122, ctun 100, wmo 1081, legacy 5, lcrit 6, explore 43, spf 27, qrw 4132, ptl 0, qwk 0, start 821, world 3136, spw 15877, spz 16528
+Merged: npc 15830, obj 12083, item 32279, quest 6296, qg 5667, qe 5994, vend 3933, rew 3193, drop 11036, odrop 3757, idrop 2750, qx 6078, nfac 7542, dng 232, ind 150, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7390, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 27, qrw 4132, ptl 0, qwk 0, start 821, world 3136, spw 15877, spz 16527
 
 Forever-only entries (only the Forever source has them): npc 5260, obj 726, item 5591, quest 235
 
@@ -23,13 +23,13 @@ Forever-only entries (only the Forever source has them): npc 5260, obj 726, item
 
 | Field | Entries where sources disagree |
 |---|---|
-| item.reqLevel | 684 |
+| item.reqLevel | 682 |
 | npc.minLv | 642 |
 | npc.maxLv | 629 |
 | quest.minLevel | 285 |
-| item.quality | 253 |
+| item.quality | 250 |
 | quest.level | 130 |
-| item.name | 84 |
+| item.name | 83 |
 | obj.name | 41 |
 | quest.title | 33 |
 | npc.rank | 18 |
