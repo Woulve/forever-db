@@ -124,7 +124,7 @@ Tables:
 | `sla` / `ieff` / `seff` | skill line spells (recipes) / item use effects / spell effects |
 | `tset` / `bpet` / `ctun` / `wmo` | transmog sets / battle pet species / content tuning (levels) / map overlays |
 | `legacy` / `lcrit` / `explore` | LegacyForever: challenge data, criterion locations, exploration areas |
-| `skin` | `{item: [[npc, chance per 10000], ...]}` what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
+| `skin` | `{item: {npc, chance per 10000, npc, chance, ...}}` (flat like drop) what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
 | `gold` | `{npc: [average copper per kill, smallest pile, largest pile, kills]}` (Drop Tables) |
 | `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |
 | `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |

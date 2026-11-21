@@ -125,7 +125,7 @@ def make_slice(db, spec):
                 kind, num = str(k)[0], int(str(k)[1:])
                 if (kind == "c" and num not in keep["npc"]) or (kind == "o" and num not in keep["obj"]):
                     continue
-            if t in ("drop", "odrop", "idrop"):
+            if t in ("drop", "odrop", "idrop", "skin"):
                 cap = spec.get("max_rows", {}).get(t)
                 if cap:
                     v = v[:cap]
