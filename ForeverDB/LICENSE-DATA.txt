@@ -26,6 +26,15 @@ Sources and their licences:
   entrances, trainers and other town services.
 - pfQuest database (https://github.com/shagu/pfQuest) - MIT licence, copyright (c)
   2017-2021 Eric Mauser (Shagu); see LICENSE-pfQuest.txt.
+- Drop Tables (https://github.com/valcheffnet/DropTables) - data under CC BY-SA 4.0, credited as
+  "Drop Tables contributors, https://github.com/valcheffnet/DropTables"; see LICENSE-DropTables.txt.
+  Its loot counts, money, skinning and kill spots recorded on WoW Forever were changed by this
+  project (turned into drop chances per kill, gold per kill, skinning chances and map spots, and
+  merged with the other sources). They include counts from Blackthornes Farmer (MIT licence,
+  copyright (c) 2026 Blackthornes), "Data from Efficient Games (https://efficient.games), licensed
+  under CC BY 4.0" and "Data from Everloot (https://everloot.app), CC BY-SA 4.0". CC BY-SA 4.0
+  material may be shared under GPL v3 (Creative Commons' compatibility list); the Drop Tables data
+  itself stays under CC BY-SA 4.0. The Drop Tables addon's code is not used.
 - WoW Forever in-game recordings (Command Center's recorder).
 
 Wowhead is not scraped by this project.

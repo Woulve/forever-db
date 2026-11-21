@@ -7,17 +7,17 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 | Source | npc | obj | item | quest |
 |---|---|---|---|---|
 | client | 0 (0 only here) | 0 (0 only here) | 32010 (5342 only here) | 0 (0 only here) |
-| questie | 15564 (5260 only here) | 7452 (724 only here) | 24227 (246 only here) | 6078 (198 only here) |
-| att | 1462 (0 only here) | 240 (2 only here) | 14225 (3 only here) | 5115 (37 only here) |
+| questie | 15564 (5260 only here) | 7471 (743 only here) | 24227 (246 only here) | 6080 (200 only here) |
+| att | 1462 (0 only here) | 240 (2 only here) | 14293 (3 only here) | 5114 (36 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
 | legacy | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 | spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15830, obj 12083, item 32279, quest 6296, qg 5667, qe 5994, vend 3933, rew 3193, drop 11036, odrop 3757, idrop 2750, qx 6078, nfac 7542, dng 232, ind 150, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7390, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 27, qrw 4132, ptl 0, qwk 0, start 821, world 3136, spw 15877, spz 16527
+Merged: npc 15830, obj 12102, item 32279, quest 6297, qg 5670, qe 5998, vend 3933, rew 3194, drop 11012, odrop 3758, idrop 2750, qx 6080, nfac 7547, dng 232, ind 153, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7390, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 27, qrw 4132, ptl 0, qwk 0, start 821, world 3136, spw 15877, spz 16529
 
-Forever-only entries (only the Forever source has them): npc 5260, obj 726, item 5591, quest 235
+Forever-only entries (only the Forever source has them): npc 5260, obj 745, item 5591, quest 236
 
 ## Disagreements
 
@@ -29,7 +29,7 @@ Forever-only entries (only the Forever source has them): npc 5260, obj 726, item
 | quest.minLevel | 285 |
 | item.quality | 250 |
 | quest.level | 130 |
-| item.name | 83 |
+| item.name | 85 |
 | obj.name | 41 |
 | quest.title | 33 |
 | npc.rank | 18 |
@@ -108,8 +108,8 @@ Drop rates compared across 2+ sources: 231978, differing more than 3x: 6776
 - 2695: {"client": "Monster - Mace, Spiked Club", "questie": "Monster - Mace, Board with Nail Club", "vmangos": "Monster - Mace, Spiked Club", "cmangos": "Monster - Mace, Board with Nail Club", "pfquest": "Monster - Mace, Spiked Club"} -> chose 'Monster - Mace, Spiked Club'
 - 3034: {"questie": "Glyphed Breastplate", "vmangos": "BKP \"Impact\" Shot", "cmangos": "Deprecated BKP \"Impact\" Shot", "pfquest": "BKP \"Impact\" Shot"} -> chose 'Glyphed Breastplate'
 - 3148: {"questie": "Work Shirt", "vmangos": "Deprecated Work Shirt", "cmangos": "Work Shirt", "pfquest": "Work Shirt"} -> chose 'Work Shirt'
-- 5229: {"questie": "Handstitched Leather Bracers", "vmangos": "Empty Greater Bloodstone", "cmangos": "Handstitched Leather Bracers", "pfquest": "Empty Greater Bloodstone"} -> chose 'Handstitched Leather Bracers'
-- 5259: {"client": "Monster - Bow, Red", "questie": "Monster - Flaming Arrows", "vmangos": "Monster - Bow, Red", "cmangos": "Monster - Flaming Arrows", "pfquest": "Monster - Bow, Red"} -> chose 'Monster - Bow, Red'
+- 3825: {"questie": "Elixir of Lesser Fortitude", "vmangos": "Elixir of Fortitude", "cmangos": "Elixir of Fortitude", "pfquest": "Elixir of Fortitude"} -> chose 'Elixir of Lesser Fortitude'
+- 3830: {"questie": "Recipe: Elixir of Lesser Fortitude", "vmangos": "Recipe: Elixir of Fortitude", "cmangos": "Recipe: Elixir of Fortitude", "pfquest": "Recipe: Elixir of Fortitude"} -> chose 'Recipe: Elixir of Lesser Fortitude'
 
 **obj.name**
 - 12653: {"vmangos": "Ghost Saber Trap", "cmangos": "Cat Figurine Trap"} -> chose 'Ghost Saber Trap'
