@@ -1,0 +1,9 @@
+{"attribution": "test", "built": 1, "submissions": 1, "license": "CC-BY-SA-4.0", "imports": [],
+ "mobs": {
+  "4444": {"name": "Forever Crab", "minLevel": 5, "maxLevel": 6, "maps": {"1429": 40},
+           "spots": {"1429": {"1275": 10, "1276": 2}},
+           "buckets": {"1": {"kills": 30, "lootable": 27, "opened": 27,
+                             "items": {"5523": {"drops": 9, "qty": 9}}, "money": {"copper": 270, "drops": 27, "min": 5, "max": 15}},
+                       "2": {"kills": 10, "lootable": 9, "opened": 9, "items": {"5523": {"drops": 3, "qty": 3}}}},
+           "skins": {"skinned": 10, "items": {"2318": {"drops": 8, "qty": 9}}}}
+ }}

@@ -151,6 +151,98 @@ def merge_recordings(recs):
     return agg
 
 
+# ------------------------------------------------------------------ Drop Tables
+# github.com/valcheffnet/DropTables data/shared.json (CC BY-SA 4.0): loot counts players record on WoW
+# Forever (their own shares + Blackthornes Farmer (MIT), EG Link (CC BY 4.0) and Everloot (CC BY-SA 4.0)).
+# The counts go in like our own recordings: a recorded rate replaces the base rate after FOREVER_RATE_MIN kills.
+DT_CELLS = 50          # shared.json spots: a 50 x 50 grid per uiMap
+DT_SKIN_MIN = 3        # skinned corpses before a skinning chance is kept
+
+
+def load_droptables(path):
+    if not path or not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def merge_droptables(agg, dt):
+    """Add Drop Tables' counts to the recordings: loot per kill, kill spots, names and levels."""
+    stats = {"mobs": 0, "kills": 0}
+    if not dt:
+        return stats
+    for sid, m in (dt.get("mobs") or {}).items():
+        if not str(sid).isdigit():
+            continue
+        npc = int(sid)
+        kills = lootable = opened = 0
+        items = {}
+        for b in (m.get("buckets") or {}).values():
+            kills += int(b.get("kills") or 0)
+            lootable += int(b.get("lootable") or 0)
+            opened += int(b.get("opened") or 0)
+            for it, e in (b.get("items") or {}).items():
+                items[int(it)] = items.get(int(it), 0) + int(e.get("drops") or 0)
+        if kills > 0 and opened > 0:
+            # chance per kill = lootable / kills * drops / opened (Drop Tables' own formula)
+            share = min(1.0, lootable / kills) / opened
+            a = agg["loot"].setdefault("c:%d" % npc, {"n": 0, "i": {}})
+            a["n"] += kills
+            for it, d in items.items():
+                a["i"][it] = a["i"].get(it, 0) + d * share * kills
+            stats["mobs"] += 1
+            stats["kills"] += kills
+        sp = agg["sp"].setdefault("c:%d" % npc, {})
+        for mp, cells in (m.get("spots") or {}).items():
+            lst = sp.setdefault(int(mp), [])
+            for c, _ in sorted(cells.items(), key=lambda kv: -kv[1]):
+                c = int(c)
+                x = int(((c // DT_CELLS) + 0.5) / DT_CELLS * 1000)
+                y = int(((c % DT_CELLS) + 0.5) / DT_CELLS * 1000)
+                if len(lst) >= SPOT_MAX * 2:
+                    break
+                if not any(abs(lst[j] - x) <= SPOT_NEAR and abs(lst[j + 1] - y) <= SPOT_NEAR for j in range(0, len(lst), 2)):
+                    lst += [x, y]
+        if not sp:
+            del agg["sp"]["c:%d" % npc]
+    return stats
+
+
+def droptables_tables(db, dt):
+    """Tables only Drop Tables has: skinning (skin), money (gold), and npcs no other source knows."""
+    if not dt:
+        return
+    skin, gold = db.setdefault("skin", {}), db.setdefault("gold", {})
+    for sid, m in (dt.get("mobs") or {}).items():
+        if not str(sid).isdigit():
+            continue
+        npc = int(sid)
+        if npc not in db["npc"] and m.get("name"):
+            db["npc"][npc] = [m["name"], None, m.get("minLevel"), m.get("maxLevel"), 0]
+        s = m.get("skins") or {}
+        n = int(s.get("skinned") or 0)
+        if n >= DT_SKIN_MIN:
+            for it, e in (s.get("items") or {}).items():
+                lst = skin.setdefault(int(it), [])
+                lst.append([npc, int(round(min(1.0, int(e.get("drops") or 0) / n) * 10000))])
+                lst.sort(key=lambda p: -p[1])
+        kills = lootable = opened = copper = 0
+        lo = hi = None
+        for b in (m.get("buckets") or {}).values():
+            kills += int(b.get("kills") or 0)
+            lootable += int(b.get("lootable") or 0)
+            opened += int(b.get("opened") or 0)
+            mo = b.get("money") or {}
+            copper += int(mo.get("copper") or 0)
+            if mo.get("min") is not None:
+                lo = mo["min"] if lo is None else min(lo, mo["min"])
+            if mo.get("max") is not None:
+                hi = mo["max"] if hi is None else max(hi, mo["max"])
+        if kills > 0 and opened > 0 and copper > 0:
+            # average copper per kill, smallest and largest pile, kills counted
+            gold[npc] = [int(round(min(1.0, lootable / kills) * copper / opened)), lo, hi, kills]
+
+
 def who(key):
     """'c:123' -> ('c', 123)"""
     k, _, i = str(key).partition(":")
@@ -188,7 +280,7 @@ def build(base, agg):
         f = field.get(kind)
         if not f or e["n"] <= 0:
             continue
-        db["seen"][kind + str(sid)] = {it: [c, e["n"]] for it, c in e["i"].items()}
+        db["seen"][kind + str(sid)] = {it: [int(round(c)), e["n"]] for it, c in e["i"].items()}
         for it, c in e["i"].items():
             ch = int(round(min(1.0, c / e["n"]) * 10000))
             lst = db[f].setdefault(it, [])
@@ -361,6 +453,7 @@ def main():
     ap.add_argument("--collected", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings")
+    ap.add_argument("--droptables", help="Drop Tables data/shared.json (CC BY-SA 4.0)")
     ap.add_argument("--sources-json", help="JSON list of {name, repo, ref, licence} for meta.sourceList")
     ap.add_argument("--fixes", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "fixes.json"),
                     help="hand-checked corrections (default: fixes.json in the repo)")
@@ -369,7 +462,10 @@ def main():
         base = json.load(f)
     recs = load_recordings(a.collected)
     agg = merge_recordings(recs)
+    dt = load_droptables(a.droptables)
+    dts = merge_droptables(agg, dt)
     db = build(base, agg)
+    droptables_tables(db, dt)
     chained = chain_prereqs(db)
     fixed = apply_fixes(db, a.fixes)
     h = digest(db)
@@ -378,6 +474,7 @@ def main():
         "hash": h[:16],
         "sources": a.source_note,
         "recordings": len(recs),
+        "dropTables": dict(dts, built=(dt or {}).get("built"), submissions=(dt or {}).get("submissions")),
         "fixes": fixed,
         "chainPrereqs": chained,
         "sourceList": json.load(open(a.sources_json)) if a.sources_json and os.path.exists(a.sources_json) else [],

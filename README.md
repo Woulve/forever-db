@@ -14,6 +14,7 @@ A World of Warcraft: Forever database that rebuilds itself and feeds any number 
 | [pfQuest](https://github.com/shagu/pfQuest) | Drop rates, map positions, names in 9 languages | MIT |
 | [LegacyForever](https://github.com/cjber/legacy-forever) | Forever's Legacy challenges, exploration area outlines, where each criterion happens | GPL-3.0-or-later |
 | [Shortest Path Forever](https://github.com/cjber/shortest-path-forever) | Travel network: flight paths and times, boats/zeppelins with timetables, portals, teleports, dungeon entrances, trainers, food/drink vendors, town areas | GPL-3.0-or-later |
+| [Drop Tables](https://github.com/valcheffnet/DropTables) | Real WoW Forever loot counts (players' shares + Blackthornes Farmer, EG Link, Everloot): drop chances per kill, gold per kill, skinning, kill spots. Counted like our own recordings: after 20 kills the Forever rate replaces the base rate | data CC BY-SA 4.0 |
 | Command Center + Questicus recordings (`CommandCenterCollect`, `QuesticusCollect`) | What players actually see in Forever; replaces a drop rate once something was looted 20+ times | - |
 
 Left out on purpose: MaNGOS Zero (CC BY-NC-SA, not compatible with GPL or CurseForge rewards), and every addon or
@@ -123,6 +124,8 @@ Tables:
 | `sla` / `ieff` / `seff` | skill line spells (recipes) / item use effects / spell effects |
 | `tset` / `bpet` / `ctun` / `wmo` | transmog sets / battle pet species / content tuning (levels) / map overlays |
 | `legacy` / `lcrit` / `explore` | LegacyForever: challenge data, criterion locations, exploration areas |
+| `skin` | `{item: [[npc, chance per 10000], ...]}` what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
+| `gold` | `{npc: [average copper per kill, smallest pile, largest pile, kills]}` (Drop Tables) |
 | `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |
 | `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |
 | `qe` | quest enders (same keys as `qg`) |

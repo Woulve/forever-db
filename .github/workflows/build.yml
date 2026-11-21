@@ -91,6 +91,11 @@ jobs:
             git -C work/src/spf sparse-checkout set --no-cone '/Data/' '/LICENSE'
             echo "REF_SPF=$(git -C work/src/spf rev-parse --short HEAD)" >> "$GITHUB_ENV"
           else echo "::warning::Shortest Path Forever could not be fetched"; fi
+          # Drop Tables (data CC BY-SA 4.0): loot, money, skinning and kill spots players record on WoW Forever
+          if git clone -q --depth 1 --filter=blob:none --sparse https://github.com/valcheffnet/DropTables.git work/src/droptables; then
+            git -C work/src/droptables sparse-checkout set --no-cone '/data/shared.json' '/LICENSE-DATA'
+            echo "REF_DROPTABLES=$(git -C work/src/droptables rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          else echo "::warning::Drop Tables could not be fetched"; fi
 
       - name: Cache source imports
         uses: actions/cache@v4
@@ -172,8 +177,8 @@ jobs:
           mkdir -p dist
           mkdir -p addon-src/collected
           python tools/build.py --base work/base.json --collected collected addon-src/collected --out dist/forever.json \
-            --sources-json work/sources.json \
-            --source-note "WoW Forever client tables + AllTheThings + QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest + LegacyForever + Shortest Path Forever, cross-checked, + WoW Forever in-game recordings"
+            --sources-json work/sources.json --droptables work/src/droptables/data/shared.json \
+            --source-note "WoW Forever client tables + AllTheThings + QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest + LegacyForever + Shortest Path Forever, cross-checked, + Drop Tables + WoW Forever in-game recordings"
 
       - name: Changed?
         id: diff
@@ -197,6 +202,7 @@ jobs:
             for lic in work/src/cmangos/LICENSE.md work/src/questie/gpl-3.0.md; do if [ -f "$lic" ]; then cp "$lic" "out/$name/$target/LICENSE-GPL.txt"; break; fi; done
             if [ -f work/src/pfquest/LICENSE ]; then cp work/src/pfquest/LICENSE "out/$name/$target/LICENSE-pfQuest.txt"; fi
             if [ -f work/src/att/LICENSE ]; then cp work/src/att/LICENSE "out/$name/$target/LICENSE-AllTheThings.txt"; fi
+            if [ -f work/src/droptables/LICENSE-DATA ]; then cp work/src/droptables/LICENSE-DATA "out/$name/$target/LICENSE-DropTables.txt"; fi
             (cd "out/$name" && zip -qr "../../dist/$name.zip" "$target")
           done
           gzip -kf dist/forever.json
@@ -230,7 +236,7 @@ jobs:
           git push origin HEAD "v$VERSION"
           gh release delete latest --yes --cleanup-tag || true
           gh release create latest dist/forever.json.gz dist/*.zip dist/report.md dist/report.json --title "Forever database (latest)" \
-            --notes "ForeverDB $VERSION, built $(date -u +%F) from the Forever client tables + AllTheThings ${REF_ATT}, QuestieDB ${REF_QUESTIE}, VMaNGOS ${REF_VMANGOS}, cMaNGOS ${REF_CMANGOS}, pfQuest ${REF_PFQUEST}, LegacyForever ${REF_LEGACY}, Shortest Path Forever ${REF_SPF} + recordings. Hash ${{ steps.diff.outputs.new }}. See report.md for the cross-check."
+            --notes "ForeverDB $VERSION, built $(date -u +%F) from the Forever client tables + AllTheThings ${REF_ATT}, QuestieDB ${REF_QUESTIE}, VMaNGOS ${REF_VMANGOS}, cMaNGOS ${REF_CMANGOS}, pfQuest ${REF_PFQUEST}, LegacyForever ${REF_LEGACY}, Shortest Path Forever ${REF_SPF}, Drop Tables ${REF_DROPTABLES} + recordings. Hash ${{ steps.diff.outputs.new }}. See report.md for the cross-check."
 
       - name: Upload ForeverDB to CurseForge
         if: steps.diff.outputs.changed == 'true'

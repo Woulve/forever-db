@@ -52,5 +52,12 @@
   "repo": "cjber/shortest-path-forever",
   "licence": "GPL-3.0-or-later",
   "forever": true
+ },
+ {
+  "name": "droptables",
+  "title": "Drop Tables (WoW Forever loot counts)",
+  "repo": "valcheffnet/DropTables",
+  "licence": "CC BY-SA 4.0 (data; includes Blackthornes Farmer MIT, EG Link CC BY 4.0, Everloot CC BY-SA 4.0)",
+  "forever": true
  }
 ]

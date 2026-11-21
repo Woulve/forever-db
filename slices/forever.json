@@ -49,7 +49,9 @@
     "legacy",
     "lcrit",
     "explore",
-    "spf"
+    "spf",
+    "skin",
+    "gold"
   ],
   "prune": false,
   "max_rows": {

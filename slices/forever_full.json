@@ -11,7 +11,9 @@
     "rew",
     "spw",
     "spz",
-    "src"
+    "src",
+    "skin",
+    "gold"
   ],
   "prune": false
 }

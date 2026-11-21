@@ -19,7 +19,8 @@ def main():
     with open(os.path.join(out, "Test_DB.toc"), "w") as f:
         f.write("## Interface: 16001\n## Version: 0\n\nold.lua\n")
     run("tools/import_base.py", dump, os.path.join(tmp, "base.json"))
-    run("tools/build.py", "--base", os.path.join(tmp, "base.json"), "--collected", col, "--out", os.path.join(tmp, "forever.json"))
+    run("tools/build.py", "--base", os.path.join(tmp, "base.json"), "--collected", col, "--out", os.path.join(tmp, "forever.json"),
+        "--droptables", os.path.join(HERE, "fixtures", "droptables.json"))
     spec = json.load(open(os.path.join(ROOT, "slices", "forever.json")))
     spec["toc"] = "Test_DB.toc"
     sp = os.path.join(tmp, "spec.json"); json.dump(spec, open(sp, "w"))
@@ -39,6 +40,12 @@ def main():
     check("recorded quest reward", 50001 in db["rew"]["5523"])
     check("renamed npc", db["npc"]["100"][0] == "Murloc Raider (Forever)")
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
+    # Drop Tables: 40 kills, 36 lootable / 36 opened, 12 drops -> 12 / 40 = 30% (replaces the base rate: 20+ kills)
+    check("drop tables: chance per kill", [4444, 3000] in db["drop"]["5523"])
+    check("drop tables: new npc from its name and levels", db["npc"]["4444"][0] == "Forever Crab" and db["npc"]["4444"][2:4] == [5, 6])
+    check("drop tables: gold per kill, smallest / largest, kills", db["gold"]["4444"] == [7, 5, 15, 40])
+    check("drop tables: skinning chance", db["skin"]["2318"] == [[4444, 8000]])
+    check("drop tables: kill spots on the map (50 x 50 grid cell centres)", db["spm"]["c4444"]["1429"][:2] == [510, 510])
     check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
     check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
     check("Questicus patrol path kept in walking order", db["ptl"]["c263380"]["2548"] == [100, 100, 120, 110, 140, 130, 160, 150])
