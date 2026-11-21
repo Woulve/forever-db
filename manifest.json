@@ -35,7 +35,7 @@
   "quest": 6297,
   "qwk": 0,
   "qx": 6080,
-  "rew": 3194,
+  "rew": 3195,
   "seen": 1741,
   "seff": 3931,
   "skin": 21,
@@ -61,21 +61,21 @@
   "submissions": 4
  },
  "fixes": 7,
- "hash": "1ad079482d0b3599",
+ "hash": "dfea87a68acd8e67",
  "recordings": 0,
  "sourceList": [
   {
    "forever": true,
    "licence": "GPL-3.0 (see LICENSE-DATA.txt)",
    "name": "questie",
-   "ref": "933ec77",
+   "ref": "9921e9b",
    "repo": "Questie/QuestieDB",
    "title": "QuestieDB (WoW Forever)"
   },
   {
    "licence": "GPL-2.0-or-later",
    "name": "vmangos",
-   "ref": "c8c1d93",
+   "ref": "34aeaa8",
    "release": "db_latest",
    "repo": "vmangos/core",
    "title": "VMaNGOS world database"
@@ -106,7 +106,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "56596df",
+   "ref": "97de495",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -122,7 +122,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "7b5814a",
+   "ref": "0a2b740",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   },
@@ -130,7 +130,7 @@
    "forever": true,
    "licence": "CC BY-SA 4.0 (data; includes Blackthornes Farmer MIT, EG Link CC BY 4.0, Everloot CC BY-SA 4.0)",
    "name": "droptables",
-   "ref": "50af655",
+   "ref": "a3df896",
    "repo": "valcheffnet/DropTables",
    "title": "Drop Tables (WoW Forever loot counts)"
   }
