@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -350,6 +350,9 @@ def merge_extra(recs, agg):
             cur = x["vendx"].get(int(npc))
             if cur is None or (e.get("t") or 0) >= (cur.get("t") or 0):
                 x["vendx"][int(npc)] = e
+        # objects that only appear when you do something (use an item on a mob, kill it): no timer
+        for key, n in as_dict(r.get("osummon")).items():
+            x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
         # respawn times measured at quest spots (Spots.lua): sum / count, shortest, "not back after"
         for key, e in as_dict(r.get("resp")).items():
             e = as_dict(e)
@@ -484,6 +487,10 @@ def apply_extra(db, x):
         else:
             continue
         resp[key] = int(round(min(3600, max(10, t))))
+    # an object reported as "appears on a kill / item use" never gets a respawn time
+    db["osummon"] = {k: 1 for k, n in x["osummon"].items() if n >= 2}
+    for k in db["osummon"]:
+        resp.pop(k, None)
     db["resp"] = resp
     # vendors: { item: {p price, s stack, n limited, c other costs, r requirements, u usable} }, and
     # the plain item -> vendors list gets every item seen for sale
