@@ -158,6 +158,16 @@ GOLD_MIN = 3           # looted corpses before a recorded money average is kept
 QMISS_MIN = 2          # times an NPC didn't offer a quest before it's flagged
 
 
+def xp_penalty(qlvl, plvl):
+    """The game's grey-quest XP penalty (Questicus Quests.lua / Record.lua use the same)."""
+    d = plvl - (qlvl or plvl)
+    if d >= 10:
+        return 0.1
+    if d > 5:
+        return 1 - 0.2 * (d - 5)
+    return 1
+
+
 def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
@@ -192,11 +202,30 @@ def merge_extra(recs, agg):
         for qid, e in as_dict(r.get("qinfo")).items():
             e = as_dict(e)
             a = x["qinfo"].setdefault(int(qid), {})
-            for k in ("o", "xp", "m", "grp", "item"):
+            for k in ("o", "grp", "item", "lv"):
                 if e.get(k):
                     a[k] = e[k]
+            # rewards as the game showed them (0 money and empty item lists count: the game said so)
+            if e.get("m") is not None:
+                a["m"] = int(e["m"])
+            for k in ("ch", "rw"):
+                if e.get(k) is not None:
+                    v = e[k] if isinstance(e[k], list) else list(as_dict(e[k]).values())
+                    a[k] = [int(i) for i in v]
+            if e.get("xb"):
+                a["xb"] = int(e["xb"])
+            for lv, xp in as_dict(e.get("xl")).items():
+                a.setdefault("xl", {})[int(lv)] = int(xp)
             if e.get("minlv"):
                 a["minlv"] = min(a.get("minlv") or 999, int(e["minlv"]))
+        # XP / money really received at a turn-in (Details.lua): fills what the windows didn't
+        for qid, e in as_dict(r.get("qact")).items():
+            e = as_dict(e)
+            a = x["qinfo"].setdefault(int(qid), {})
+            if e.get("xp") and e.get("lv"):
+                a.setdefault("act", {})[int(e["lv"])] = int(e["xp"])
+            if e.get("money") is not None and "m" not in a:
+                a["mact"] = int(e["money"])
         for npc, qs in as_dict(r.get("qoff")).items():
             for qid, lv in as_dict(qs).items():
                 a = x["qoff"].setdefault(int(qid), {})
@@ -254,7 +283,7 @@ def merge_extra(recs, agg):
 def apply_extra(db, x):
     """Put Record.lua's tables in the master database (after Drop Tables, so recordings add to theirs)."""
     if not x:
-        return
+        return {}
     gold, skin = db.setdefault("gold", {}), db.setdefault("skin", {})
     for npc, g in x["gold"].items():
         if g["n"] < GOLD_MIN:
@@ -292,6 +321,34 @@ def apply_extra(db, x):
                    for npc, e in x["fcost"].items()}
     db["trn"] = {npc: {str(n): (v if isinstance(v, list) else [as_dict(v).get(k) for k in range(1, 5)])
                        for n, v in as_dict(e.get("s")).items()} for npc, e in x["trn"].items()}
+    # quest rewards: WoW Forever's own numbers replace the base table (qrw: money, full XP, choices, fixed)
+    db.setdefault("qrw", {})
+    qfix = 0
+    for qid, e in x["qinfo"].items():
+        q = db["quest"].get(qid)
+        if e.get("lv") and q:
+            q[1] = e["lv"]                          # the level the game gives the quest
+        ql = e.get("lv") or (q[1] if q else None)
+        full = e.get("xb")
+        if not full:                                # work back from a level with a penalty (not grey)
+            for lv, xp in sorted(list((e.get("xl") or {}).items()) + list((e.get("act") or {}).items())):
+                p = xp_penalty(ql, lv)
+                if p > 0.1:
+                    full = int(round(xp / p))
+                    break
+        if full:
+            e["xb"] = full
+        money = e.get("m", e.get("mact"))
+        if full or money is not None or "ch" in e or "rw" in e:
+            b = list(db["qrw"].get(qid) or [0, 0, None, None])
+            b += [None] * (4 - len(b))
+            new = [money if money is not None else b[0], full or b[1],
+                   (e["ch"] or None) if "ch" in e else b[2], (e["rw"] or None) if "rw" in e else b[3]]
+            if new != b:
+                qfix += 1
+            db["qrw"][qid] = new
+        for k in ("xl", "act", "mact"):
+            e.pop(k, None)
     db["qinfo"] = x["qinfo"]
     for qid, e in x["qinfo"].items():
         q = db["quest"].get(qid)
@@ -319,6 +376,7 @@ def apply_extra(db, x):
         if it not in db["item"]:
             db["item"][it] = [e[0], e[1]]
     db["itemx"] = x["itemx"]
+    return {"questRewardsFromGame": qfix}
 
 
 # ------------------------------------------------------------------ Drop Tables
@@ -637,7 +695,7 @@ def main():
     dts = merge_droptables(agg, dt)
     db = build(base, agg)
     droptables_tables(db, dt)
-    apply_extra(db, agg.get("x"))
+    extra = apply_extra(db, agg.get("x"))
     chained = chain_prereqs(db)
     fixed = apply_fixes(db, a.fixes)
     h = digest(db)
@@ -649,6 +707,7 @@ def main():
         "dropTables": dict(dts, built=(dt or {}).get("built"), submissions=(dt or {}).get("submissions")),
         "fixes": fixed,
         "chainPrereqs": chained,
+        "recorded": extra,
         "sourceList": json.load(open(a.sources_json)) if a.sources_json and os.path.exists(a.sources_json) else [],
         "counts": {k: len(v) for k, v in db.items() if isinstance(v, dict) and k not in ("loc", "src")},
     }

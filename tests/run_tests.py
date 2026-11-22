@@ -43,7 +43,10 @@ def main():
     check("recorded skinning", any(p[0] == 5523 for p in db["skin"].get("4232", [])))
     check("fishing by zone", db["fish"]["1429"] == [[6303, 10000]])
     check("flight costs", db["fcost"]["352"]["nodes"]["Sentinel Hill"][0] == 80)
-    check("quest details + offered-by giver", db["qinfo"]["50001"]["xp"] == 420 and "c888" in db["qg"]["50001"])
+    check("quest details + offered-by giver", db["qinfo"]["50001"]["xb"] == 420 and "c888" in db["qg"]["50001"])
+    check("game rewards replace the base ones", db["qrw"]["50001"][0] == 0 and db["qrw"]["50001"][1] == 420
+          and db["qrw"]["50001"][3] == [2318] and db["quest"]["50001"][1] == 4)
+    check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)
     check("rares, subzones, skills, types", db["rare"]["99"]["gap"] == 8000 and "Northshire Abbey" in db["zsub"]["1429"]
           and db["oskill"]["1731"] == ["Mining", 1] and db["ctype"]["5523"] == ["Beast", "Wolf"])
     check("renamed npc", db["npc"]["100"][0] == "Murloc Raider (Forever)")
