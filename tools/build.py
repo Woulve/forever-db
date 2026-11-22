@@ -655,7 +655,11 @@ def build(base, agg):
     db["qsp"] = {q: {m: p for m, p in maps.items() if p} for q, maps in agg["qsp"].items()}
     db["qsrc"] = {}
     for q, srcs in agg["qsrc"].items():
-        keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1]) if c >= 1]
+        # a source needs two credits at least (one kill just before some progress is chance), and
+        # once an object is a source, creatures with far fewer credits are left out
+        top_o = max([c for k, c in srcs.items() if str(k).startswith("o")] or [0])
+        keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1])
+                if c >= 2 and not (str(k).startswith("c") and top_o >= 3 * c)]
         if keep:
             db["qsrc"][q] = keep
     db["ptl"] = {k: v for k, v in agg["ptl"].items() if v}
