@@ -62,7 +62,8 @@
     "enc",
     "rare",
     "oskill",
-    "ctype"
+    "ctype",
+    "resp"
   ],
   "prune": false,
   "max_rows": {

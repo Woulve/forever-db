@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype")}
+                         "rare", "oskill", "itemx", "ctype", "resp")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -344,6 +344,14 @@ def merge_extra(recs, agg):
             e = e if isinstance(e, list) else [as_dict(e).get(k) for k in range(1, 10)]
             if e and e[0]:
                 x["itemx"][int(it)] = e
+        # respawn times measured at quest spots (Spots.lua): sum / count, shortest, "not back after"
+        for key, e in as_dict(r.get("resp")).items():
+            e = as_dict(e)
+            key = str(key).replace(":", "")
+            a = x["resp"].setdefault(key, {"n": 0, "s": 0.0, "lo": 0})
+            a["n"] += int(e.get("n") or 0)
+            a["s"] += float(e.get("s") or 0)
+            a["lo"] = max(a["lo"], float(e.get("lo") or 0))
         for npc, e in as_dict(r.get("ctype")).items():
             e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
             if e and e[0]:
@@ -440,6 +448,20 @@ def apply_extra(db, x):
         rare[npc] = {"n": len(l), "gap": min(gaps) if gaps else None,
                      "at": [[s[1], s[2], s[3]] for s in l[-10:] if len(s) >= 4]}
     db["rare"] = rare
+    # respawn seconds per creature / object ("c123" / "o456"): the measured average, never less than
+    # the longest time it was seen still gone
+    resp = {}
+    for key, a in x["resp"].items():
+        if a["n"] > 0:
+            t = a["s"] / a["n"]
+            if a["lo"] > t:
+                t = a["lo"] * 1.1
+        elif a["lo"] > 0:
+            t = a["lo"] * 1.25
+        else:
+            continue
+        resp[key] = int(round(min(3600, max(10, t))))
+    db["resp"] = resp
     db["oskill"] = x["oskill"]
     db["ctype"] = x["ctype"]
     for it, e in x["itemx"].items():
