@@ -176,7 +176,8 @@ jobs:
         run: |
           mkdir -p dist
           mkdir -p addon-src/collected
-          python tools/build.py --base work/base.json --collected collected addon-src/collected --out dist/forever.json \
+          # recorded/ keeps every recording for good (counts never go down, nothing recorded is ever dropped)
+          python tools/build.py --base work/base.json --collected collected addon-src/collected --keep recorded --out dist/forever.json \
             --sources-json work/sources.json --droptables work/src/droptables/data/shared.json \
             --source-note "WoW Forever client tables + AllTheThings + QuestieDB (Forever) + VMaNGOS + cMaNGOS classic-db + pfQuest + LegacyForever + Shortest Path Forever, cross-checked, + Drop Tables + WoW Forever in-game recordings"
 
@@ -187,6 +188,16 @@ jobs:
           OLD=$(python -c "import json,os;print(json.load(open('manifest.json'))['hash'] if os.path.exists('manifest.json') else '')")
           echo "new=$NEW" >> "$GITHUB_OUTPUT"
           if [ "$NEW" = "$OLD" ] && [ "${{ inputs.force }}" != "true" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Keep recordings (also when the data didn't change)
+        if: steps.diff.outputs.changed != 'true'
+        run: |
+          if [ -n "$(git status --porcelain recorded)" ]; then
+            git config user.name "forever-db bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add recorded
+            git commit -m "Keep recordings" && git push origin HEAD
+          fi
 
       - name: Slices
         if: steps.diff.outputs.changed == 'true'
@@ -230,7 +241,7 @@ jobs:
           git config user.name "forever-db bot"
           git config user.email "actions@users.noreply.github.com"
           cp dist/report.md REPORT.md
-          git add manifest.json ForeverDB ForeverDB_Full ForeverDB_Locales REPORT.md
+          git add manifest.json ForeverDB ForeverDB_Full ForeverDB_Locales REPORT.md recorded
           git commit -m "ForeverDB $VERSION (data ${{ steps.diff.outputs.new }})" || true
           git tag "v$VERSION"
           git push origin HEAD "v$VERSION"

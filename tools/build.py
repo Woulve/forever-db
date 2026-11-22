@@ -2,10 +2,19 @@
 
   python tools/build.py --base data/base.json --collected <folder(s) with *.lua> --out dist/forever.json
 
-Recordings (CommandCenterCollect from Command Center's Collector, QuesticusCollect from Questicus) override the base for
-names / levels (WoW Forever renamed or changed things), add Forever-only creatures, items,
-vendors, quests, drops and map spots, and replace a base drop chance once enough loots
-were recorded (FOREVER_RATE_MIN) because Forever changed many rates.
+RULE (user, 2026-11-21): WoW Forever client data and everything recorded in game is what the release
+uses, and it is never overwritten.
+  - merge.py: the client tables win every field they have (first FOREVER source).
+  - Recordings (CommandCenterCollect from Command Center's Collector, QuesticusCollect from Questicus)
+    override the base and Drop Tables: names / levels, Forever-only creatures, items, vendors, quests,
+    drops (a recorded chance always replaces the base / Drop Tables chance, from the first loot),
+    money, skinning, fishing, map spots. No minimum counts for our own recordings.
+  - Recordings are kept for good (--keep): each recording file is merged into recorded/<name>.json with
+    a high-water mark (counts never go down, lists and keys are only added), so a reset SavedVariables
+    or a deleted file can't take recorded data out of the database.
+  - fixes.json (hand-checked in game) still corrects the sources, but recorded spots survive it.
+  - slice.py never cuts a recorded drop / skin row with its max_rows caps.
+  - Drop Tables (other players' recordings) replaces a base rate after DT_RATE_MIN kills.
 Master format = import_base.py format plus:
   spm  {"c123": {uiMap: [x, y, ...]}}       map spots (0-1000) seen in game
   vp   {npc: {item: [price, stack, limited, costs]}}
@@ -23,10 +32,10 @@ import argparse, glob, json, os, sys, hashlib, datetime
 sys.path.insert(0, os.path.dirname(__file__))
 from luatable import load_var
 
-FOREVER_RATE_MIN = 20     # looted this many times before a recorded rate replaces the base rate
-NEW_RATE_MIN = 3          # recorded drops shown when the base doesn't have them at all
+DT_RATE_MIN = 20          # Drop Tables kills before its rate replaces a base rate (our recordings: always)
+DT_NEW_MIN = 3            # Drop Tables kills before a drop the base doesn't have is added
 SPOT_NEAR = 15
-SPOT_MAX = 60
+SPOT_MAX = 400            # recorded spots per map (deduplicated SPOT_NEAR apart)
 
 
 def keyed(d):
@@ -43,19 +52,89 @@ def load_recordings(folders):
     recs = []
     for folder in folders:
         for path in sorted(glob.glob(os.path.join(folder, "**", "*.lua"), recursive=True)):
-            with open(path, encoding="utf-8", errors="replace") as f:
+            # utf-8-sig: the PC's sync script (PowerShell) writes a byte-order mark, which hid every
+            # recording from the build until 2026-11-21
+            with open(path, encoding="utf-8-sig", errors="replace") as f:
                 text = f.read()
             for var in ("CommandCenterCollect", "QuesticusCollect"):
                 v = load_var(text, var)
                 if isinstance(v, dict):
-                    recs.append((path, v))
+                    recs.append((path, var, v))
     return recs
+
+
+# ------------------------------------------------------------------ recordings kept for good
+def high_water(old, new):
+    """Merge two snapshots of the same recording: numbers never go down, dict keys and list entries are
+    only added, text takes the newest non-empty value."""
+    if isinstance(old, dict) and isinstance(new, dict):
+        out = dict(old)
+        for k, v in new.items():
+            out[k] = high_water(old[k], v) if k in old else v
+        return out
+    if isinstance(old, list) and isinstance(new, list):
+        if all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in old + new):
+            if len(old) % 2 == 0 and len(new) % 2 == 0:          # flat x, y spot lists: add new pairs
+                out = list(old)
+                have = {(old[i], old[i + 1]) for i in range(0, len(old), 2)}
+                for i in range(0, len(new), 2):
+                    if (new[i], new[i + 1]) not in have:
+                        out += [new[i], new[i + 1]]
+                        have.add((new[i], new[i + 1]))
+                return out
+            return new if len(new) >= len(old) else old
+        out = list(old)
+        seen = {json.dumps(v, sort_keys=True) for v in old}
+        for v in new:
+            s = json.dumps(v, sort_keys=True)
+            if s not in seen:
+                out.append(v)
+                seen.add(s)
+        return out
+    if isinstance(old, bool) or isinstance(new, bool):
+        return new if new is not None else old
+    if isinstance(old, (int, float)) and isinstance(new, (int, float)):
+        return max(old, new)
+    return new if new not in (None, "") else old
+
+
+def json_keys(v):
+    """JSON can't keep int keys: make every key a string, the way a reload gives them back."""
+    if isinstance(v, dict):
+        return {str(k): json_keys(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [json_keys(x) for x in v]
+    return v
+
+
+def keep_recordings(recs, folder):
+    """Merge every recording into folder/<file>.<var>.json and return the kept copies (all of them, also the
+    ones whose recording file is gone)."""
+    if not folder:
+        return recs
+    os.makedirs(folder, exist_ok=True)
+    kept = {}
+    for path in sorted(glob.glob(os.path.join(folder, "*.json"))):
+        with open(path, encoding="utf-8") as f:
+            kept[os.path.basename(path)[:-5]] = json.load(f)
+    changed = 0
+    for path, var, v in recs:
+        name = "%s.%s" % (os.path.splitext(os.path.basename(path))[0], var)
+        v = json_keys(v)
+        merged = high_water(kept[name], v) if name in kept else v
+        if kept.get(name) != merged:
+            kept[name] = merged
+            with open(os.path.join(folder, name + ".json"), "w", encoding="utf-8") as f:
+                json.dump(merged, f, separators=(",", ":"), ensure_ascii=False, sort_keys=True)
+            changed += 1
+    print("recordings kept: %d (%d updated) in %s" % (len(kept), changed, folder))
+    return [(os.path.join(folder, n + ".json"), n.rsplit(".", 1)[-1], v) for n, v in sorted(kept.items())]
 
 
 def merge_recordings(recs):
     agg = {"loot": {}, "vend": {}, "qst": {}, "npc": {}, "obj": {}, "sp": {}, "item": {}, "qsp": {}, "qsrc": {},
            "ptl": {}, "qwk": {}, "removed": {}}
-    for _, r in recs:
+    for _, _, r in recs:
         for key, e in as_dict(r.get("loot")).items():
             e = as_dict(e)
             a = agg["loot"].setdefault(key, {"n": 0, "i": {}})
@@ -152,10 +231,10 @@ def merge_recordings(recs):
 
 
 # ------------------------------------------------------------------ Questicus recorder, part 2 (Record.lua)
-FISH_MIN = 10          # catches in a zone before its fishing chances are kept
-SKIN_MIN = 3           # skinned corpses before a recorded skinning chance is kept
-GOLD_MIN = 3           # looted corpses before a recorded money average is kept
-QMISS_MIN = 2          # times an NPC didn't offer a quest before it's flagged
+FISH_MIN = 1           # catches in a zone before its fishing chances are kept
+SKIN_MIN = 1           # skinned corpses before a recorded skinning chance is kept
+GOLD_MIN = 1           # looted corpses before a recorded money average is kept
+QMISS_MIN = 1          # times an NPC didn't offer a quest before it's flagged
 
 
 def xp_penalty(qlvl, plvl):
@@ -173,7 +252,7 @@ def merge_extra(recs, agg):
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
                          "rare", "oskill", "itemx", "ctype")}
-    for _, r in recs:
+    for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
             a = x["gold"].setdefault(int(npc), {"n": 0, "c": 0, "lo": None, "hi": None})
@@ -288,16 +367,7 @@ def apply_extra(db, x):
     for npc, g in x["gold"].items():
         if g["n"] < GOLD_MIN:
             continue
-        avg = int(round(g["c"] / g["n"]))
-        cur = gold.get(npc)
-        if cur and cur[3]:
-            k = cur[3] + g["n"]
-            avg = int(round((cur[0] * cur[3] + g["c"]) / k))
-            lo = min(v for v in (cur[1], g["lo"]) if v is not None) if (cur[1] is not None or g["lo"] is not None) else None
-            hi = max(v for v in (cur[2], g["hi"]) if v is not None) if (cur[2] is not None or g["hi"] is not None) else None
-            gold[npc] = [avg, lo, hi, k]
-        else:
-            gold[npc] = [avg, g["lo"], g["hi"], g["n"]]
+        gold[npc] = [int(round(g["c"] / g["n"])), g["lo"], g["hi"], g["n"]]   # ours replace Drop Tables
     for npc, e in x["skinl"].items():
         if e["n"] < SKIN_MIN:
             continue
@@ -306,7 +376,7 @@ def apply_extra(db, x):
             ch = int(round(min(1.0, c / e["n"]) * 10000))
             for p in lst:
                 if p[0] == npc:
-                    p[1] = max(p[1], ch)
+                    p[1] = ch                    # ours replace Drop Tables
                     break
             else:
                 lst.append([npc, ch])
@@ -382,7 +452,7 @@ def apply_extra(db, x):
 # ------------------------------------------------------------------ Drop Tables
 # github.com/valcheffnet/DropTables data/shared.json (CC BY-SA 4.0): loot counts players record on WoW
 # Forever (their own shares + Blackthornes Farmer (MIT), EG Link (CC BY 4.0) and Everloot (CC BY-SA 4.0)).
-# The counts go in like our own recordings: a recorded rate replaces the base rate after FOREVER_RATE_MIN kills.
+# Its rates replace a base rate after DT_RATE_MIN kills; our own recordings always win over it.
 DT_CELLS = 50          # shared.json spots: a 50 x 50 grid per uiMap
 DT_SKIN_MIN = 3        # skinned corpses before a skinning chance is kept
 
@@ -414,13 +484,13 @@ def merge_droptables(agg, dt):
         if kills > 0 and opened > 0:
             # chance per kill = lootable / kills * drops / opened (Drop Tables' own formula)
             share = min(1.0, lootable / kills) / opened
-            a = agg["loot"].setdefault("c:%d" % npc, {"n": 0, "i": {}})
+            a = agg.setdefault("dtloot", {}).setdefault("c:%d" % npc, {"n": 0, "i": {}})
             a["n"] += kills
             for it, d in items.items():
                 a["i"][it] = a["i"].get(it, 0) + d * share * kills
             stats["mobs"] += 1
             stats["kills"] += kills
-        sp = agg["sp"].setdefault("c:%d" % npc, {})
+        sp = agg.setdefault("dtsp", {}).setdefault("c:%d" % npc, {})
         for mp, cells in (m.get("spots") or {}).items():
             lst = sp.setdefault(int(mp), [])
             for c, _ in sorted(cells.items(), key=lambda kv: -kv[1]):
@@ -432,7 +502,7 @@ def merge_droptables(agg, dt):
                 if not any(abs(lst[j] - x) <= SPOT_NEAR and abs(lst[j + 1] - y) <= SPOT_NEAR for j in range(0, len(lst), 2)):
                     lst += [x, y]
         if not sp:
-            del agg["sp"]["c:%d" % npc]
+            del agg["dtsp"]["c:%d" % npc]
     return stats
 
 
@@ -501,8 +571,24 @@ def build(base, agg):
     for it, e in agg["item"].items():
         b = db["item"].get(it)
         db["item"][it] = [e[0], e[1] if e[1] is not None else (b[1] if b else None), b[2] if b else None]
-    # loot
+    # loot: Drop Tables first (other players' counts), then our own recordings on top
     field = {"c": "drop", "o": "odrop", "i": "idrop"}
+    for key, e in agg.get("dtloot", {}).items():
+        kind, sid = who(key)
+        f = field.get(kind)
+        if not f or e["n"] <= 0:
+            continue
+        db["seen"].setdefault(kind + str(sid), {it: [int(round(c)), e["n"]] for it, c in e["i"].items()})
+        for it, c in e["i"].items():
+            ch = int(round(min(1.0, c / e["n"]) * 10000))
+            lst = db[f].setdefault(it, [])
+            cur = next((p for p in lst if p[0] == sid), None)
+            if cur is None:
+                if e["n"] >= DT_NEW_MIN or not lst:
+                    lst.append([sid, ch])
+            elif e["n"] >= DT_RATE_MIN:
+                cur[1] = ch
+            lst.sort(key=lambda p: -p[1])
     for key, e in agg["loot"].items():
         kind, sid = who(key)
         f = field.get(kind)
@@ -514,10 +600,9 @@ def build(base, agg):
             lst = db[f].setdefault(it, [])
             cur = next((p for p in lst if p[0] == sid), None)
             if cur is None:
-                if e["n"] >= NEW_RATE_MIN or c >= 2 or not lst:
-                    lst.append([sid, ch])
-            elif e["n"] >= FOREVER_RATE_MIN:
-                cur[1] = ch
+                lst.append([sid, ch])            # recorded in WoW Forever: always kept
+            else:
+                cur[1] = ch                      # and its chance always replaces the base / Drop Tables one
             lst.sort(key=lambda p: -p[1])
     # vendors
     for npc, lst in agg["vend"].items():
@@ -548,13 +633,13 @@ def build(base, agg):
     db["qsp"] = {q: {m: p for m, p in maps.items() if p} for q, maps in agg["qsp"].items()}
     db["qsrc"] = {}
     for q, srcs in agg["qsrc"].items():
-        keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1]) if c >= 2][:6]
+        keep = [k for k, c in sorted(srcs.items(), key=lambda kv: -kv[1]) if c >= 1]
         if keep:
             db["qsrc"][q] = keep
     db["ptl"] = {k: v for k, v in agg["ptl"].items() if v}
     db["qwk"] = {q: [round(a[0] / a[1]), a[1]] for q, a in agg["qwk"].items() if a[1] > 0}
-    # map spots
-    for key, maps in agg["sp"].items():
+    # map spots (Drop Tables' kill spots, then ours)
+    for key, maps in list(agg.get("dtsp", {}).items()) + list(agg["sp"].items()):
         kind, sid = who(key)
         cur = db["spm"].setdefault(kind + str(sid), {})
         for m, pts in maps.items():
@@ -636,8 +721,8 @@ def chain_prereqs(db):
     return n
 
 
-def apply_fixes(db, path):
-    """fixes.json: hand-checked corrections that win over every source and recording."""
+def apply_fixes(db, path, recorded_sp=None):
+    """fixes.json: hand-checked corrections that win over the sources. Spots recorded in game stay."""
     if not path or not os.path.exists(path):
         return 0
     fx = json.load(open(path, encoding="utf-8"))
@@ -645,6 +730,12 @@ def apply_fixes(db, path):
     spm = db.setdefault("spm", {})
     for key, maps in (fx.get("spm") or {}).items():
         spm[key] = {int(m): list(p) for m, p in maps.items()}
+        for m, pts in ((recorded_sp or {}).get(key[0] + ":" + key[1:]) or {}).items():
+            lst = spm[key].setdefault(int(m), [])
+            for k in range(0, len(pts) - 1, 2):
+                if not any(abs(lst[j] - pts[k]) <= SPOT_NEAR and abs(lst[j + 1] - pts[k + 1]) <= SPOT_NEAR
+                           for j in range(0, len(lst) - 1, 2)):
+                    lst += [pts[k], pts[k + 1]]
         if key in db.get("spw", {}):
             del db["spw"][key]           # the corrected map spots replace the world spawns too
         n += 1
@@ -681,6 +772,7 @@ def main():
     ap.add_argument("--collected", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--source-note", default="cMaNGOS classic-db (GPL-3.0) + WoW Forever in-game recordings")
+    ap.add_argument("--keep", help="folder that keeps every recording for good (recorded/ in the repo)")
     ap.add_argument("--droptables", help="Drop Tables data/shared.json (CC BY-SA 4.0)")
     ap.add_argument("--sources-json", help="JSON list of {name, repo, ref, licence} for meta.sourceList")
     ap.add_argument("--fixes", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "fixes.json"),
@@ -688,7 +780,7 @@ def main():
     a = ap.parse_args()
     with open(a.base, encoding="utf-8") as f:
         base = json.load(f)
-    recs = load_recordings(a.collected)
+    recs = keep_recordings(load_recordings(a.collected), a.keep)
     agg = merge_recordings(recs)
     merge_extra(recs, agg)
     dt = load_droptables(a.droptables)
@@ -697,7 +789,7 @@ def main():
     droptables_tables(db, dt)
     extra = apply_extra(db, agg.get("x"))
     chained = chain_prereqs(db)
-    fixed = apply_fixes(db, a.fixes)
+    fixed = apply_fixes(db, a.fixes, agg["sp"])
     h = digest(db)
     db["meta"] = {
         "build": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),

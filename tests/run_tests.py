@@ -58,7 +58,7 @@ def main():
     check("drop tables: skinning chance", db["skin"]["2318"] == [[4444, 8000]])
     check("drop tables: kill spots on the map (50 x 50 grid cell centres)", db["spm"]["c4444"]["1429"][:2] == [510, 510])
     check("Questicus objective spots (near ones merged)", db["qsp"]["50001"]["1429"] == [400, 500, 700, 700])
-    check("Questicus objective sources (seen 2+ times only)", db["qsrc"]["50001"] == ["o645516"])
+    check("Questicus objective sources (every one recorded, most seen first)", db["qsrc"]["50001"][0] == "o645516")
     check("Questicus patrol path kept in walking order", db["ptl"]["c263380"]["2548"] == [100, 100, 120, 110, 140, 130, 160, 150])
     check("Questicus real quest time (active seconds, runs)", db["qwk"]["50001"] == [300, 2])
     check("spot a player removed in game is gone, the other stays", db["spm"]["c888"]["1429"] == [300, 300])
@@ -85,6 +85,40 @@ def main():
         if r.returncode:
             print(r.stdout, r.stderr)
         check("lua file loads", r.returncode == 0)
+
+    # ---- RULE: client data and recordings are what the release uses, never overwritten
+    kt = os.path.join(tmp, "keeptest"); kcol = os.path.join(kt, "collected"); keep = os.path.join(kt, "recorded")
+    os.makedirs(kcol)
+    rec = os.path.join(kcol, "rec-pc.lua")
+    with open(rec, "w", encoding="utf-8-sig") as f:      # byte-order mark, like the PC's sync script writes
+        f.write('CommandCenterCollect = { ["loot"] = { ["c:101"] = { ["n"] = 2, ["i"] = { [7000] = 1, [7002] = 2 } } },'
+                ' ["sp"] = { ["c:257001"] = { [2548] = { 100, 900 } } } }\n')
+    kfx = os.path.join(kt, "fixes.json")
+    json.dump({"spm": {"c257001": {"2548": [771, 728]}}}, open(kfx, "w"))
+    def kbuild(name):
+        run("tools/build.py", "--base", os.path.join(tmp, "base.json"), "--collected", kcol, "--keep", keep,
+            "--fixes", kfx, "--droptables", os.path.join(HERE, "fixtures", "droptables.json"),
+            "--out", os.path.join(kt, name))
+        return json.load(open(os.path.join(kt, name)))
+    k1 = kbuild("k1.json")
+    check("recordings with a byte-order mark are read", k1["meta"]["recordings"] == 1)
+    check("a recorded chance replaces the base one from the first loot (2 kills)",
+          [101, 5000] in k1["drop"]["7000"] and [101, 10000] in k1["drop"]["7002"])
+    check("fixes.json corrects the spot but the recorded spot stays",
+          k1["spm"]["c257001"]["2548"] == [771, 728, 100, 900])
+    # the PC's SavedVariables were reset: the new snapshot has fewer loots and no spots
+    with open(rec, "w", encoding="utf-8-sig") as f:
+        f.write('CommandCenterCollect = { ["loot"] = { ["c:101"] = { ["n"] = 1, ["i"] = { [7000] = 1 } } } }\n')
+    k2 = kbuild("k2.json")
+    check("kept recordings: counts never go down after a reset", [101, 5000] in k2["drop"]["7000"] and [101, 10000] in k2["drop"]["7002"])
+    check("kept recordings: recorded spots survive a reset", k2["spm"]["c257001"]["2548"] == [771, 728, 100, 900])
+    os.remove(rec)
+    k3 = kbuild("k3.json")
+    check("kept recordings: a deleted recording file still counts", [101, 5000] in k3["drop"]["7000"] and k3["meta"]["recordings"] == 1)
+    import slice as _s
+    capdb = {"seen": {"c9": {"7000": [1, 1]}}, "drop": {"7000": [[1, 9000], [2, 8000], [9, 100]]}}
+    check("slice caps never cut a recorded drop row", _s.capped(capdb, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000], [9, 100]]
+          and _s.capped({"seen": {}}, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000]])
 
     # ---- VMaNGOS: final-patch rows only, several creatures per spawn point
     vdump = os.path.join(tmp, "vdump"); os.makedirs(vdump)

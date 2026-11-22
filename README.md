@@ -24,6 +24,12 @@ Wowhead is **not** scraped (their terms forbid it). Note: QuestieDB's *generated
 was built by the Questie team from Wowhead's Forever pages; set the repository variable
 `QUESTIE_GENERATED` to `off` to leave that part out (traces and hand-written fixes stay).
 
+**The rule: WoW Forever's own data and what players record in game always win, and are never overwritten.**
+- The Forever client tables win every field they have; then the other Forever sources (QuestieDB Forever, AllTheThings); the 1.12 server databases only fill what's missing.
+- Recordings (Command Center's Collector, Questicus) replace the sources and Drop Tables for everything they cover, from the first loot: names, levels, drop chances, money, skinning, fishing, quest rewards, givers, map spots. Drop Tables (other players' counts) replaces a base rate after 20 kills.
+- Recordings are kept for good in `recorded/` (one JSON per recording file): counts only go up, spots and entries are only added, so a reset SavedVariables or a deleted file never takes recorded data out.
+- `fixes.json` (hand-checked in game) corrects the sources, but recorded spots stay next to the corrected ones. The size caps in the slices never cut a recorded drop.
+
 **How sources are combined** (`tools/merge.py`, report in `REPORT.md` and the release):
 - Every entry any source has is kept.
 - Names, levels, ranks, quality: Forever data wins any field it has; otherwise the value most

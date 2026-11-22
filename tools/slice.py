@@ -100,6 +100,20 @@ def referenced(db, tables):
     return npcs, objs, quests, items
 
 
+KIND = {"drop": "c", "odrop": "o", "idrop": "i", "skin": "c"}
+
+
+def capped(db, t, k, rows, n):
+    """The best n rows, plus every row recorded in WoW Forever (db.seen): recorded data is never cut."""
+    if len(rows) <= n or t not in KIND:
+        return rows[:n]
+    seen = db.get("seen") or {}
+    def recorded(r):
+        s = seen.get(KIND[t] + str(r[0])) if isinstance(r, list) and r else None
+        return bool(s) and (str(k) in s or k in s)
+    return rows[:n] + [r for r in rows[n:] if recorded(r)]
+
+
 def make_slice(db, spec):
     tables = spec["tables"]
     out = {}
@@ -109,7 +123,7 @@ def make_slice(db, spec):
         db = dict(db)
         for t, n in caps.items():
             if t in db:
-                db[t] = {k: v[:n] for k, v in db[t].items()}
+                db[t] = {k: capped(db, t, k, v, n) for k, v in db[t].items()}
     if spec.get("prune"):
         npcs, objs, quests, items = referenced(db, tables)
         keep = {"npc": npcs, "obj": objs, "quest": quests, "qg": quests, "qe": quests, "item": items,
@@ -126,10 +140,7 @@ def make_slice(db, spec):
                 if (kind == "c" and num not in keep["npc"]) or (kind == "o" and num not in keep["obj"]):
                     continue
             if t in ("drop", "odrop", "idrop", "skin"):
-                cap = spec.get("max_rows", {}).get(t)
-                if cap:
-                    v = v[:cap]
-                v = [x for pair in v for x in pair]
+                v = [x for pair in v for x in pair]      # already capped above (recorded rows kept)
             elif t in ("vend", "rew") and spec.get("max_rows", {}).get(t):
                 v = v[:spec["max_rows"][t]]
             cols = spec.get("fields", {}).get(t)
