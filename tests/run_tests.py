@@ -126,6 +126,21 @@ def main():
     check("slice caps never cut a recorded drop row", _s.capped(capdb, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000], [9, 100]]
           and _s.capped({"seen": {}}, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000]])
 
+    # ---- zone borders from the terrain (tools/import_terrain.py)
+    tdir = os.path.join(tmp, "terrain"); os.makedirs(tdir)
+    run("tests/fixtures/terrain/make.py", tdir)
+    run("tools/import_terrain.py", os.path.join(tdir, "csv"), os.path.join(tdir, "cache"), os.path.join(tdir, "t.json"),
+        "--files", os.path.join(tdir, "files"))
+    tj = json.load(open(os.path.join(tdir, "t.json")))
+    z, s = tj["zbord"].get("1", {}), tj["abord"].get("2", {})
+    check("terrain: zone border (world yards) and on its map (0..1000)",
+          z.get("ui") == 1429 and z.get("n") == 512 and z.get("w") == [[16533, 16000, 17067, 16000, 17067, 17067, 16533, 17067]]
+          and z.get("m") == [[1000, 500, 1000, 0, 0, 0, 0, 500]])
+    check("terrain: sub-zone border, with its zone", s.get("z") == 1 and s.get("n") == 16
+          and s.get("w") == [[16933, 16933, 16800, 16933, 16800, 16800, 16933, 16800]])
+    check("terrain: zone grid for point lookups (sub-zone rolled up to its zone)", tj["agrid"]["0"]["z"]["5"] == "1*32,0*992")
+    check("terrain: instances left out", "33" not in tj["agrid"])
+
     # ---- VMaNGOS: final-patch rows only, several creatures per spawn point
     vdump = os.path.join(tmp, "vdump"); os.makedirs(vdump)
     shutil.copy(os.path.join(HERE, "vm_mini.sql"), vdump)

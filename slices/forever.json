@@ -65,7 +65,8 @@
     "ctype",
     "resp",
     "train",
-    "vendx"
+    "vendx",
+    "zbord"
   ],
   "prune": false,
   "max_rows": {

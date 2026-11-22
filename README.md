@@ -130,6 +130,9 @@ Tables:
 | `sla` / `ieff` / `seff` | skill line spells (recipes) / item use effects / spell effects |
 | `tset` / `bpet` / `ctun` / `wmo` | transmog sets / battle pet species / content tuning (levels) / map overlays |
 | `legacy` / `lcrit` / `explore` | LegacyForever: challenge data, criterion locations, exploration areas |
+| `zbord` | `{zone areaID: {c = continent mapID, ui = uiMapID, n = map chunks, w = {{x, y, x, y, ...}, ...} world-yard loops (outlines and holes), m = the same loops on the zone's map, 0-1000}}` zone borders from the WoW Forever client's own terrain (every ADT map chunk's area) |
+| `abord` | the same for every sub-zone (towns, camps, ...), plus `z` = its zone (ForeverDB_Full) |
+| `agrid` | `{continent: {o, c, z = {row: "zoneID*count,..."}}}` which zone each 33-yard map chunk belongs to (world X = o - (row + 0.5) * c, Y = o - (col + 0.5) * c), for point-in-zone lookups (ForeverDB_Full) |
 | `skin` | `{item: {npc, chance per 10000, npc, chance, ...}}` (flat like drop) what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
 | `gold` | `{npc: [average copper per kill, smallest pile, largest pile, kills]}` (Drop Tables) |
 | `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |

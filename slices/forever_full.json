@@ -13,7 +13,10 @@
     "spz",
     "src",
     "skin",
-    "gold"
+    "gold",
+    "zbord",
+    "abord",
+    "agrid"
   ],
   "prune": false
 }

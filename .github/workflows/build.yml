@@ -127,6 +127,16 @@ jobs:
           # AllTheThings: its own Lua runs (tools/att), then the Forever client tables it ships
           imp att "$REF_ATT" sh -c "python tools/att/prepare.py work/src/att/.contrib/.db work/att && lua5.1 tools/att/run.lua work/att/order.txt work/cache/att.json && python tools/import_att.py work/cache/att.json work/cache/src-att.json"
           imp client "$REF_ATT" python tools/import_client.py work/src/att/.contrib/.db/forever/.config/.wago work/cache/src-client.json
+          # zone borders from the Forever client's own terrain (every outdoor continent's ADT map chunks, from
+          # wago.tools for the client build ATT ships; only a small grid per continent is kept in the cache)
+          CB=$(ls work/src/att/.contrib/.db/forever/.config/.wago/AreaTable.*.csv 2>/dev/null | sed -E 's/.*AreaTable\.([0-9.]+)\.csv/\1/' | head -1)
+          if [ -n "$CB" ]; then
+            mkdir -p work/terrain-csv
+            cp work/src/att/.contrib/.db/forever/.config/.wago/{AreaTable,UiMap,UiMapAssignment}.$CB.csv work/terrain-csv/
+            [ -s "work/terrain-csv/Map.$CB.csv" ] || curl -sSfL -A "forever-db/1" -o "work/terrain-csv/Map.$CB.csv" "https://wago.tools/db2/Map/csv?build=$CB" \
+              || echo "::warning::Map table not fetched from wago.tools"
+            imp terrain "$CB" python tools/import_terrain.py work/terrain-csv work/cache/terrain work/cache/src-terrain.json --build "$CB"
+          fi
           imp legacy "$REF_LEGACY" sh -c "lua5.1 tools/lua/export.lua ns work/cache/legacy.json work/src/legacy/Data/Legacy.lua work/src/legacy/Data/Explore.lua && python tools/import_extra.py legacy work/cache/legacy.json work/cache/src-legacy.json --locations work/src/legacy/tools/locations.json"
           imp spf "$REF_SPF" sh -c "lua5.1 tools/lua/export.lua ns work/cache/spf.json \$(ls work/src/spf/Data/*.lua | grep -vE 'Credits|Heights|RoadCells|RoadEdges') && python tools/import_extra.py spf work/cache/spf.json work/cache/src-spf.json"
 
@@ -142,7 +152,8 @@ jobs:
           python tools/merge.py --out work/base.json --report dist/report.json \
             client=work/cache/src-client.json questie=work/cache/src-questie.json att=work/cache/src-att.json \
             vmangos=work/cache/src-vmangos.json cmangos=work/cache/src-cmangos.json pfquest=work/cache/src-pfquest.json \
-            legacy=work/cache/src-legacy.json spf=work/cache/src-spf.json
+            legacy=work/cache/src-legacy.json spf=work/cache/src-spf.json \
+            $( [ -f work/cache/src-terrain.json ] && echo terrain=work/cache/src-terrain.json )
           python - <<'PY'
           import json, os
           src = json.load(open("sources.json"))
