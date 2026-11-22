@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -344,6 +344,12 @@ def merge_extra(recs, agg):
             e = e if isinstance(e, list) else [as_dict(e).get(k) for k in range(1, 10)]
             if e and e[0]:
                 x["itemx"][int(it)] = e
+        # vendors as players saw them (Record.lua): the newest visit of each vendor wins
+        for npc, e in as_dict(r.get("vendx")).items():
+            e = as_dict(e)
+            cur = x["vendx"].get(int(npc))
+            if cur is None or (e.get("t") or 0) >= (cur.get("t") or 0):
+                x["vendx"][int(npc)] = e
         # respawn times measured at quest spots (Spots.lua): sum / count, shortest, "not back after"
         for key, e in as_dict(r.get("resp")).items():
             e = as_dict(e)
@@ -479,6 +485,30 @@ def apply_extra(db, x):
             continue
         resp[key] = int(round(min(3600, max(10, t))))
     db["resp"] = resp
+    # vendors: { item: {p price, s stack, n limited, c other costs, r requirements, u usable} }, and
+    # the plain item -> vendors list gets every item seen for sale
+    vendx = {}
+    for npc, e in x["vendx"].items():
+        rows = {}
+        for it, row in as_dict(e.get("i")).items():
+            row = as_dict(row)
+            out = {"p": int(row.get("p") or 0), "s": int(row.get("s") or 1)}
+            if row.get("n"):
+                out["n"] = int(row["n"])
+            if row.get("c"):
+                out["c"] = [list(c) if isinstance(c, list) else list(as_dict(c).values()) for c in
+                            (row["c"] if isinstance(row["c"], list) else list(as_dict(row["c"]).values()))]
+            if row.get("r"):
+                out["r"] = [str(t) for t in (row["r"] if isinstance(row["r"], list) else list(as_dict(row["r"]).values()))]
+            if row.get("u") is False:
+                out["u"] = False
+            rows[int(it)] = out
+            lst = db["vend"].setdefault(int(it), [])
+            if isinstance(lst, list) and npc not in lst:
+                lst.append(npc)
+        if rows:
+            vendx[npc] = rows
+    db["vendx"] = vendx
     db["oskill"] = x["oskill"]
     db["ctype"] = x["ctype"]
     for it, e in x["itemx"].items():

@@ -64,7 +64,8 @@
     "oskill",
     "ctype",
     "resp",
-    "train"
+    "train",
+    "vendx"
   ],
   "prune": false,
   "max_rows": {

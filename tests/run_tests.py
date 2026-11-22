@@ -48,6 +48,9 @@ def main():
           and db["qrw"]["50001"][3] == [2318] and db["quest"]["50001"][1] == 4)
     check("class training costs per ability", db["train"]["HUNTER"]["Serpent Sting (Rank 2)"] == [200, 10]
           and db["train"]["HUNTER"]["Arcane Shot"] == [100, 6])
+    check("vendors: prices, limits, costs, requirements", db["vendx"]["5523"]["200"]["p"] == 450
+          and db["vendx"]["5523"]["200"]["r"] == ["Requires Level 5"] and db["vendx"]["5523"]["9999"]["c"] == [[20558, 20]]
+          and 5523 in db["vend"]["9999"])
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)
     check("rares, subzones, skills, types", db["rare"]["99"]["gap"] == 8000 and "Northshire Abbey" in db["zsub"]["1429"]
