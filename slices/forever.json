@@ -63,7 +63,8 @@
     "rare",
     "oskill",
     "ctype",
-    "resp"
+    "resp",
+    "train"
   ],
   "prune": false,
   "max_rows": {

@@ -399,6 +399,23 @@ def apply_extra(db, x):
                    for npc, e in x["fcost"].items()}
     db["trn"] = {npc: {str(n): (v if isinstance(v, list) else [as_dict(v).get(k) for k in range(1, 5)])
                        for n, v in as_dict(e.get("s")).items()} for npc, e in x["trn"].items()}
+    # class training: every ability's cost and level per class, from class trainers players opened
+    # ("Name (Rank 2)" -> [cost copper, level]); older recordings keep the state in the name: dropped
+    import re
+    train = {}
+    for npc, e in x["trn"].items():
+        cls = e.get("cls")
+        if not cls:
+            continue
+        t = train.setdefault(str(cls), {})
+        for n, v in as_dict(e.get("s")).items():
+            v = v if isinstance(v, list) else [as_dict(v).get(k) for k in range(1, 5)]
+            name = re.sub(r" \((available|unavailable|used)\)$", "", str(n))
+            if v and v[0] is not None and len(v) > 1 and v[1] is not None:
+                cur = t.get(name)
+                if cur is None or (e.get("t") or 0) >= cur[2]:
+                    t[name] = [int(v[0]), int(v[1]), e.get("t") or 0]
+    db["train"] = {c: {n: v[:2] for n, v in t.items()} for c, t in train.items()}
     # quest rewards: WoW Forever's own numbers replace the base table (qrw: money, full XP, choices, fixed)
     db.setdefault("qrw", {})
     qfix = 0
