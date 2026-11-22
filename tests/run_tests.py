@@ -38,6 +38,14 @@ def main():
     check("reference chance multiplied", db["drop"]["8001"] == [[101, 500]])
     check("vendor template", 200 in db["vend"]["5523"])
     check("recorded quest reward", 50001 in db["rew"]["5523"])
+    # Questicus' Record.lua tables
+    check("recorded money per kill", db["gold"]["5523"][3] >= 4)
+    check("recorded skinning", any(p[0] == 5523 for p in db["skin"].get("4232", [])))
+    check("fishing by zone", db["fish"]["1429"] == [[6303, 10000]])
+    check("flight costs", db["fcost"]["352"]["nodes"]["Sentinel Hill"][0] == 80)
+    check("quest details + offered-by giver", db["qinfo"]["50001"]["xp"] == 420 and "c888" in db["qg"]["50001"])
+    check("rares, subzones, skills, types", db["rare"]["99"]["gap"] == 8000 and "Northshire Abbey" in db["zsub"]["1429"]
+          and db["oskill"]["1731"] == ["Mining", 1] and db["ctype"]["5523"] == ["Beast", "Wolf"])
     check("renamed npc", db["npc"]["100"][0] == "Murloc Raider (Forever)")
     check("map spots", db["spm"]["c777"]["1429"] == [500, 600])
     # Drop Tables: 40 kills, 36 lootable / 36 opened, 12 drops -> 12 / 40 = 30% (replaces the base rate: 20+ kills)

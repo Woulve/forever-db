@@ -51,7 +51,18 @@
     "explore",
     "spf",
     "skin",
-    "gold"
+    "gold",
+    "fish",
+    "fcost",
+    "trn",
+    "qinfo",
+    "qmiss",
+    "qrep",
+    "zsub",
+    "enc",
+    "rare",
+    "oskill",
+    "ctype"
   ],
   "prune": false,
   "max_rows": {

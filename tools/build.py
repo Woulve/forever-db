@@ -151,6 +151,176 @@ def merge_recordings(recs):
     return agg
 
 
+# ------------------------------------------------------------------ Questicus recorder, part 2 (Record.lua)
+FISH_MIN = 10          # catches in a zone before its fishing chances are kept
+SKIN_MIN = 3           # skinned corpses before a recorded skinning chance is kept
+GOLD_MIN = 3           # looted corpses before a recorded money average is kept
+QMISS_MIN = 2          # times an NPC didn't offer a quest before it's flagged
+
+
+def merge_extra(recs, agg):
+    """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
+    quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
+    x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
+                         "rare", "oskill", "itemx", "ctype")}
+    for _, r in recs:
+        for npc, e in as_dict(r.get("gold")).items():
+            e = as_dict(e)
+            a = x["gold"].setdefault(int(npc), {"n": 0, "c": 0, "lo": None, "hi": None})
+            a["n"] += int(e.get("n") or 0)
+            a["c"] += int(e.get("c") or 0)
+            for k, f in (("lo", min), ("hi", max)):
+                if e.get(k) is not None:
+                    a[k] = e[k] if a[k] is None else f(a[k], e[k])
+        for src, dst in (("skinl", "skinl"), ("fishl", "fishl")):
+            for key, e in as_dict(r.get(src)).items():
+                e = as_dict(e)
+                a = x[dst].setdefault(int(key), {"n": 0, "i": {}})
+                a["n"] += int(e.get("n") or 0)
+                for it, c in as_dict(e.get("i")).items():
+                    a["i"][int(it)] = a["i"].get(int(it), 0) + int(c or 0)
+        for npc, e in as_dict(r.get("taxi")).items():
+            e = as_dict(e)
+            cur = x["fcost"].get(int(npc))
+            if cur is None or (e.get("t") or 0) >= (cur.get("t") or 0):
+                x["fcost"][int(npc)] = e
+        for npc, e in as_dict(r.get("trn")).items():
+            e = as_dict(e)
+            cur = x["trn"].get(int(npc))
+            if cur is None or (e.get("t") or 0) >= (cur.get("t") or 0):
+                x["trn"][int(npc)] = e
+        for qid, e in as_dict(r.get("qinfo")).items():
+            e = as_dict(e)
+            a = x["qinfo"].setdefault(int(qid), {})
+            for k in ("o", "xp", "m", "grp", "item"):
+                if e.get(k):
+                    a[k] = e[k]
+            if e.get("minlv"):
+                a["minlv"] = min(a.get("minlv") or 999, int(e["minlv"]))
+        for npc, qs in as_dict(r.get("qoff")).items():
+            for qid, lv in as_dict(qs).items():
+                a = x["qoff"].setdefault(int(qid), {})
+                lv = int(lv or 0)
+                a[int(npc)] = min(a[int(npc)], lv) if a.get(int(npc)) and lv else (lv or a.get(int(npc)) or 0)
+        for qid, npcs in as_dict(r.get("qmiss")).items():
+            for npc, lv in as_dict(npcs).items():
+                a = x["qmiss"].setdefault(int(qid), {}).setdefault(int(npc), [0, 0])
+                a[0] += 1
+                a[1] = max(a[1], int(lv or 0))
+        for qid, facs in as_dict(r.get("qrep")).items():
+            x["qrep"].setdefault(int(qid), {}).update({str(f): int(v) for f, v in as_dict(facs).items()})
+        for m, subs in as_dict(r.get("area")).items():
+            for name, pts in as_dict(subs).items():
+                lst = x["zsub"].setdefault(int(m), {}).setdefault(str(name), [])
+                pts = pts if isinstance(pts, list) else list(as_dict(pts).values())
+                for k in range(0, len(pts) - 1, 2):
+                    px, py = int(pts[k]), int(pts[k + 1])
+                    if len(lst) < 120 and not any(abs(lst[j] - px) <= SPOT_NEAR and abs(lst[j + 1] - py) <= SPOT_NEAR
+                                                  for j in range(0, len(lst), 2)):
+                        lst += [px, py]
+        for eid, e in as_dict(r.get("enc")).items():
+            e = e if isinstance(e, list) else [as_dict(e).get(k) for k in range(1, 4)]
+            x["enc"][int(eid)] = e
+        for npc, l in as_dict(r.get("rare")).items():
+            l = l if isinstance(l, list) else list(as_dict(l).values())
+            a = x["rare"].setdefault(int(npc), [])
+            for s in l:
+                s = s if isinstance(s, list) else [as_dict(s).get(k) for k in range(1, 5)]
+                if s and s[0] and s not in a:
+                    a.append(s)
+        for oid, e in as_dict(r.get("oskill")).items():
+            e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
+            if e and e[0]:
+                x["oskill"][int(oid)] = e
+        for it, e in as_dict(r.get("itemx")).items():
+            e = e if isinstance(e, list) else [as_dict(e).get(k) for k in range(1, 10)]
+            if e and e[0]:
+                x["itemx"][int(it)] = e
+        for npc, e in as_dict(r.get("ctype")).items():
+            e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
+            if e and e[0]:
+                x["ctype"][int(npc)] = e
+    # an NPC really offering a quest makes it a giver (fixes missing / wrong givers)
+    for qid, npcs in x["qoff"].items():
+        a = agg["qst"].setdefault(qid, {})
+        for npc in npcs:
+            a.setdefault("g", [])
+            if "c:%d" % npc not in a["g"]:
+                a["g"].append("c:%d" % npc)
+    agg["x"] = x
+    return x
+
+
+def apply_extra(db, x):
+    """Put Record.lua's tables in the master database (after Drop Tables, so recordings add to theirs)."""
+    if not x:
+        return
+    gold, skin = db.setdefault("gold", {}), db.setdefault("skin", {})
+    for npc, g in x["gold"].items():
+        if g["n"] < GOLD_MIN:
+            continue
+        avg = int(round(g["c"] / g["n"]))
+        cur = gold.get(npc)
+        if cur and cur[3]:
+            k = cur[3] + g["n"]
+            avg = int(round((cur[0] * cur[3] + g["c"]) / k))
+            lo = min(v for v in (cur[1], g["lo"]) if v is not None) if (cur[1] is not None or g["lo"] is not None) else None
+            hi = max(v for v in (cur[2], g["hi"]) if v is not None) if (cur[2] is not None or g["hi"] is not None) else None
+            gold[npc] = [avg, lo, hi, k]
+        else:
+            gold[npc] = [avg, g["lo"], g["hi"], g["n"]]
+    for npc, e in x["skinl"].items():
+        if e["n"] < SKIN_MIN:
+            continue
+        for it, c in e["i"].items():
+            lst = skin.setdefault(it, [])
+            ch = int(round(min(1.0, c / e["n"]) * 10000))
+            for p in lst:
+                if p[0] == npc:
+                    p[1] = max(p[1], ch)
+                    break
+            else:
+                lst.append([npc, ch])
+            lst.sort(key=lambda p: -p[1])
+    # fishing: [[item, chance x 10000], ...] per uiMap
+    db["fish"] = {m: sorted([[it, int(round(min(1.0, c / e["n"]) * 10000))] for it, c in e["i"].items()],
+                            key=lambda p: -p[1])
+                  for m, e in x["fishl"].items() if e["n"] >= FISH_MIN}
+    # flight masters: { at = node, nodes = { name = [cost, x, y] } }
+    db["fcost"] = {npc: {"at": e.get("at"), "nodes": {str(n): (v if isinstance(v, list) else list(as_dict(v).values()))[:3]
+                                                       for n, v in as_dict(e.get("nodes")).items()}}
+                   for npc, e in x["fcost"].items()}
+    db["trn"] = {npc: {str(n): (v if isinstance(v, list) else [as_dict(v).get(k) for k in range(1, 5)])
+                       for n, v in as_dict(e.get("s")).items()} for npc, e in x["trn"].items()}
+    db["qinfo"] = x["qinfo"]
+    for qid, e in x["qinfo"].items():
+        q = db["quest"].get(qid)
+        if q and len(q) > 2 and not q[2] and e.get("minlv"):
+            q[2] = e["minlv"]                       # the lowest level it was offered at, when nothing else says
+        if e.get("item"):
+            db["start"].setdefault(int(e["item"]), qid)   # item -> the quest it starts
+    db["qmiss"] = {qid: {npc: v[1] for npc, v in npcs.items() if v[0] >= QMISS_MIN}
+                   for qid, npcs in x["qmiss"].items()}
+    db["qmiss"] = {q: v for q, v in db["qmiss"].items() if v}
+    db["qrep"] = x["qrep"]
+    db["zsub"] = x["zsub"]
+    db["enc"] = x["enc"]
+    # rares: where they're seen, and the shortest gap between two sightings (a respawn hint, seconds)
+    rare = {}
+    for npc, l in x["rare"].items():
+        l = sorted(l, key=lambda s: s[0])
+        gaps = [b[0] - a[0] for a, b in zip(l, l[1:]) if b[0] - a[0] > 600]
+        rare[npc] = {"n": len(l), "gap": min(gaps) if gaps else None,
+                     "at": [[s[1], s[2], s[3]] for s in l[-10:] if len(s) >= 4]}
+    db["rare"] = rare
+    db["oskill"] = x["oskill"]
+    db["ctype"] = x["ctype"]
+    for it, e in x["itemx"].items():
+        if it not in db["item"]:
+            db["item"][it] = [e[0], e[1]]
+    db["itemx"] = x["itemx"]
+
+
 # ------------------------------------------------------------------ Drop Tables
 # github.com/valcheffnet/DropTables data/shared.json (CC BY-SA 4.0): loot counts players record on WoW
 # Forever (their own shares + Blackthornes Farmer (MIT), EG Link (CC BY 4.0) and Everloot (CC BY-SA 4.0)).
@@ -462,10 +632,12 @@ def main():
         base = json.load(f)
     recs = load_recordings(a.collected)
     agg = merge_recordings(recs)
+    merge_extra(recs, agg)
     dt = load_droptables(a.droptables)
     dts = merge_droptables(agg, dt)
     db = build(base, agg)
     droptables_tables(db, dt)
+    apply_extra(db, agg.get("x"))
     chained = chain_prereqs(db)
     fixed = apply_fixes(db, a.fixes)
     h = digest(db)
