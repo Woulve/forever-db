@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -353,6 +353,14 @@ def merge_extra(recs, agg):
         # objects that only appear when you do something (use an item on a mob, kill it): no timer
         for key, n in as_dict(r.get("osummon")).items():
             x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
+        # zone border crossings players walked (Questicus Nav.lua): [continent]["zoneA-zoneB"] = {x, y, ...}
+        for cont, prs in as_dict(r.get("zcross")).items():
+            for pk, pts in as_dict(prs).items():
+                pts = pts if isinstance(pts, list) else list(as_dict(pts).values())
+                lst = x["zcross"].setdefault((int(cont), str(pk)), [])
+                for j in range(0, len(pts) - 1, 2):
+                    if isinstance(pts[j], (int, float)) and isinstance(pts[j + 1], (int, float)):
+                        lst.append((float(pts[j]), float(pts[j + 1])))
         # respawn times measured at quest spots (Spots.lua): sum / count, shortest, "not back after"
         for key, e in as_dict(r.get("resp")).items():
             e = as_dict(e)
@@ -487,6 +495,23 @@ def apply_extra(db, x):
         else:
             continue
         resp[key] = int(round(min(3600, max(10, t))))
+    # border crossings: points within 40 yards are one crossing (their average), most walked first, 12 per pair
+    zc = {}
+    for (cont, pk), pts in sorted(x["zcross"].items()):
+        cl = []
+        for px, py in pts:
+            for c in cl:
+                if (c[0] / c[2] - px) ** 2 + (c[1] / c[2] - py) ** 2 < 40 * 40:
+                    c[0] += px; c[1] += py; c[2] += 1
+                    break
+            else:
+                cl.append([px, py, 1])
+        cl.sort(key=lambda c: -c[2])
+        flat = []
+        for c in cl[:12]:
+            flat += [int(round(c[0] / c[2])), int(round(c[1] / c[2]))]
+        zc.setdefault(str(cont), {})[pk] = flat
+    db["zcross"] = zc
     # an object reported as "appears on a kill / item use" never gets a respawn time
     db["osummon"] = {k: 1 for k, n in x["osummon"].items() if n >= 2}
     for k in db["osummon"]:

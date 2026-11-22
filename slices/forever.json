@@ -67,7 +67,7 @@
     "train",
     "vendx",
     "zbord",
-    "osummon"
+    "osummon", "zcross"
   ],
   "prune": false,
   "max_rows": {
