@@ -52,6 +52,7 @@ def main():
           and db["vendx"]["5523"]["200"]["r"] == ["Requires Level 5"] and db["vendx"]["5523"]["9999"]["c"] == [[20558, 20]]
           and 5523 in db["vend"]["9999"])
     check("objects that appear on a kill have no respawn time", db["osummon"].get("o4444") == 1)
+    check("respawn between 'not back after' and 'back by'", db["resp"].get("c5555") == 150)
     check("zone border crossings: near points merged", db["zcross"]["1"]["14-17"] == [305, -3768, 900, -3500])
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)

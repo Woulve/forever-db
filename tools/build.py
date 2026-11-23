@@ -369,6 +369,8 @@ def merge_extra(recs, agg):
             a["n"] += int(e.get("n") or 0)
             a["s"] += float(e.get("s") or 0)
             a["lo"] = max(a["lo"], float(e.get("lo") or 0))
+            if e.get("hi"):        # "found back by then": the respawn is at most this
+                a["hi"] = min(a.get("hi") or 1e9, float(e.get("hi")))
         for npc, e in as_dict(r.get("ctype")).items():
             e = e if isinstance(e, list) else [as_dict(e).get(1), as_dict(e).get(2)]
             if e and e[0]:
@@ -490,6 +492,10 @@ def apply_extra(db, x):
             t = a["s"] / a["n"]
             if a["lo"] > t:
                 t = a["lo"] * 1.1
+        elif a.get("hi") and a["lo"] > 0 and a["hi"] > a["lo"]:
+            t = (a["lo"] + a["hi"]) / 2
+        elif a.get("hi"):
+            t = min(60, a["hi"])
         elif a["lo"] > 0:
             t = a["lo"] * 1.25
         else:
