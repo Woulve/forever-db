@@ -134,6 +134,7 @@ Tables:
 | `abord` | the same for every sub-zone (towns, camps, ...), plus `z` = its zone (ForeverDB_Full) |
 | `agrid` | `{continent: {o, c, z = {row: "zoneID*count,..."}}}` which zone each 33-yard map chunk belongs to (world X = o - (row + 0.5) * c, Y = o - (col + 0.5) * c), for point-in-zone lookups (ForeverDB_Full) |
 | `zcross` | `{continent: {"zoneA-zoneB": {x, y, ...}}}` world points where players really walked from one zone into the next (Questicus records them; points within 40 yards merged, most walked first, 12 per zone pair): the passes through zone borders, for pathing and travel times |
+| (recordings) `nspawn` | Questicus: quest mobs / objects seen standing (out of combat, next to the player) more than 30 yards from every known spawn - merged into `spw` (or `spm` when only map spots are known), 30 yards apart |
 | `skin` | `{item: {npc, chance per 10000, npc, chance, ...}}` (flat like drop) what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
 | `gold` | `{npc: [average copper per kill, smallest pile, largest pile, kills]}` (Drop Tables) |
 | `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |

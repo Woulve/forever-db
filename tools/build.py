@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -353,6 +353,13 @@ def merge_extra(recs, agg):
         # objects that only appear when you do something (use an item on a mob, kill it): no timer
         for key, n in as_dict(r.get("osummon")).items():
             x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
+        # spawn points of quest mobs the database didn't have (Questicus: seen standing out of combat)
+        for key, pts in as_dict(r.get("nspawn")).items():
+            pts = pts if isinstance(pts, list) else list(as_dict(pts).values())
+            for e in pts:
+                e = as_dict(e)
+                if e.get("i") is not None and e.get("x") is not None and e.get("y") is not None:
+                    x["nspawn"].setdefault(str(key), []).append(e)
         # zone border crossings players walked (Questicus Nav.lua): [continent]["zoneA-zoneB"] = {x, y, ...}
         for cont, prs in as_dict(r.get("zcross")).items():
             for pk, pts in as_dict(prs).items():
@@ -507,6 +514,38 @@ def apply_extra(db, x):
         else:
             continue
         resp[key] = int(round(min(3600, max(10, t))))
+    # new spawn points: more than 30 yards from every known one (and from each other) -> added to spw,
+    # or to spm (map spots) for things the database only has map spots for
+    added = 0
+    for key, pts in sorted(x["nspawn"].items()):
+        if not key[:1] in ("c", "o"):
+            continue
+        groups = db["spw"].get(key)
+        if groups is not None or key not in db.get("spm", {}):
+            groups = db["spw"].setdefault(key, [])
+            for e in pts:
+                i, px, py = int(float(e["i"])), float(e["x"]), float(e["y"])
+                near = any(g[0] == i and any((g[k] - px) ** 2 + (g[k + 1] - py) ** 2 <= 900 for k in range(1, len(g) - 1, 2)) for g in groups)
+                if near:
+                    continue
+                g = next((g for g in groups if g[0] == i), None)
+                if g is None:
+                    g = [i]
+                    groups.append(g)
+                g += [int(round(px)), int(round(py))]
+                added += 1
+        else:
+            cur = db["spm"][key]
+            for e in pts:
+                if e.get("m") in (None, False) or e.get("mx") is None:
+                    continue
+                m, mx, my = str(int(float(e["m"]))), int(float(e["mx"])), int(float(e["my"]))
+                lst = cur.setdefault(m, [])
+                if any(abs(lst[j] - mx) <= 25 and abs(lst[j + 1] - my) <= 25 for j in range(0, len(lst) - 1, 2)):
+                    continue
+                lst += [mx, my]
+                added += 1
+    nspawn_added = added
     # border crossings: points within 40 yards are one crossing (their average), most walked first, 12 per pair
     zc = {}
     for (cont, pk), pts in sorted(x["zcross"].items()):
@@ -559,7 +598,7 @@ def apply_extra(db, x):
         if it not in db["item"]:
             db["item"][it] = [e[0], e[1]]
     db["itemx"] = x["itemx"]
-    return {"questRewardsFromGame": qfix}
+    return {"questRewardsFromGame": qfix, "newSpawns": nspawn_added}
 
 
 # ------------------------------------------------------------------ Drop Tables

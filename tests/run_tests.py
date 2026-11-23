@@ -53,6 +53,8 @@ def main():
           and 5523 in db["vend"]["9999"])
     check("objects that appear on a kill have no respawn time", db["osummon"].get("o4444") == 1)
     check("respawn between 'not back after' and 'back by'", db["resp"].get("c5555") == 150)
+    sp6 = [g for g in db["spw"].get("c6", []) if g[0] == 0]
+    check("new spawn points merged, near ones once", sp6 and sum(1 for g in sp6 for k in range(1, len(g) - 1, 2) if abs(g[k] - 10000) < 30) == 1)
     check("zone border crossings: near points merged", db["zcross"]["1"]["14-17"] == [305, -3768, 900, -3500])
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)
