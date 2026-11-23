@@ -57,7 +57,8 @@ def main():
     check("new spawn points merged, near ones once", sp6 and sum(1 for g in sp6 for k in range(1, len(g) - 1, 2) if abs(g[k] - 10000) < 30) == 1)
     check("hand-set route paths kept", db["fpath"].get("complete:5", {}).get("n") == [1, 2, 3, 4, 5, 6])
     check("findings relayed in game from another player count as their own recording", db["resp"].get("c7777") == 300)
-    check("zone border crossings: near points merged", db["zcross"]["1"]["14-17"] == [305, -3768, 900, -3500])
+    check("zone border crossings: near points merged, removed ones gone", db["zcross"]["1"]["14-17"] == [305, -3768])
+    check("zone outline redrawn by hand", db["zbord"].get("9001", {}).get("w") == [[0, 0, 100, 0, 100, 100]] and db["zbordEd"].get("1"))
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)
     check("rares, subzones, skills, types", db["rare"]["99"]["gap"] == 8000 and "Northshire Abbey" in db["zsub"]["1429"]

@@ -260,7 +260,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath", "zcrossDel", "zbord")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -362,6 +362,28 @@ def merge_extra(recs, agg):
         # objects that only appear when you do something (use an item on a mob, kill it): no timer
         for key, n in as_dict(r.get("osummon")).items():
             x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
+        # crossings the author removed and zone outlines redrawn by hand (Questicus dev tools)
+        for cont, prs in as_dict(r.get("zcrossDel")).items():
+            for pk, pts in as_dict(prs).items():
+                pts = pts if isinstance(pts, list) else list(as_dict(pts).values())
+                lst = x["zcrossDel"].setdefault((int(cont), str(pk)), [])
+                for j in range(0, len(pts) - 1, 2):
+                    if isinstance(pts[j], (int, float)) and isinstance(pts[j + 1], (int, float)):
+                        lst.append((float(pts[j]), float(pts[j + 1])))
+        for zone, e in as_dict(r.get("zbord")).items():
+            e = as_dict(e)
+            w = e.get("w")
+            w = w if isinstance(w, list) else list(as_dict(w).values())
+            loops = []
+            for loop in w:
+                loop = loop if isinstance(loop, list) else list(as_dict(loop).values())
+                if len(loop) >= 6:
+                    loops.append([int(round(float(v))) for v in loop])
+            if e.get("c") is None or not loops:
+                continue
+            cur = x["zbord"].get(str(zone))
+            if cur is None or float(e.get("t") or 0) >= cur["t"]:
+                x["zbord"][str(zone)] = {"c": int(float(e["c"])), "w": loops, "t": float(e.get("t") or 0)}
         # route paths the author set by hand (Questicus dev tools): the newest per step wins
         for k, e in as_dict(r.get("fpath")).items():
             e = as_dict(e)
@@ -582,7 +604,36 @@ def apply_extra(db, x):
         for c in cl[:12]:
             flat += [int(round(c[0] / c[2])), int(round(c[1] / c[2]))]
         zc.setdefault(str(cont), {})[pk] = flat
+    # removed by hand: crossings within 40 yards of a removed one go (and the list ships, so players' own
+    # recordings near it are ignored too)
+    zd = {}
+    for (cont, pk), pts in sorted(x["zcrossDel"].items()):
+        flat = zc.get(str(cont), {}).get(pk)
+        if flat:
+            keep = []
+            for j in range(0, len(flat) - 1, 2):
+                if not any((flat[j] - px) ** 2 + (flat[j + 1] - py) ** 2 <= 1600 for px, py in pts):
+                    keep += [flat[j], flat[j + 1]]
+            if keep:
+                zc[str(cont)][pk] = keep
+            else:
+                del zc[str(cont)][pk]
+        out = []
+        for px, py in pts:
+            out += [int(round(px)), int(round(py))]
+        zd.setdefault(str(cont), {})[pk] = out
     db["zcross"] = zc
+    db["zcrossDel"] = zd
+    # zone outlines redrawn by hand replace ForeverDB's (map loops m dropped: they'd no longer match)
+    ed = {}
+    for zone, e in x["zbord"].items():
+        if zone in db.get("zbord", {}):
+            db["zbord"][zone]["w"] = e["w"]
+            db["zbord"][zone].pop("m", None)
+        else:
+            db.setdefault("zbord", {})[zone] = {"c": e["c"], "w": e["w"]}
+        ed[str(e["c"])] = True
+    db["zbordEd"] = ed
     # an object reported as "appears on a kill / item use" never gets a respawn time
     db["osummon"] = {k: 1 for k, n in x["osummon"].items() if n >= 2}
     for k in db["osummon"]:
