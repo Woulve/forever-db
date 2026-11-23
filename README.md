@@ -60,6 +60,10 @@ quest givers / enders, `note` adds a short tip. Add a line there whenever a loca
      - uploads it to CurseForge (project 1807282);
      - refreshes the `latest` GitHub release (full `forever.json.gz` with translations, the report, slices).
 2. Your PC's scheduled task pushes new recordings to the addon repo (`collected/`), which pings this repo.
+   Other players' Questicus findings (respawn times, new spawn points, zone border crossings, objects that
+   appear on a kill) reach it in game: Questicus' relay whispers them to a collector (the author's
+   Questicus with its local dev tools), which keeps them in `QuesticusCollect.relay[<sender hash>]`. The
+   build reads each sender as a recording of its own (`<file>-relay-<hash>`).
 3. Repos listed in `DB_CONSUMERS` get a `db-updated` ping.
 
 The **ForeverDB** CurseForge package holds three LoadOnDemand addon folders:

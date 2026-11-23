@@ -59,7 +59,16 @@ def load_recordings(folders):
             for var in ("CommandCenterCollect", "QuesticusCollect"):
                 v = load_var(text, var)
                 if isinstance(v, dict):
+                    # other players' findings relayed in game (Questicus Relay.lua): each sender is a
+                    # recording of its own (kept as <file>-relay-<sender hash>)
+                    relay = v.pop("relay", None)
+                    v.pop("relayAck", None)
                     recs.append((path, var, v))
+                    for h, r in sorted(as_dict(relay).items()):
+                        if isinstance(r, dict):
+                            r = {k: val for k, val in r.items() if k in ("resp", "nspawn", "zcross", "osummon")}
+                            if r:
+                                recs.append((path[:-4] + "-relay-" + str(h) + ".lua", var, r))
     return recs
 
 
