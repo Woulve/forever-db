@@ -55,6 +55,7 @@ def main():
     check("respawn between 'not back after' and 'back by'", db["resp"].get("c5555") == 150)
     sp6 = [g for g in db["spw"].get("c6", []) if g[0] == 0]
     check("new spawn points merged, near ones once", sp6 and sum(1 for g in sp6 for k in range(1, len(g) - 1, 2) if abs(g[k] - 10000) < 30) == 1)
+    check("hand-set route paths kept", db["fpath"].get("complete:5", {}).get("n") == [1, 2, 3, 4, 5, 6])
     check("zone border crossings: near points merged", db["zcross"]["1"]["14-17"] == [305, -3768, 900, -3500])
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)

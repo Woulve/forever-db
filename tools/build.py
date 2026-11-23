@@ -251,7 +251,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -353,6 +353,16 @@ def merge_extra(recs, agg):
         # objects that only appear when you do something (use an item on a mob, kill it): no timer
         for key, n in as_dict(r.get("osummon")).items():
             x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
+        # route paths the author set by hand (Questicus dev tools): the newest per step wins
+        for k, e in as_dict(r.get("fpath")).items():
+            e = as_dict(e)
+            n = e.get("n")
+            n = n if isinstance(n, list) else list(as_dict(n).values())
+            if e.get("i") is None or len(n) < 4:
+                continue
+            cur = x["fpath"].get(str(k))
+            if cur is None or float(e.get("t") or 0) >= cur["t"]:
+                x["fpath"][str(k)] = {"i": int(float(e["i"])), "n": [round(float(v), 1) for v in n], "t": float(e.get("t") or 0)}
         # spawn points of quest mobs the database didn't have (Questicus: seen standing out of combat)
         for key, pts in as_dict(r.get("nspawn")).items():
             pts = pts if isinstance(pts, list) else list(as_dict(pts).values())
@@ -514,6 +524,7 @@ def apply_extra(db, x):
         else:
             continue
         resp[key] = int(round(min(3600, max(10, t))))
+    db["fpath"] = {k: {"i": v["i"], "n": v["n"]} for k, v in x["fpath"].items()}
     # new spawn points: more than 30 yards from every known one (and from each other) -> added to spw,
     # or to spm (map spots) for things the database only has map spots for
     added = 0
