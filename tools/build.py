@@ -260,7 +260,7 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath", "zcrossDel", "zbord")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath", "zcrossDel", "zbord", "walls")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -362,6 +362,18 @@ def merge_extra(recs, agg):
         # objects that only appear when you do something (use an item on a mob, kill it): no timer
         for key, n in as_dict(r.get("osummon")).items():
             x["osummon"][str(key).replace(":", "")] = x["osummon"].get(str(key).replace(":", ""), 0) + int(n or 0)
+        # walls drawn by hand (Questicus dev tools): the newest per wall wins, removed ones go
+        for cont, ws in as_dict(r.get("walls")).items():
+            for wid, e in as_dict(ws).items():
+                e = as_dict(e)
+                k = (int(cont), str(wid))
+                cur = x["walls"].get(k)
+                if cur is not None and float(e.get("t") or 0) < cur["t"]:
+                    continue
+                n = e.get("n")
+                n = n if isinstance(n, list) else list(as_dict(n).values())
+                x["walls"][k] = {"t": float(e.get("t") or 0), "del": bool(e.get("del")),
+                                 "n": [int(round(float(v))) for v in n] if not e.get("del") else []}
         # crossings the author removed and zone outlines redrawn by hand (Questicus dev tools)
         for cont, prs in as_dict(r.get("zcrossDel")).items():
             for pk, pts in as_dict(prs).items():
@@ -634,6 +646,11 @@ def apply_extra(db, x):
             db.setdefault("zbord", {})[zone] = {"c": e["c"], "w": e["w"]}
         ed[str(e["c"])] = True
     db["zbordEd"] = ed
+    walls = {}
+    for (cont, wid), e in sorted(x["walls"].items()):
+        if not e["del"] and len(e["n"]) >= 4:
+            walls.setdefault(str(cont), {})[wid] = {"n": e["n"]}
+    db["walls"] = walls
     # an object reported as "appears on a kill / item use" never gets a respawn time
     db["osummon"] = {k: 1 for k, n in x["osummon"].items() if n >= 2}
     for k in db["osummon"]:

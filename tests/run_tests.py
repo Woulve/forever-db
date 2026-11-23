@@ -58,6 +58,7 @@ def main():
     check("hand-set route paths kept", db["fpath"].get("complete:5", {}).get("n") == [1, 2, 3, 4, 5, 6])
     check("findings relayed in game from another player count as their own recording", db["resp"].get("c7777") == 300)
     check("zone border crossings: near points merged, removed ones gone", db["zcross"]["1"]["14-17"] == [305, -3768])
+    check("walls drawn by hand kept, removed ones gone", db["walls"].get("1", {}).get("wa", {}).get("n") == [0, 0, 50, 50] and "wb" not in db["walls"].get("1", {}))
     check("zone outline redrawn by hand", db["zbord"].get("9001", {}).get("w") == [[0, 0, 100, 0, 100, 100]] and db["zbordEd"].get("1"))
     check("respawn times measured in game", db["resp"]["c5523"] == 300 and db["resp"]["o1731"] == 250)
     check("game XP at a grey-ish level worked back to full", db["qrw"]["50002"][1] == 500)
