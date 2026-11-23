@@ -488,15 +488,21 @@ def apply_extra(db, x):
     # the longest time it was seen still gone
     resp = {}
     for key, a in x["resp"].items():
+        # (timings under 20 s are another mob of the kind wandering past; "not back after" far beyond the
+        # timed respawn means it came back at another spawn point, not later)
+        if a["n"] > 0 and a["s"] / a["n"] < 20:
+            a["n"], a["s"] = 0, 0.0
+        if a.get("hi") and a["hi"] < 20:
+            a["hi"] = None
         if a["n"] > 0:
             t = a["s"] / a["n"]
-            if a["lo"] > t:
-                t = a["lo"] * 1.1
+            if t < a["lo"] <= t * 2.5:
+                t = a["lo"] * 1.05
         elif a.get("hi") and a["lo"] > 0 and a["hi"] > a["lo"]:
             t = (a["lo"] + a["hi"]) / 2
         elif a.get("hi"):
             t = min(60, a["hi"])
-        elif a["lo"] > 0:
+        elif 0 < a["lo"] <= 900:
             t = a["lo"] * 1.25
         else:
             continue
