@@ -639,6 +639,9 @@ def apply_extra(db, x):
     # zone outlines redrawn by hand replace ForeverDB's (map loops m dropped: they'd no longer match)
     ed = {}
     for zone, e in x["zbord"].items():
+        # (the base's tables have int keys - a str key here made zbord mixed and json.dumps(sort_keys) failed:
+        # builds of 2026-11-23 23:41 and 11-24 08:35)
+        zone = int(zone) if str(zone).lstrip("-").isdigit() else zone
         if zone in db.get("zbord", {}):
             db["zbord"][zone]["w"] = e["w"]
             db["zbord"][zone].pop("m", None)
