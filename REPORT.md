@@ -7,8 +7,8 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 | Source | npc | obj | item | quest |
 |---|---|---|---|---|
 | client | 0 (0 only here) | 0 (0 only here) | 32010 (5341 only here) | 0 (0 only here) |
-| questie | 15564 (5260 only here) | 7477 (749 only here) | 24227 (246 only here) | 6083 (193 only here) |
-| att | 1463 (0 only here) | 240 (2 only here) | 14308 (3 only here) | 5133 (35 only here) |
+| questie | 15564 (5192 only here) | 7477 (749 only here) | 24227 (246 only here) | 6083 (192 only here) |
+| att | 1720 (0 only here) | 240 (2 only here) | 14312 (3 only here) | 5134 (35 only here) |
 | vmangos | 10381 (0 only here) | 9368 (507 only here) | 17707 (0 only here) | 4433 (0 only here) |
 | cmangos | 10384 (0 only here) | 10743 (650 only here) | 17718 (0 only here) | 4245 (0 only here) |
 | pfquest | 10385 (4 only here) | 8985 (19 only here) | 17712 (0 only here) | 4433 (0 only here) |
@@ -16,9 +16,9 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 | spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 | terrain | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15830, obj 12108, item 32279, quest 6299, qg 5674, qe 6008, vend 3933, rew 3198, drop 11014, odrop 3759, idrop 2750, qx 6083, nfac 7553, dng 232, ind 154, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7390, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 29, zbord 58, abord 833, agrid 6, qrw 4132, ptl 0, qwk 0, start 822, world 3136, spw 15877, spz 16531
+Merged: npc 15830, obj 12108, item 32279, quest 6299, qg 5674, qe 6008, vend 3933, rew 3201, drop 11001, odrop 3759, idrop 2750, qx 6083, nfac 7553, dng 232, ind 154, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7390, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 29, zbord 58, abord 833, agrid 6, qrw 4132, ptl 0, qwk 0, start 822, world 3136, spw 15877, spz 16534
 
-Forever-only entries (only the Forever source has them): npc 5260, obj 751, item 5590, quest 228
+Forever-only entries (only the Forever source has them): npc 5192, obj 751, item 5590, quest 227
 
 ## Disagreements
 

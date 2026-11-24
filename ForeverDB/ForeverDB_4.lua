@@ -608,11 +608,20 @@ t[2596]={198,200,250,4}
 t[2618]={170,134,205,2}
 t[2619]={48,nil,nil,2}
 t[2624]={208,208,208,1}
+t[2640]={260,79,441,2}
+t[2642]={326,326,326,1}
+t[2643]={1049,572,1526,2}
+t[2644]={208,417,417,2}
+t[2645]={1170,754,1585,2}
+t[2646]={880,344,1416,2}
+t[2647]={1276,935,1633,5}
+t[2648]={1332,613,1862,3}
 t[2649]={181,63,327,11}
 t[2650]={217,79,362,9}
 t[2654]={343,nil,nil,1}
 t[2655]={200,nil,nil,12}
 t[2656]={171,nil,nil,17}
+t[2681]={0,nil,nil,1}
 t[2693]={116,nil,nil,2}
 t[2694]={204,nil,nil,3}
 t[2701]={208,123,296,3}
@@ -914,6 +923,7 @@ t[4458]={194,nil,nil,1}
 t[4462]={96,99,245,7}
 t[4463]={47,26,69,7}
 t[4464]={213,86,340,2}
+t[4465]={214,429,429,2}
 t[4466]={330,nil,nil,12}
 t[4490]={82,28,186,5}
 t[4505]={233,129,357,11}
@@ -1174,6 +1184,7 @@ t[10758]={71,54,107,9}
 t[10759]={87,38,127,16}
 t[10760]={76,51,114,17}
 t[10761]={73,36,142,9}
+t[10802]={0,nil,nil,1}
 t[10896]={50,67,153,6}
 t[10916]={337,nil,nil,1}
 t[11318]={32,13,85,69}
@@ -1401,11 +1412,17 @@ D.fish = D.fish or {}
 D.fcost = D.fcost or {}
 ;(function() local t = D.fcost
 t[1387]={at="Grom'gol, Stranglethorn",nodes={["Booty Bay, Stranglethorn"]={567,432,930},["Flame Crest, Burning Steppes"]={0,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={0,448,836},["Hammerfall, Arathi"]={1134,615,309},["Kargath, Badlands"]={567,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={0,698,160},["Revantusk Village, The Hinterlands"]={1791,672,296},["Rog'mar, Riverglades"]={1134,674,630},["Stonard, Swamp of Sorrows"]={567,605,747},["Tarren Mill, Hillsbrad"]={1431,494,267},["The Sepulcher, Silverpine Forest"]={1530,384,245},["Thorium Point, Searing Gorge"]={0,505,568},["Undercity, Tirisfal"]={1134,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
+t[2389]={at="Tarren Mill, Hillsbrad",nodes={["Booty Bay, Stranglethorn"]={2088,432,930},["Flame Crest, Burning Steppes"]={1791,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={1521,448,836},["Hammerfall, Arathi"]={477,615,309},["Kargath, Badlands"]={1044,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={0,698,160},["Revantusk Village, The Hinterlands"]={657,672,296},["Rog'mar, Riverglades"]={1224,674,630},["Stonard, Swamp of Sorrows"]={0,605,747},["Tarren Mill, Hillsbrad"]={0,494,267},["The Sepulcher, Silverpine Forest"]={99,384,245},["Thorium Point, Searing Gorge"]={0,505,568},["Undercity, Tirisfal"]={297,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
 t[2861]={at="Kargath, Badlands",nodes={["Booty Bay, Stranglethorn"]={567,432,930},["Flame Crest, Burning Steppes"]={747,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={477,448,836},["Hammerfall, Arathi"]={567,615,309},["Kargath, Badlands"]={0,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={0,698,160},["Revantusk Village, The Hinterlands"]={1224,672,296},["Rog'mar, Riverglades"]={567,674,630},["Stonard, Swamp of Sorrows"]={639,605,747},["Tarren Mill, Hillsbrad"]={864,494,267},["The Sepulcher, Silverpine Forest"]={963,384,245},["Thorium Point, Searing Gorge"]={747,505,568},["Undercity, Tirisfal"]={567,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
+t[3310]={at="Orgrimmar, Durotar",nodes={["Bloodvenom Post, Felwood"]={747,465,304},["Brackenwall Village, Dustwallow Marsh"]={567,567,642},["Camp Mojache, Feralas"]={756,443,694},["Camp Taurajo, The Barrens"]={198,528,610},["Cenarion Hold, Silithus"]={0,416,792},["Crossroads, The Barrens"]={99,557,530},["Everlook, Winterspring"]={918,640,232},["Freewind Post, Thousand Needles"]={486,550,734},["Gadgetzan, Tanaris"]={657,606,802},["Marshal's Refuge, Un'Goro Crater"]={1890,498,764},Moonglade={2412,538,205},["Orgrimmar, Durotar"]={0,628,443},["Ratchet, The Barrens"]={198,606,549},["Shadowprey Village, Desolace"]={522,317,585},["Splintertree Post, Ashenvale"]={477,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={288,408,473},["Tainted Foothills, Mount Hyjal"]={0,567,332},["Thunder Bluff, Mulgore"]={45,449,562},["Valormok, Azshara"]={747,631,362},["Zoram'gar Outpost, Ashenvale"]={774,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
+t[4314]={at="Revantusk Village, The Hinterlands",nodes={["Booty Bay, Stranglethorn"]={2088,432,930},["Flame Crest, Burning Steppes"]={1791,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={1521,448,836},["Hammerfall, Arathi"]={477,615,309},["Kargath, Badlands"]={1044,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={927,698,160},["Revantusk Village, The Hinterlands"]={0,672,296},["Rog'mar, Riverglades"]={1224,674,630},["Stonard, Swamp of Sorrows"]={0,605,747},["Tarren Mill, Hillsbrad"]={297,494,267},["The Sepulcher, Silverpine Forest"]={396,384,245},["Thorium Point, Searing Gorge"]={0,505,568},["Undercity, Tirisfal"]={657,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
 t[4551]={at="Undercity, Tirisfal",nodes={["Booty Bay, Stranglethorn"]={1611,432,930},["Flame Crest, Burning Steppes"]={0,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={1044,448,836},["Hammerfall, Arathi"]={477,615,309},["Kargath, Badlands"]={567,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={918,698,160},["Revantusk Village, The Hinterlands"]={657,672,296},["Rog'mar, Riverglades"]={1521,674,630},["Stonard, Swamp of Sorrows"]={0,605,747},["Tarren Mill, Hillsbrad"]={297,494,267},["The Sepulcher, Silverpine Forest"]={99,384,245},["Thorium Point, Searing Gorge"]={0,505,568},["Undercity, Tirisfal"]={0,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
+t[7824]={at="Gadgetzan, Tanaris",nodes={["Bloodvenom Post, Felwood"]={1611,465,304},["Brackenwall Village, Dustwallow Marsh"]={567,567,642},["Camp Mojache, Feralas"]={567,443,694},["Camp Taurajo, The Barrens"]={774,528,610},["Cenarion Hold, Silithus"]={918,416,792},["Crossroads, The Barrens"]={657,557,530},["Everlook, Winterspring"]={2439,640,232},["Freewind Post, Thousand Needles"]={387,550,734},["Gadgetzan, Tanaris"]={0,606,802},["Marshal's Refuge, Un'Goro Crater"]={747,498,764},Moonglade={2358,538,205},["Orgrimmar, Durotar"]={657,628,443},["Ratchet, The Barrens"]={873,606,549},["Shadowprey Village, Desolace"]={1224,317,585},["Splintertree Post, Ashenvale"]={1251,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={963,408,473},["Tainted Foothills, Mount Hyjal"]={0,567,332},["Thunder Bluff, Mulgore"]={657,449,562},["Valormok, Azshara"]={1521,631,362},["Zoram'gar Outpost, Ashenvale"]={1071,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
 t[8610]={at="Valormok, Azshara",nodes={["Bloodvenom Post, Felwood"]={837,465,304},["Brackenwall Village, Dustwallow Marsh"]={1314,567,642},["Camp Mojache, Feralas"]={1404,443,694},["Camp Taurajo, The Barrens"]={846,528,610},["Cenarion Hold, Silithus"]={0,416,792},["Crossroads, The Barrens"]={747,557,530},["Everlook, Winterspring"]={918,640,232},["Freewind Post, Thousand Needles"]={1134,550,734},["Gadgetzan, Tanaris"]={1791,606,802},["Marshal's Refuge, Un'Goro Crater"]={2538,498,764},Moonglade={1665,538,205},["Orgrimmar, Durotar"]={747,628,443},["Ratchet, The Barrens"]={846,606,549},["Shadowprey Village, Desolace"]={1224,317,585},["Splintertree Post, Ashenvale"]={477,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={936,408,473},["Tainted Foothills, Mount Hyjal"]={0,567,332},["Thunder Bluff, Mulgore"]={747,449,562},["Valormok, Azshara"]={0,631,362},["Zoram'gar Outpost, Ashenvale"]={774,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
+t[10583]={at="Marshal's Refuge, Un'Goro Crater",nodes={["Bloodvenom Post, Felwood"]={2520,465,304},["Brackenwall Village, Dustwallow Marsh"]={1360,567,642},["Camp Mojache, Feralas"]={1360,443,694},["Camp Taurajo, The Barrens"]={1590,528,610},["Cenarion Hold, Silithus"]={1030,416,792},["Crossroads, The Barrens"]={1590,557,530},["Everlook, Winterspring"]={3440,640,232},["Freewind Post, Thousand Needles"]={1160,550,734},["Gadgetzan, Tanaris"]={730,606,802},["Marshal's Refuge, Un'Goro Crater"]={0,498,764},Moonglade={3350,538,205},["Orgrimmar, Durotar"]={1460,628,443},["Ratchet, The Barrens"]={1700,606,549},["Shadowprey Village, Desolace"]={2090,317,585},["Splintertree Post, Ashenvale"]={2120,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={1800,408,473},["Tainted Foothills, Mount Hyjal"]={0,567,332},["Thunder Bluff, Mulgore"]={1460,449,562},["Valormok, Azshara"]={2420,631,362},["Zoram'gar Outpost, Ashenvale"]={1920,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
 t[11139]={at="Everlook, Winterspring",nodes={["Bloodvenom Post, Felwood"]={837,465,304},["Brackenwall Village, Dustwallow Marsh"]={2061,567,642},["Camp Mojache, Feralas"]={2151,443,694},["Camp Taurajo, The Barrens"]={1593,528,610},["Cenarion Hold, Silithus"]={0,416,792},["Crossroads, The Barrens"]={1494,557,530},["Everlook, Winterspring"]={0,640,232},["Freewind Post, Thousand Needles"]={1881,550,734},["Gadgetzan, Tanaris"]={2538,606,802},["Marshal's Refuge, Un'Goro Crater"]={3285,498,764},Moonglade={747,538,205},["Orgrimmar, Durotar"]={918,628,443},["Ratchet, The Barrens"]={1593,606,549},["Shadowprey Village, Desolace"]={1971,317,585},["Splintertree Post, Ashenvale"]={1224,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={1683,408,473},["Tainted Foothills, Mount Hyjal"]={297,567,332},["Thunder Bluff, Mulgore"]={1494,449,562},["Valormok, Azshara"]={747,631,362},["Zoram'gar Outpost, Ashenvale"]={1521,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
 t[13177]={at="Flame Crest, Burning Steppes",nodes={["Booty Bay, Stranglethorn"]={1791,432,930},["Flame Crest, Burning Steppes"]={0,555,611},["Generic, World target"]={0,435,663},["Grom'gol, Stranglethorn"]={1224,448,836},["Hammerfall, Arathi"]={1314,615,309},["Kargath, Badlands"]={747,555,571},["Light's Hope Chapel, Eastern Plaguelands"]={0,698,160},["Revantusk Village, The Hinterlands"]={1971,672,296},["Rog'mar, Riverglades"]={567,674,630},["Stonard, Swamp of Sorrows"]={747,605,747},["Tarren Mill, Hillsbrad"]={1611,494,267},["The Sepulcher, Silverpine Forest"]={1710,384,245},["Thorium Point, Searing Gorge"]={747,505,568},["Undercity, Tirisfal"]={1314,443,195},["zzOLDBolder'ok, Riverglades"]={0,505,568}}}
+t[16227]={at="Ratchet, The Barrens",nodes={["Bloodvenom Post, Felwood"]={1040,465,304},["Brackenwall Village, Dustwallow Marsh"]={740,567,642},["Camp Mojache, Feralas"]={840,443,694},["Camp Taurajo, The Barrens"]={220,528,610},["Cenarion Hold, Silithus"]={0,416,792},["Crossroads, The Barrens"]={110,557,530},["Everlook, Winterspring"]={1960,640,232},["Freewind Post, Thousand Needles"]={540,550,734},["Gadgetzan, Tanaris"]={1270,606,802},["Marshal's Refuge, Un'Goro Crater"]={2100,498,764},Moonglade={1870,538,205},["Orgrimmar, Durotar"]={220,628,443},["Ratchet, The Barrens"]={0,606,549},["Shadowprey Village, Desolace"]={850,317,585},["Splintertree Post, Ashenvale"]={640,554,418},["Summit of Eternity, Mount Hyjal"]={0,587,295},["Sun Rock Retreat, Stonetalon Mountains"]={320,408,473},["Tainted Foothills, Mount Hyjal"]={0,567,332},["Thunder Bluff, Mulgore"]={220,449,562},["Valormok, Azshara"]={940,631,362},["Zoram'gar Outpost, Ashenvale"]={440,410,374},["zzOLDPowderfuse Port, Riverglades"]={0,606,549}}}
 end)()
 D.trn = D.trn or {}
 ;(function() local t = D.trn
@@ -1434,12 +1451,14 @@ t[404]={xb=410}
 t[407]={xb=160}
 t[426]={xb=875}
 t[427]={xb=700}
+t[501]={ch={2230,3741,6482,276724},lv=24,m=0,minlv=53,o="Bring 10 vials of Mountain Lion Blood to Apothecary Lydon in Tarren Mill.",rw={3735}}
 t[645]={xb=875}
 t[646]={xb=4312}
 t[650]={xb=4400}
 t[1187]={xb=3312}
 t[1188]={xb=812}
 t[1189]={xb=812}
+t[1446]={ch={11123,11124,270115},lv=53,m=0,minlv=53,o="The Atal'ai Exile in The Hinterlands wants the Head of Jammal'an.",xb=12750}
 t[2768]={xb=12978}
 t[2770]={xb=14626}
 t[2846]={xb=12100}
@@ -1451,6 +1470,7 @@ t[2934]={xb=3900}
 t[2935]={xb=2900}
 t[2936]={xb=9991}
 t[2937]={lv=55,m=20069,xb=8450}
+t[2938]={ch={9649,9650,10686},lv=55,m=25000,minlv=53,o="Bring Faranell's Parcel to Master Apothecary Faranell in the Undercity.",xb=8450}
 t[2973]={xb=3900}
 t[2974]={xb=3900}
 t[2976]={xb=4850}
@@ -1459,15 +1479,20 @@ t[3042]={xb=8034}
 t[3098]={xb=40}
 t[3121]={xb=1950}
 t[3122]={xb=975}
+t[3161]={ch={10827,10826},m=0,minlv=53,o="Marvon Rivetseeker in Tanaris wants you to collect 30 Gahz'ridian Ornaments.",xb=4400}
 t[3362]={lv=50,m=10413,xb=4700}
 t[3380]={xb=6550}
 t[3421]={}
+t[3444]={lv=51,m=9188,minlv=53,o="Retrieve the Stone Circle from Marvon Rivetseeker's workshop in Ratchet.",xb=4900}
+t[3446]={lv=51,m=9188,minlv=53,o="Find the Altar of Hakkar in the Sunken Temple in Swamp of Sorrows.",xb=9550}
+t[3447]={lv=51,m=0,minlv=53,o="Travel into the Sunken Temple and discover the secret hidden in the circle of statues.",rw={10773},xb=11900}
 t[3503]={}
 t[3505]={xb=3950}
 t[3517]={xb=5100}
 t[3518]={xb=2626}
 t[3520]={xb=3750}
 t[3527]={xb=10815}
+t[3528]={ch={10749,10750,10751,270117},lv=53,m=24000,minlv=53,o="Bring the Filled Egg of Hakkar to Yeh'kinya in Tanaris.",xb=15400}
 t[3541]={xb=2550}
 t[3542]={xb=2626}
 t[3561]={xb=2550}
@@ -1493,6 +1518,9 @@ t[3906]={lv=52,m=15367,minlv=52,o="Travel to the quarry in Blackrock Mountain an
 t[3907]={ch={12113,12114,12112,12115},lv=56,m=25500,minlv=52,o="Enter Blackrock Depths and track down Lord Incendius. Slay him and return any source of information you may find to Thunderheart.\n",xb=13500}
 t[3908]={lv=52,m=10200,xb=5100}
 t[4023]={lv=54,m=12263,minlv=52,o="Show Cyrus Therepentous proof of your worth.\n\nYou have a feeling that Cyrus already knows that you are unworthy.",xb=5450}
+t[4145]={lv=52,m=12700,minlv=53,o="Hunt 5 Bloodpetal Lashers, 5 Bloodpetal Threshers, 5 Bloodpetal Flayers and 5 Bloodpetal Trappers for Larion at Marshal's Refuge.",xb=5100}
+t[4146]={lv=52,m=10200,minlv=53,o="Deliver the Unloaded Zapper and 5 samples of Atal'ai Haze to Larion in Marshal's Refuge.",xb=9200}
+t[4147]={lv=52,m=0,minlv=53,o="Travel to Marvon Rivetseeker's workshop in Ratchet.",xb=2550}
 t[4284]={xb=5407}
 t[4289]={xb=5819}
 t[4290]={xb=5250}
@@ -1508,6 +1536,7 @@ t[4501]={lv=55,m=0,xb=5650}
 t[4504]={xb=5450}
 t[4641]={xb=40}
 t[4726]={lv=52,m=12700,minlv=52,o="Bring 8 Broodling Essence and the Draco-Incarcinatrix 900 to Tinkee Steamboil at the Flame Crest in the Burning Steppes.",xb=5100}
+t[4787]={lv=50,m=10325,minlv=52,o="Bring the Ancient Egg to Yeh'kinya in Tanaris.",xb=5900}
 t[4808]={lv=54,m=0,minlv=52,o="Give Tinkee's Letter to Felnok Steelspring.",xb=2700}
 t[5481]={xb=230}
 t[5482]={xb=550}
@@ -1526,7 +1555,18 @@ t[7067]={xb=10650}
 t[7721]={xb=4400}
 t[7815]={xb=4700}
 t[7816]={xb=4400}
+t[7828]={lv=48,m=10100,minlv=53,o="Huntsman Markhor at Revantusk Village in the Hinterlands wants you to kill 15 Silvermane Stalkers and 15 Silvermane Howlers. Return to him once the task is complete.\n\nMarkhor mentioned that the wolves hide in the wilds of the Hinterlands.",xb=4400}
+t[7829]={lv=48,m=10100,minlv=53,o="Huntsman Markhor at Revantusk Village in the Hinterlands wants you to kill 20 Savage Owlbeasts. Return to him once the task is complete.\n\nMarkhor mentioned that the Savage Owlbeasts occupy the wilds of the Hinterlands.",xb=4400}
+t[7830]={lv=48,m=10100,minlv=52,o="Huntsman Markhor at Revantusk Village in the Hinterlands wants you to kill a Razorbeak Skylord and retrieve its Skylord Plume. Return to him once the task is complete.\n\nMarkhor mentioned that the Razorbeak Skylord are a rare breed that tend to occupy the wilds of the Hinterlands.",xb=4400}
 t[7839]={xb=4400}
+t[7840]={lv=49,m=14000,minlv=52,o="Lard at Revantusk Village in the Hinterlands wants you to find Lard's Lunch. Return to him when this task is complete.\n\nLard mentioned that he left it on the island to the north. Watch out for Vilebranch trolls.",rw={19035,287074},xb=4550}
+t[7845]={lv=51,m=9188,minlv=52,o="Primal Torntusk at Raventusk Village in the Hinterlands wants you to rescue her mate, Elder Torntusk, from Jintha'alor.\n\nYou have been told that he is being held prisoner atop Jintha'alor, the Vilebranch capital city located in the southern region of the Hinterlands.",xb=5047}
+t[7846]={lv=51,m=11438,minlv=52,o="Elder Torntusk at Jintha'alor wants you to kill Hitah'ya the Keeper to get the Shackle Key to his bindings. Return to Elder Torn'tusk when you have recovered the key.",xb=6283}
+t[7847]={ch={19114,19115,270111},lv=51,m=22500,minlv=52,o="Elder Torntusk at Jintha'alor wants you to return to Primal Torntusk at Revantusk Village with news of his rescue.",xb=5047}
+t[7849]={ch={19117,19116},lv=50,m=14500,minlv=52,o="Huntsman Markhor at Revantusk Village in the Hinterlands wants you to recover his twin brother's remains. Find and return Huntsman Malkhor's Skull and Huntsman Malkhor's Bones to Huntsman Markhor.\n\nMarkhor mentioned that his brother's remains were fed to the oozes and wolves of the Vilebranch. He also mentioned that there is a refuse pit filled with oozes in Jintha'alor as well as a wolf den. Both of these places are near the top of the temple.",xb=6077}
+t[7850]={ch={19118,270106,270107,270108},lv=50,m=0,minlv=52,o="Primal Torntusk at Revantusk Village in the Hinterlands wants you to recover 10 Vessels of Tainted Blood from Jintha'alor. Return to Primal Torntusk when this task is complete.",xb=5900}
+t[7861]={ch={19159,19121},lv=51,m=22500,minlv=52,o="You have been ordered to slay Vile Priestess Hexx and 20 Vilebranch Aman'zasi Guards. See Primal Torntusk at Revantusk Village in the Hinterlands once this task is complete.\n\nVile Priestess Hexx and the Aman'zasi Guards can be found atop Jintha'alor in the Hinterlands.",xb=6100}
+t[7862]={lv=51,m=22500,minlv=52,o="You have been tasked with the decimation of 20 Vilebranch Berserkers, 20 Vilebranch Shadow Hunters, 20 Vilebranch Blood Drinkers, and 20 Vilebranch Soul Eaters.\n\nShould you complete this task, return to Primal Torntusk at Revantusk Village in the Hinterlands.",rw={19120,270225},xb=6100}
 t[8410]={lv=52,m=7600,minlv=52,o="Collect a sample of air, fire, earth and water for Bath'rah the Windwatcher.",xb=3800}
 t[8412]={lv=52,m=10200,minlv=52,o="Bring the pieces for the spirit totem to Bath'rah the Windwatcher.",xb=5100}
 t[86784]={xb=625}
@@ -1639,8 +1679,15 @@ t[99141]={xb=410}
 end)()
 D.qmiss = D.qmiss or {}
 ;(function() local t = D.qmiss
+t[3444]={[7771]=53}
+t[3446]={[7771]=53}
 t[3801]={[8888]=52}
+t[4146]={[8496]=53}
 t[6030]={[10431]=52}
+t[7828]={[14741]=53}
+t[7829]={[14741]=53}
+t[7845]={[14736]=52}
+t[7849]={[14741]=52}
 t[91611]={[3621]=52}
 t[92464]={[251361]=2}
 t[94414]={[257554]=2}
@@ -1648,6 +1695,8 @@ t[96376]={[3230]=52}
 end)()
 D.qrep = D.qrep or {}
 ;(function() local t = D.qrep
+t[2937]={["Darkspear Trolls"]=50,Horde=50,Orgrimmar=50,["Thunder Bluff"]=50,Undercity=200}
+t[2938]={["Darkspear Trolls"]=50,Horde=50,Orgrimmar=50,["Thunder Bluff"]=50,Undercity=200}
 t[3821]={["Darkspear Trolls"]=100,Horde=25,Orgrimmar=25,["Thunder Bluff"]=25,Undercity=25}
 t[3822]={["Darkspear Trolls"]=25,Horde=25,Orgrimmar=100,["Thunder Bluff"]=25,Undercity=25}
 t[3906]={["Darkspear Trolls"]=25,Horde=25,Orgrimmar=25,["Thunder Bluff"]=100,Undercity=25}
@@ -1659,25 +1708,33 @@ t[94414]={Windshapers=10}
 end)()
 D.zsub = D.zsub or {}
 ;(function() local t = D.zsub
-t[1411]={["Bladefist Bay"]={569,151,556,95},["Jaggedswine Farm"]={486,141,505,141},["Skull Rock"]={524,97},["Southfury River"]={354,27}}
-t[1414]={["Southfury River"]={564,445}}
-t[1416]={["Chillwind Point"]={733,657},["Corrahn's Dagger"]={435,846},["Gavin's Naze"]={299,771},["Lordamere Lake"]={176,450},["Old Dalaran Ruins"]={194,503},["The Headland"]={354,842}}
+t[1411]={["Bladefist Bay"]={569,151,556,95},["Darkspear Strand"]={622,692},["Hidden Path"]={416,732},["Jaggedswine Farm"]={486,141,505,141},["Razor Hill"]={552,391,528,446},["Scuttle Coast"]={620,655},["Skull Rock"]={524,97},["Southfury River"]={354,27},["Tiragarde Keep"]={606,616},["Valley of Trials"]={505,691}}
+t[1413]={["Agama'gor"]={466,557},["Bael Modan"]={448,865},["Blackthorn Ridge"]={459,833,443,894},Bramblescar={538,519,514,505},["Field of Giants"]={464,688,459,714,458,741},["Gold Road"]={499,391,521,337,503,427,509,458},["Northwatch Hold"]={583,505},Ratchet={640,377,599,393},["Razorfen Downs"]={447,870},["Razorfen Kraul"]={443,895},["Southern Barrens"]={568,508,499,575,473,659,457,742,460,782,459,765,466,687,471,583,514,486,472,636},["Southern Gold Road"]={476,651,469,669,463,692,458,767,460,787,458,841,446,872,443,900,460,711,472,613},["The Crossroads"]={509,299},["The Great Lift"]={443,915},["The Great Sea"]={746,554},["The Merchant Coast"]={663,360,637,364},["Thorn Hill"]={605,313}}
+t[1414]={["Echo Isles"]={603,592},["Southfury River"]={564,445}}
+t[1416]={["Chillwind Point"]={733,657},["Corrahn's Dagger"]={435,846},["Dandred's Fold"]={375,261},["Gallows' Corner"]={504,637},["Gavin's Naze"]={299,771},["Lordamere Lake"]={176,450,301,101},["Old Dalaran Ruins"]={194,503},["Ruins of Alterac"]={485,498},["The Headland"]={354,842},["The Uplands"]={371,300,336,111}}
+t[1417]={["Circle of East Binding"]={712,329},["Go'Shek Farm"]={565,606},Hammerfall={713,434},["Thandol Span"]={439,927}}
 t[1418]={["Angor Fortress"]={393,406},["Apocryphan's Rest"]={104,572,103,607},["Camp Cagg"]={99,731},["Hammertoe's Digsite"]={491,269},Kargath={100,441},["The Dustbowl"]={143,547,182,549},["The Maker's Terrace"]={510,164}}
-t[1420]={Deathknell={329,671},["Nightmare Vale"]={436,556,457,578},["Ruins of Lordaeron"]={605,620},["Solliden Farmstead"]={387,479},["Whispering Shore"]={310,337}}
-t[1421]={["Fenris Isle"]={682,168,748,346},["Lordamere Lake"]={676,132,703,232},["The Dawning Isles"]={739,323,750,353},["The Shining Strand"]={681,62}}
-t[1424]={["Tarren Mill"]={563,250,576,125}}
+t[1420]={Deathknell={329,671},["Nightmare Vale"]={436,556,457,578},["Ruins of Lordaeron"]={605,620,618,842,597,830,572,798,564,774,554,673},["Solliden Farmstead"]={387,479},["The Bulwark"]={820,710},["Whispering Shore"]={310,337}}
+t[1421]={["Fenris Isle"]={682,168,748,346},["Lordamere Lake"]={676,132,703,232,748,123},["The Dawning Isles"]={739,323,750,353},["The Shining Strand"]={681,62,717,88,709,71}}
+t[1422]={["Darrowmere Lake"]={531,737},["Ruins of Andorhal"]={417,595},["Sorrow Hill"]={490,722},["The Bulwark"]={284,574}}
+t[1424]={["Durnholde Keep"]={864,316},["Tarren Mill"]={563,250,576,125,628,296}}
+t[1425]={["Agol'watha"]={472,454},["Featherbeard's Hovel"]={145,520},["Hiri'watha"]={306,546},["Jintha'Alor"]={660,636},["Plaguemist Ravine"]={216,260},["Quel'Danil Lodge"]={308,519,284,519},["Revantusk Village"]={755,756,799,843,824,806},["Shadra'Alor"]={413,647,383,637},["Shindigger's Camp"]={252,456},["Skulk Rock"]={543,429},["The Altar of Zul"]={473,727,512,598,427,636,473,597},["The Creeping Ruin"]={515,547},["The Overlook Cliffs"]={700,639,789,844,763,753,822,805,717,614},["Valorwind Lake"]={371,626,396,636,435,636,455,583,448,620}}
 t[1427]={["Blackrock Mountain"]={340,740,322,741},["Firewatch Ridge"]={348,374},["Grimesilt Dig Site"]={603,691,601,669,638,584,588,641},["Tanner Camp"]={603,759,612,695},["The Grinding Quarry"]={307,873,288,874,266,815},["The Masonary"]={265,814},["The Sea of Cinders"]={584,870,602,676,602,707},["Thorium Point"]={354,236}}
 t[1428]={["Blackrock Mountain"]={285,190,280,353,352,507,274,228,268,246},["Blackrock Pass"]={789,834},["Dreadmaul Rock"]={801,563,740,434,740,472,740,407,808,298,763,263,840,344,865,343,796,260,762,288},["Flame Crest"]={638,299,637,235,671,277},["Forgewright's Tomb"]={293,287},["Ruins of Thaurissan"]={715,432,535,476,637,294,658,309,697,310},["Slither Rock"]={911,322},["Terror Wing Path"]={812,308,797,264,851,342,910,316},["The Grinding Quarry"]={267,239,239,194},["The Molten Span"]={274,228,280,351,294,276,267,246},["The Pillar of Ash"]={512,480}}
 t[1431]={Darkshire={711,617},["Manor Mistmantle"]={760,393},["The Darkened Bank"]={791,194,877,112,902,100},["The Rotting Orchard"]={594,702},["The Yorgen Farmstead"]={470,807,556,695}}
 t[1432]={["Stonewrought Dam"]={508,169},["The Loch"]={510,693,504,328,515,186}}
 t[1433]={["Alther's Mill"]={393,392,409,341},["Lake Everstill"]={302,567},["Three Corners"]={9,903}}
 t[1434]={["Grom'gol Base Camp"]={301,296},["Lake Nazferiti"]={405,226},["Mizjah Ruins"]={367,328},["The Savage Coast"]={312,314},["The Vile Reef"]={241,298,306,297}}
-t[1437]={["Mosshide Fen"]={610,646},["The Green Belt"]={580,465}}
+t[1437]={["Dun Modr"]={510,211},["Mosshide Fen"]={610,646},["Thandol Span"]={502,139},["The Green Belt"]={580,465}}
 t[1440]={["Southfury River"]={994,405,982,436,970,459,947,493,942,542,936,576,931,601,936,722,942,740}}
+t[1441]={["Darkcloud Pinnacle"]={334,246,379,441,326,263},["Freewind Post"]={429,477,484,512},["Ironstone Camp"]={681,645},["Mirage Raceway"]={736,631},["Tahonda Ruins"]={778,853},["The Great Lift"]={328,227,314,261,324,206},["The Rustmaul Dig Site"]={702,819},["The Shimmering Flats"]={690,570,765,899,753,976,690,611,712,875},["Windbreak Canyon"]={547,516}}
+t[1445]={["Alcaz Island"]={708,246,741,63},["Dreadmurk Shore"]={710,267},["The Great Sea"]={773,952,741,66}}
+t[1446]={["Abyssal Sands"]={514,432,524,410},["Broken Pillar"]={547,411,531,411},Gadgetzan={513,245,510,310},["Noonshade Ruins"]={572,257,635,232,563,240},["Sandsorrow Watch"]={456,251,341,268},["South Seas"]={683,121},["Steamwheedle Port"]={645,232,650,214},["Waterspring Field"]={612,266,601,288},["Wavestrider Beach"]={676,158}}
 t[1447]={["Bear's Head"]={347,388,281,493},["Blackmaw Hold"]={363,310,356,387,423,260},["Haldarr Encampment"]={241,596},["Legashi Encampment"]={629,182},["Legashi Stronghold"]={704,164},["Ruins of Eldarath"]={410,387},["Southfury River"]={168,634,138,685,130,705,119,723,98,752,91,793,85,842,79,871,75,892},Ursolan={419,258,493,220},Valormok={248,498,247,522}}
+t[1449]={["Ironstone Plateau"]={837,446,775,417},["Lakkari Tar Pits"]={621,342,460,130,450,240,433,269,621,361,578,378},["Marshal's Refuge"]={459,129,454,61},["The Marshlands"]={838,446,803,502,817,447}}
 t[1452]={["Darkwhisper Gorge"]={678,754},Everlook={613,389},["Frostwhisper Gorge"]={663,663},["Ice Thistle Hills"]={633,389,650,547},["Owl Wing Thicket"]={654,571}}
-t[1454]={["Grommash Hold"]={404,370,378,372},Orgrimmar={153,612,399,618,403,453,525,851},["The Drag"]={527,573},["Valley of Spirits"]={339,729},["Valley of Strength"]={387,735,401,621,526,577,539,688},["Valley of Wisdom"]={408,449,405,370,495,363}}
-t[1458]={Canals={661,312},["Ruins of Lordaeron"]={663,4},Sewers={478,279},["Trade Quarter"]={660,543},Undercity={660,361},["War Quarter"]={594,219}}
+t[1454]={["Grommash Hold"]={404,370,378,372},Orgrimmar={153,612,399,618,403,453,525,851,492,952},["The Drag"]={527,573},["Valley of Spirits"]={339,729},["Valley of Strength"]={387,735,401,621,526,577,539,688,525,844,463,651},["Valley of Wisdom"]={408,449,405,370,495,363}}
+t[1458]={Canals={661,312,602,215,629,487,656,570,619,645,631,540},["Ruins of Lordaeron"]={663,4},Sewers={478,279,152,318},["The Apothecarium"]={617,642},["Trade Quarter"]={660,543,661,367,629,484,728,441},Undercity={660,361,660,321,635,537,657,566},["War Quarter"]={594,219,483,283}}
 t[2521]={["Thendal Grove"]={430,258,443,225},["Thendal Village"]={428,231,432,257}}
 end)()
 D.enc = D.enc or {}
@@ -1694,33 +1751,100 @@ t[1508]={"Beast","Wolf"}
 t[1512]={"Beast","Bat"}
 t[1513]={"Beast","Bat"}
 t[1693]={"Beast","Crocolisk"}
+t[1863]={"Demon","Succubus"}
+t[2050]={"Humanoid"}
+t[2055]={"Humanoid"}
+t[2216]={"Humanoid"}
 t[2350]={"Beast","Spider"}
 t[2389]={"Humanoid"}
 t[2405]={"Humanoid"}
 t[2408]={"Beast","Turtle"}
 t[2429]={"Humanoid"}
+t[2437]={"Humanoid"}
+t[2505]={"Beast","Turtle"}
+t[2563]={"Beast","Spider"}
 t[2630]={"Totem"}
+t[2639]={"Humanoid"}
+t[2640]={"Humanoid"}
+t[2641]={"Humanoid"}
+t[2642]={"Humanoid"}
+t[2643]={"Humanoid"}
+t[2644]={"Humanoid"}
+t[2645]={"Humanoid"}
+t[2646]={"Humanoid"}
+t[2647]={"Humanoid"}
+t[2648]={"Humanoid"}
+t[2653]={"Humanoid"}
+t[2658]={"Beast"}
+t[2680]={"Beast","Wolf"}
+t[2681]={"Beast","Wolf"}
+t[2686]={"Beast","Spider"}
+t[2707]={"Beast"}
 t[2729]={"Beast","Wolf"}
 t[2831]={"Beast","Carrion Bird"}
 t[2861]={"Humanoid"}
+t[2914]={"Critter"}
+t[2925]={"Beast","Wolf"}
+t[2926]={"Beast","Wolf"}
+t[2928]={"Humanoid"}
 t[3100]={"Beast","Boar"}
 t[3123]={"Beast","Raptor"}
+t[3128]={"Humanoid"}
+t[3129]={"Humanoid"}
 t[3230]={"Humanoid"}
+t[3238]={"Beast"}
+t[3239]={"Beast"}
+t[3240]={"Beast"}
+t[3244]={"Beast","Tallstrider"}
+t[3258]={"Humanoid"}
+t[3261]={"Humanoid"}
 t[3296]={"Humanoid"}
 t[3309]={"Humanoid"}
+t[3310]={"Humanoid"}
 t[3318]={"Humanoid"}
+t[3341]={"Humanoid"}
 t[3344]={"Humanoid"}
 t[3367]={"Humanoid"}
 t[3403]={"Humanoid"}
+t[3426]={"Beast"}
+t[3442]={"Humanoid"}
+t[3463]={"Beast"}
+t[3480]={"Humanoid"}
+t[3483]={"Humanoid"}
+t[3501]={"Humanoid"}
+t[3538]={"Mechanical"}
 t[3621]={"Humanoid"}
+t[3658]={"Humanoid"}
 t[3708]={"Humanoid"}
+t[4113]={"Humanoid"}
+t[4129]={"Beast","Hyena"}
+t[4140]={"Beast","Scorpid"}
+t[4142]={"Beast","Turtle"}
+t[4143]={"Beast","Turtle"}
+t[4150]={"Beast"}
+t[4314]={"Humanoid"}
+t[4374]={"Beast"}
+t[4452]={"Humanoid"}
+t[4465]={"Humanoid"}
+t[4466]={"Humanoid"}
+t[4467]={"Humanoid"}
+t[4468]={"Not specified"}
+t[4550]={"Undead"}
 t[4551]={"Humanoid"}
+t[4553]={"Humanoid"}
+t[4554]={"Humanoid"}
 t[4949]={"Humanoid"}
+t[5419]={"Beast"}
+t[5422]={"Beast","Scorpid"}
+t[5425]={"Beast","Hyena"}
+t[5598]={"Humanoid"}
 t[5624]={"Undead"}
+t[5774]={"Beast"}
 t[5853]={"Elemental"}
 t[5856]={"Beast","Spider"}
 t[5892]={"Humanoid"}
 t[5913]={"Totem"}
+t[5922]={"Totem"}
 t[6176]={"Humanoid"}
 t[6190]={"Humanoid"}
 t[6193]={"Humanoid"}
@@ -1728,6 +1852,19 @@ t[6194]={"Humanoid"}
 t[6195]={"Humanoid"}
 t[6377]={"Beast"}
 t[6491]={"Humanoid"}
+t[6499]={"Beast"}
+t[6500]={"Beast"}
+t[6509]={"Not specified"}
+t[6510]={"Not specified"}
+t[6511]={"Not specified"}
+t[6512]={"Not specified"}
+t[6518]={"Elemental"}
+t[6519]={"Elemental"}
+t[6527]={"Elemental"}
+t[6556]={"Not specified"}
+t[6557]={"Not specified"}
+t[6559]={"Not specified"}
+t[6560]={"Elemental"}
 t[7031]={"Elemental"}
 t[7033]={"Humanoid"}
 t[7034]={"Humanoid"}
@@ -1741,11 +1878,26 @@ t[7044]={"Dragonkin"}
 t[7047]={"Dragonkin"}
 t[7048]={"Dragonkin"}
 t[7367]={"Totem"}
+t[7380]={"Non-combat Pet"}
+t[7389]={"Non-combat Pet"}
+t[7394]={"Non-combat Pet"}
+t[7398]={"Totem"}
 t[7400]={"Totem"}
 t[7412]={"Totem"}
 t[7415]={"Totem"}
+t[7423]={"Totem"}
+t[7465]={"Totem"}
+t[7483]={"Totem"}
+t[7484]={"Totem"}
 t[7486]={"Totem"}
+t[7768]={"Not specified"}
+t[7771]={"Humanoid"}
+t[7824]={"Humanoid"}
+t[7977]={"Beast"}
+t[7995]={"Humanoid"}
+t[8496]={"Humanoid"}
 t[8576]={"Humanoid"}
+t[8579]={"Humanoid"}
 t[8586]={"Humanoid"}
 t[8587]={"Humanoid"}
 t[8610]={"Humanoid"}
@@ -1755,32 +1907,60 @@ t[8762]={"Beast","Spider"}
 t[8888]={"Humanoid"}
 t[8890]={"Humanoid"}
 t[8977]={"Humanoid"}
+t[8996]={"Demon","Voidwalker"}
 t[9026]={"Elemental"}
 t[9079]={"Humanoid"}
 t[9082]={"Humanoid"}
 t[9084]={"Humanoid"}
 t[9085]={"Humanoid"}
 t[9086]={"Humanoid"}
+t[9118]={"Humanoid"}
 t[9136]={"Humanoid"}
+t[9157]={"Not specified"}
+t[9162]={"Beast"}
+t[9163]={"Beast"}
+t[9274]={"Beast"}
 t[9459]={"Dragonkin"}
+t[9460]={"Humanoid"}
+t[9477]={"Not specified"}
+t[9525]={"Humanoid"}
 t[9536]={"Humanoid"}
+t[9564]={"Humanoid"}
+t[9618]={"Humanoid"}
+t[9662]={"Non-combat Pet"}
 t[9688]={"Totem"}
 t[9691]={"Beast","Scorpid"}
 t[9694]={"Beast","Wolf"}
 t[9695]={"Beast","Scorpid"}
 t[9778]={"Demon"}
 t[9836]={"Humanoid"}
+t[10079]={"Humanoid"}
 t[10267]={"Humanoid"}
 t[10361]={"Humanoid"}
 t[10431]={"Humanoid"}
 t[10540]={"Humanoid"}
+t[10583]={"Humanoid"}
+t[10682]={"Humanoid"}
+t[10802]={"Humanoid"}
+t[10880]={"Humanoid"}
 t[11139]={"Humanoid"}
 t[11190]={"Humanoid"}
 t[11629]={"Humanoid"}
 t[13177]={"Humanoid"}
 t[13417]={"Humanoid"}
 t[14304]={"Humanoid"}
+t[14375]={"Humanoid"}
 t[14377]={"Humanoid"}
+t[14392]={"Humanoid"}
+t[14730]={"Humanoid"}
+t[14731]={"Humanoid"}
+t[14736]={"Humanoid"}
+t[14737]={"Humanoid"}
+t[14740]={"Humanoid"}
+t[14741]={"Humanoid"}
+t[14757]={"Humanoid"}
+t[16096]={"Humanoid"}
+t[16227]={"Humanoid"}
 t[203138]={"Humanoid"}
 t[230317]={"Humanoid"}
 t[235906]={"Humanoid"}
@@ -1814,15 +1994,20 @@ t[257551]={"Humanoid"}
 t[257554]={"Humanoid"}
 t[263113]={"Humanoid"}
 t[266025]={"Non-combat Pet"}
+t[266735]={"Non-combat Pet"}
 t[268048]={"Humanoid"}
 t[268745]={"Humanoid"}
 t[269647]={"Humanoid"}
 t[271351]={"Humanoid"}
+t[271915]={"Non-combat Pet"}
 t[271929]={"Not specified"}
 end)()
 D.resp = D.resp or {}
 ;(function() local t = D.resp
 t["c251169"]=414
+t["c6509"]=408
+t["c6510"]=30
+t["c6511"]=75
 t["c7047"]=549
 t["o613286"]=52
 end)()
@@ -1834,6 +2019,8 @@ end)()
 D.vendx = D.vendx or {}
 ;(function() local t = D.vendx
 t[3621]={[117]={p=23,s=5},[159]={p=23,s=5},[1179]={p=113,r={"Requires Level 5"},s=5},[1205]={p=450,r={"Requires Level 15"},s=5},[1645]={p=1800,r={"Requires Level 35"},s=5},[1708]={p=900,r={"Requires Level 25"},s=5},[2287]={p=113,r={"Requires Level 5"},s=5},[3770]={p=450,r={"Requires Level 15"},s=5},[3771]={p=900,r={"Requires Level 25"},s=5},[4599]={p=1800,r={"Requires Level 35"},s=5},[8766]={p=3600,r={"Requires Level 45"},s=5},[8952]={p=3600,r={"Requires Level 45"},s=5}}
+t[4553]={[159]={p=23,s=5},[2678]={p=9,s=5},[2692]={p=36,s=1},[3713]={p=144,s=1},[4470]={p=35,s=1},[4471]={p=122,s=1},[4536]={p=23,s=5},[6330]={p=1080,r={"Requires Level 15","Requires Cooking (100)"},s=1,u=false},[6368]={p=360,r={"Requires Cooking (50)"},s=1,u=false},[10284]={p=180,s=1},[11291]={p=4050,s=1},[21099]={p=450,r={"Requires Level 10","Requires Cooking (80)"},s=1,u=false},[21219]={p=4500,r={"Requires Cooking (175)"},s=1,u=false},[272941]={p=180000,s=1}}
+t[14737]={[2880]={p=100,s=1},[2901]={p=10,s=1},[3466]={p=2000,s=1},[3857]={p=500,s=1},[5956]={p=18,s=1},[18567]={p=150000,s=1}}
 t[251364]={[1194]={p=104,s=1},[2130]={p=54,s=1,u=false},[2131]={p=54,s=1},[2132]={p=102,s=1,u=false},[2134]={p=82,s=1,u=false},[2139]={p=57,s=1},[2479]={p=107,s=1,u=false},[2480]={p=72,s=1,u=false}}
 t[251365]={[2117]={p=36,s=1},[2119]={p=24,s=1},[2120]={p=50,s=1},[2121]={p=50,s=1},[2122]={p=32,s=1},[2123]={p=48,s=1},[2124]={p=32,s=1},[2125]={p=32,s=1},[2126]={p=59,s=1},[2127]={p=60,s=1},[3599]={p=24,s=1},[3600]={p=24,s=1}}
 t[251965]={[2129]={p=77,s=1,u=false},[2379]={p=75,s=1,u=false},[2380]={p=37,s=1,u=false},[2381]={p=75,s=1,u=false},[2383]={p=57,s=1,u=false},[2384]={p=37,s=1,u=false},[2385]={p=37,s=1,u=false},[17184]={p=34,s=1,u=false}}
@@ -1853,7 +2040,7 @@ t[16]={c=1,m={{432,-313,432,-155,425,-155,425,-126,419,-126,412,-47,392,-27,392,
 t[17]={c=1,m={{384,357,387,357,387,436,384,436,381,461,374,466,374,495,387,500,390,515,404,530,404,554,407,554,407,574,410,574,410,663,407,663,407,688,400,693,397,722,387,727,381,742,374,742,374,752,364,767,364,855,367,855,367,875,384,900,390,900,394,910,433,915,436,924,443,915,443,924,456,924,459,934,476,934,476,954,483,964,489,964,499,984,519,989,525,998,558,998,555,959,552,959,548,944,529,939,506,895,492,895,489,885,499,885,499,870,509,870,509,860,515,855,515,831,509,826,512,821,512,796,506,796,502,776,506,776,512,732,519,732,519,717,512,712,512,688,522,683,522,673,519,673,519,638,535,623,532,609,535,609,538,594,555,589,558,579,568,579,568,574,581,579,591,599,614,599,614,584,621,584,621,579,624,579,627,594,637,594,654,569,660,569,667,559,677,559,677,549,700,549,700,554,943,554,943,525,805,525,788,500,772,500,762,485,756,485,739,461,739,451,733,451,733,446,713,451,713,441,703,436,690,416,690,382,680,382,677,367,667,367,663,347,654,352,650,327,647,327,647,308,644,308,644,293,640,293,640,278,634,273,634,253,631,253,634,96,644,81,644,-8,640,-13,631,-13,627,-8,631,2,608,2,604,17,594,31,584,31,584,22,578,12,555,12,555,22,519,22,519,36,532,36,532,71,509,71,509,41,469,41,459,56,459,71,364,71,364,96,358,105,358,125,348,140,348,175,364,184,364,234,354,239,344,253,344,273,341,273,338,288,331,288,331,298,344,318,361,318,364,313,364,337,374,337,377,347,384,347}},n=13399,ui=1413,w={{-800,-1267,-800,-1300,-1333,-1300,-1333,-1267,-1500,-1233,-1533,-1167,-1733,-1167,-1767,-1300,-1867,-1333,-1967,-1467,-2133,-1467,-2133,-1500,-2267,-1500,-2267,-1533,-2867,-1533,-2867,-1500,-3033,-1500,-3067,-1433,-3267,-1400,-3300,-1300,-3400,-1233,-3400,-1167,-3467,-1167,-3567,-1067,-4167,-1067,-4167,-1100,-4300,-1100,-4467,-1267,-4467,-1333,-4533,-1367,-4567,-1767,-4633,-1800,-4567,-1867,-4633,-1867,-4633,-2000,-4700,-2033,-4700,-2200,-4833,-2200,-4900,-2267,-4900,-2333,-5033,-2433,-5067,-2633,-5133,-2700,-5133,-3033,-4867,-3000,-4867,-2967,-4767,-2933,-4733,-2733,-4433,-2500,-4433,-2367,-4367,-2333,-4367,-2433,-4267,-2433,-4267,-2533,-4200,-2533,-4167,-2600,-4000,-2600,-3967,-2533,-3933,-2567,-3767,-2567,-3767,-2500,-3633,-2467,-3633,-2500,-3333,-2567,-3333,-2633,-3233,-2633,-3200,-2567,-3033,-2567,-3000,-2667,-2933,-2667,-2933,-2633,-2700,-2633,-2600,-2800,-2500,-2767,-2500,-2800,-2400,-2833,-2367,-3000,-2300,-3033,-2300,-3133,-2267,-3133,-2300,-3267,-2433,-3367,-2433,-3600,-2333,-3600,-2333,-3667,-2300,-3667,-2300,-3700,-2400,-3733,-2400,-3833,-2233,-4000,-2233,-4067,-2167,-4133,-2167,-4233,-2100,-4233,-2100,-4467,-2133,-4467,-2133,-6933,-1933,-6933,-1933,-5533,-1767,-5367,-1767,-5200,-1667,-5100,-1667,-5033,-1500,-4867,-1433,-4867,-1433,-4800,-1400,-4800,-1433,-4600,-1367,-4600,-1333,-4500,-1200,-4367,-967,-4367,-967,-4267,-867,-4233,-867,-4133,-733,-4100,-767,-4000,-600,-3967,-600,-3933,-467,-3933,-467,-3900,-367,-3900,-367,-3867,-267,-3867,-233,-3800,-100,-3800,-100,-3767,967,-3800,1067,-3900,1667,-3900,1700,-3867,1700,-3767,1667,-3733,1600,-3767,1600,-3533,1500,-3500,1400,-3400,1400,-3300,1467,-3300,1533,-3233,1533,-3000,1467,-3000,1467,-2633,1367,-2633,1367,-2767,1133,-2767,1133,-2533,1333,-2533,1333,-2133,1233,-2033,1133,-2033,1133,-1067,967,-1067,900,-1000,767,-1000,667,-900,433,-900,367,-1067,33,-1067,0,-967,-100,-867,-233,-867,-233,-833,-333,-800,-333,-733,-400,-733,-533,-867,-533,-1033,-500,-1067,-667,-1067,-667,-1167,-733,-1200,-733,-1267}}}
 t[28]={c=0,m={{345,23,345,93,384,140,391,442,368,442,368,477,322,477,283,535,283,651,267,651,252,686,182,686,182,698,244,709,260,733,283,721,283,756,314,802,314,826,322,826,337,884,461,872,461,837,469,837,477,849,469,919,500,919,508,930,508,977,539,965,539,953,585,953,593,919,601,919,601,872,609,860,624,860,624,895,678,895,678,884,740,872,756,849,795,837,818,802,818,674,810,674,810,651,779,640,779,605,764,581,702,570,702,395,647,314,647,174,632,163,632,140,593,116,593,23}},n=3616,ui=1422,w={{3300,-1067,3100,-1067,2967,-1233,2100,-1267,2100,-1167,2000,-1167,2000,-967,1833,-800,1500,-800,1500,-733,1400,-667,1400,-367,1367,-367,1333,-633,1267,-700,1300,-800,1200,-800,1067,-933,1000,-933,1000,-967,833,-1033,867,-1567,967,-1567,967,-1600,933,-1633,733,-1600,733,-1733,700,-1767,567,-1767,600,-1900,633,-1900,633,-2100,733,-2133,733,-2167,867,-2167,900,-2200,900,-2267,800,-2267,800,-2500,833,-2500,867,-2767,933,-2833,967,-3000,1067,-3100,1433,-3100,1433,-3067,1500,-3067,1533,-2933,1633,-2933,1700,-2867,1733,-2600,2233,-2600,2467,-2367,2867,-2367,2900,-2300,2967,-2300,3033,-2133,3300,-2133}}}
 t[33]={c=0,m={{-65,885,-65,1136,599,1136,599,760,682,760,682,47,677,47,677,31,609,31,609,23,588,23,588,31,520,31,520,39,432,39,426,23,390,31,390,23,364,23,364,15,259,23,238,62,129,62,129,125,103,141,87,172,66,180,66,156,56,141,50,148,40,148,40,141,-39,148,-49,164,-65,164,-65,156,-80,156,-80,164,-237,164,-237,7,-321,7,-321,383,-70,383}},n=20505,ui=1434,w={{-14933,2633,-16000,2633,-16000,-1600,-14400,-1600,-14400,-2133,-11367,-2133,-11367,-2100,-11300,-2100,-11300,-1667,-11267,-1667,-11267,-1533,-11300,-1533,-11300,-1100,-11333,-1100,-11333,-533,-11267,-500,-11300,-267,-11267,-267,-11267,-100,-11233,-100,-11267,567,-11433,700,-11433,1400,-11700,1400,-11767,1567,-11900,1667,-11933,1800,-11833,1800,-11767,1867,-11800,1900,-11800,1967,-11767,1967,-11800,2467,-11867,2533,-11867,2633,-11833,2633,-11833,2733,-11867,2733,-11867,3733,-11200,3733,-11200,4267,-12800,4267,-12800,2667}}}
-t[36]={c=0,m={{125,821,89,839,89,875,113,875,137,964,185,964,220,893,256,893,268,821,280,821,280,893,327,893,351,857,363,946,411,964,423,875,470,875,470,911,518,893,506,714,530,679,554,679,565,732,601,732,625,625,685,625,732,714,792,750,792,786,851,857,875,804,911,804,911,607,899,607,911,429,899,411,851,411,851,375,863,375,863,304,851,286,839,286,839,339,649,357,625,268,613,268,613,232,577,196,565,107,530,125,506,89,411,71,411,54,375,54,375,36,268,36,256,89,185,107,185,179,220,179,220,232,244,250,244,304,268,321,268,393,220,411,208,446,173,446,173,482,89,500,77,696,101,714}},n=2197,ui=1416,w={{-33,433,-67,533,-133,533,-133,467,-300,400,-300,267,-167,167,-167,67,-33,33,-33,0,-167,0,-167,-133,-100,-200,-267,-233,-300,-367,-133,-400,-133,-533,-200,-533,-167,-667,167,-633,233,-700,233,-767,133,-800,133,-900,333,-967,333,-1133,167,-1267,100,-1433,33,-1433,-100,-1600,0,-1667,0,-1767,367,-1767,367,-1733,700,-1767,733,-1733,733,-1600,800,-1600,800,-1633,933,-1633,967,-1600,967,-1567,867,-1567,833,-1033,1000,-967,1000,-933,1067,-933,1133,-833,1300,-800,1267,-700,1333,-633,1367,-367,1400,-367,1400,-267,1433,-267,1433,33,1333,67,1300,267,1167,267,1167,167,1067,167,1033,100,933,100,900,33,767,33,733,167,667,200,667,300,600,300,567,533,200,567,167,500}}}
+t[36]={c=0,n=2197,ui=1416,w={{-33,433,-67,533,-133,533,-133,467,-300,400,-300,267,-167,167,-167,67,-113,71,-44,49,2,-10,82,-28,83,-66,-30,-184,-68,-268,-63,-304,31,-370,100,-482,63,-519,87,-559,207,-590,253,-600,308,-593,349,-635,303,-716,290,-767,337,-821,435,-804,414,-888,505,-954,559,-986,581,-1025,558,-1056,555,-1021,543,-992,499,-967,484,-993,441,-959,435,-1026,368,-1077,167,-1267,100,-1433,33,-1433,-100,-1600,0,-1667,0,-1767,367,-1767,367,-1733,700,-1767,733,-1733,733,-1600,800,-1600,800,-1633,933,-1633,967,-1600,967,-1567,867,-1567,833,-1033,1000,-967,1000,-933,1067,-933,1133,-833,1300,-800,1267,-700,1333,-633,1367,-367,1400,-367,1400,-267,1433,-267,1433,33,1333,67,1300,267,1167,267,1167,167,1067,167,1033,100,933,100,900,33,767,33,733,167,667,200,667,300,600,300,567,533,200,567,167,500}}}
 t[38]={c=0,m={{872,224,872,-120,631,-120,631,43,570,43,570,79,522,79,510,116,449,116,425,43,147,43,147,79,111,79,111,188,147,188,147,224,159,224,159,333,171,333,171,387,196,387,196,460,220,460,220,550,171,623,171,695,147,713,147,786,123,822,135,949,256,949,256,967,292,967,292,985,389,967,401,822,570,822,582,877,655,877,667,949,800,949,800,804,848,804,848,695,884,659}},n=2920,ui=1432,w={{-4900,-4400,-4267,-4400,-4267,-3733,-4567,-3733,-4567,-3567,-4633,-3567,-4633,-3433,-4700,-3400,-4700,-3233,-4567,-3167,-4567,-2400,-4633,-2400,-4633,-2300,-4833,-2300,-4833,-2400,-4900,-2400,-4900,-2433,-5100,-2433,-5100,-2467,-5200,-2467,-5200,-2533,-5333,-2533,-5333,-2600,-5500,-2600,-5633,-2467,-5767,-2467,-5800,-2400,-5933,-2400,-6000,-2333,-6233,-2367,-6233,-2700,-6267,-2700,-6267,-2800,-6300,-2800,-6267,-3067,-6000,-3100,-6000,-3567,-6100,-3600,-6100,-3800,-6233,-3833,-6233,-4200,-5967,-4200,-5967,-4333,-5767,-4333,-5700,-4433}}}
 t[40]={c=0,m={{652,214,614,171,614,86,576,86,567,71,576,-100,557,-100,557,-143,252,-143,252,-600,557,-600,557,-1286,-52,-1286,-52,-600,-205,-600,-205,1057,81,1057,81,1043,138,1057,157,1029,224,1029,224,1014,300,1014,300,1029,319,1029,329,1014,348,1043,348,1086,367,1086,414,1014,462,986,462,871,662,871,700,800,767,800,767,771,738,729,719,729,690,686,690,657,681,657,681,500,643,443,643,271,652,271}},n=11790,ui=1436,w={{-9900,733,-9800,867,-9600,867,-9600,1000,-9567,1033,-9167,1000,-9167,1067,-9067,1067,-9067,2133,-8000,2133,-8000,1067,-6400,1067,-6400,3200,-8000,3200,-8000,3733,-11867,3733,-11867,2733,-11833,2733,-11867,2533,-11800,2467,-11800,2233,-11767,2233,-11767,1967,-11800,1967,-11800,1900,-11767,1867,-11833,1800,-11933,1800,-11933,1733,-11767,1567,-11700,1400,-11433,1400,-11433,700,-11267,567,-11267,333,-11200,333,-11100,433,-11100,500,-11000,600,-10933,600,-10933,633,-10567,633,-10433,767,-10033,767,-10033,733}}}
 t[41]={c=0,m={{507,860,520,960,600,960,640,900,627,660,667,660,693,540,640,520,627,480,600,480,587,180,547,180,560,160,560,40,507,60,507,160,413,160,413,120,387,120,373,220,347,220,347,280,320,280,320,520,293,540,293,660,320,700,333,860}},n=855,ui=1430,w={{-11300,-2100,-11467,-2133,-11467,-2333,-11367,-2433,-10967,-2400,-10967,-2500,-10767,-2567,-10733,-2433,-10667,-2400,-10667,-2333,-10167,-2300,-10167,-2200,-10133,-2233,-9933,-2233,-9967,-2100,-10133,-2100,-10133,-1867,-10067,-1867,-10067,-1800,-10233,-1767,-10233,-1700,-10333,-1700,-10333,-1633,-10733,-1633,-10767,-1567,-10967,-1567,-11033,-1633,-11300,-1667}}}
@@ -1868,7 +2055,7 @@ t[139]={c=0,m={{188,788,196,788,196,916,173,951,134,962,119,985,57,997,57,1020,7
 t[141]={c=1,m={{-613,343,-613,1129,-298,1129,-298,1443,16,1443,16,1286,514,1286,553,1217,566,1217,586,1188,586,1168,625,1149,631,1129,651,1129,651,1119,664,1119,677,1099,697,1099,697,1090,730,1090,730,1080,756,1080,756,1070,782,1070,782,1060,815,1060,815,1050,867,1031,900,982,900,962,959,883,959,-128,16,-128,16,343},{219,461,232,441,245,441,252,412,265,412,265,402,278,402,291,382,304,382,304,402,317,402,317,432,330,441,330,461,337,461,337,481,343,481,343,500,356,520,356,599,343,608,343,628,337,628,337,648,330,648,330,667,317,687,278,697,278,707,252,707,252,697,232,697,232,687,212,677,206,599,199,599,199,569,186,569,186,530,206,520,206,471}},n=27967,ui=1438,w={{10667,6933,8000,6933,8000,5333,6933,5333,6933,3733,7467,3733,7467,1200,7700,1000,7700,933,7800,833,7867,833,7933,633,8000,600,8000,500,8033,500,8033,433,8100,367,8100,267,8133,267,8133,100,8167,100,8167,-33,8200,-33,8200,-167,8233,-167,8233,-333,8267,-333,8333,-600,8500,-767,8567,-767,8833,-1067,12267,-1067,12267,3733,10667,3733},{10267,2700,10333,2633,10333,2567,10433,2533,10433,2467,10467,2467,10467,2400,10533,2333,10533,2267,10467,2267,10467,2200,10367,2200,10333,2133,10267,2133,10267,2100,10200,2100,10200,2067,10133,2067,10067,2000,9800,2000,9767,2067,9700,2067,9700,2100,9633,2100,9633,2133,9567,2133,9500,2200,9467,2400,9433,2400,9433,2533,9467,2533,9467,2633,9500,2633,9533,2733,9800,2767,9800,2800,9900,2800,9900,2867,10033,2867,10067,2767,10233,2767}}}
 t[148]={c=1,m={{312,931,327,954,337,954,347,977,373,977,373,985,403,985,408,947,429,947,434,962,444,962,459,931,485,931,485,901,475,885,475,832,480,832,480,809,485,809,485,687,505,687,505,473,515,473,515,443,525,435,525,420,551,412,551,389,561,389,576,366,576,321,673,321,673,305,688,298,693,275,714,275,714,260,734,229,734,206,724,198,724,99,739,99,744,-69,1019,-69,1019,-534,612,-534,612,-115,566,-53,566,-38,541,0,500,15,500,23,475,23,475,31,454,31,454,38,434,38,434,46,408,46,408,53,393,53,393,61,383,61,373,76,358,76,352,92,322,107,322,122,307,145,296,145,266,198,-121,198,-121,931}},n=19719,ui=1439,w={{4267,900,4167,800,4167,733,4067,667,4067,500,4033,500,4033,300,4200,267,4200,133,4133,100,4133,33,4267,-67,4267,-233,4400,-233,4467,-167,4700,-167,4700,-200,4800,-200,4800,-233,5333,-233,5333,-367,6267,-367,6267,-433,6400,-433,6433,-500,6500,-500,6533,-667,6633,-667,6633,-733,6733,-833,6933,-833,6933,-1467,7000,-1467,7033,-1567,7133,-1600,7133,-1733,7200,-1733,7333,-1867,7433,-1867,7467,-1800,7900,-1800,7900,-1900,8633,-1933,8633,-3733,10667,-3733,10667,-1067,8833,-1067,8567,-767,8500,-767,8333,-600,8267,-333,8233,-333,8233,-167,8200,-167,8200,-33,8167,-33,8167,100,8133,100,8133,267,8100,267,8100,367,8067,367,8067,433,8000,500,8000,600,7933,633,7867,833,7800,833,7700,933,7700,1000,7467,1200,7467,3733,4267,3733}}}
 t[215]={c=1,m={{414,154,414,114,408,106,392,130,370,130,354,106,343,57,322,57,316,65,316,106,311,106,311,122,316,122,316,219,311,219,316,252,300,276,300,398,305,398,311,455,300,455,300,488,322,488,327,496,322,561,332,561,332,585,338,585,338,845,349,845,349,861,365,869,365,886,381,910,392,910,392,926,408,926,425,951,571,951,582,934,582,918,592,910,592,894,603,894,614,869,630,861,636,813,647,804,647,764,652,764,652,618,647,618,647,585,641,585,641,544,619,520,614,496,592,488,592,439,603,431,609,390,614,390,614,260,592,228,576,228,576,195,544,195,544,187,527,179,522,154},{435,414,435,431,408,439,397,423,397,406,365,406,360,398,360,333,338,325,338,301,349,293,349,276,381,276,381,293,408,293,408,301,430,301,430,293,462,293,468,301,468,341,462,349,441,349,441,366,430,382}},n=5055,ui=1412,w={{-367,-67,-200,-67,-167,-33,-267,67,-267,200,-167,300,33,367,33,500,0,533,-167,533,-167,567,-233,567,-233,533,-633,533,-633,567,-767,533,-867,633,-1367,633,-1367,600,-1600,567,-1600,633,-1733,633,-1733,500,-1767,467,-2033,500,-2033,433,-2133,433,-2133,400,-3200,400,-3200,333,-3267,333,-3300,233,-3367,233,-3467,133,-3467,67,-3533,67,-3533,-33,-3633,-133,-3633,-1033,-3567,-1100,-3500,-1100,-3467,-1167,-3400,-1167,-3400,-1233,-3300,-1300,-3267,-1400,-3067,-1433,-3033,-1500,-2867,-1500,-2867,-1533,-2267,-1533,-2267,-1500,-2133,-1500,-2133,-1467,-1967,-1467,-1867,-1333,-1767,-1300,-1733,-1167,-1533,-1167,-1500,-1233,-1333,-1267,-1333,-1300,-800,-1300,-667,-1167,-667,-1067,-533,-1067,-533,-867,-500,-867,-467,-767,-367,-733},{-1433,-200,-1500,-200,-1533,-33,-1467,33,-1400,33,-1400,233,-1367,267,-1100,267,-1067,400,-967,400,-933,333,-867,333,-867,133,-933,133,-933,-33,-967,-33,-967,-167,-933,-167,-933,-367,-967,-400,-1133,-400,-1167,-367,-1167,-233,-1233,-233,-1300,-167}}}
-t[267]={c=0,m={{458,266,448,328,417,328,406,281,396,281,396,234,375,266,333,266,333,203,323,203,312,266,281,266,250,328,208,328,208,359,187,359,146,422,146,453,125,484,125,563,146,563,146,609,125,609,94,656,104,703,115,703,115,766,94,781,83,859,115,906,135,906,146,938,198,938,198,1031,229,1078,229,1250,208,1250,177,1297,177,1406,167,1422,83,1406,83,1438,42,1438,52,1531,31,1531,31,1594,115,1594,125,1563,156,1547,156,1516,219,1500,240,1469,240,1406,229,1391,240,1391,250,1313,281,1297,292,1266,323,1266,333,1250,333,1188,510,1188,510,1203,552,1203,552,1188,750,1188,750,1141,729,1109,760,1078,760,984,729,984,729,969,740,969,740,922,750,922,750,766,760,766,760,719,781,703,802,609,844,563,844,531,906,453,906,422,927,391,948,391,938,344,958,328,958,281,906,281,906,250,896,250,896,94,885,94,885,188,854,188,823,234,781,172,781,141,729,109,688,31,635,31,615,125,583,125,573,78,552,78,531,109,542,266,531,281,500,281,500,250,458,250}},n=4276,ui=1424,w={{-167,-400,-300,-367,-300,-267,-200,-233,-200,-200,-100,-200,-167,-133,-167,0,-33,0,-33,33,-167,67,-167,167,-300,267,-300,400,-367,400,-367,467,-500,600,-567,600,-633,667,-800,667,-800,600,-900,600,-900,667,-1000,767,-1100,733,-1100,700,-1233,700,-1267,767,-1433,800,-1533,700,-1533,633,-1600,600,-1600,433,-1800,433,-1900,333,-2267,333,-2267,400,-2367,500,-2600,500,-2633,533,-2600,800,-2667,800,-2667,933,-2867,900,-2867,967,-3000,967,-3000,700,-2933,667,-2900,567,-2833,567,-2800,367,-2733,300,-2600,300,-2567,333,-2567,300,-2400,267,-2367,167,-2300,133,-2300,33,-2267,0,-2133,0,-2133,-567,-2167,-567,-2167,-700,-2133,-700,-2133,-1333,-2033,-1333,-1967,-1267,-1900,-1367,-1700,-1367,-1700,-1267,-1667,-1267,-1667,-1300,-1567,-1300,-1567,-1333,-1233,-1333,-1233,-1367,-1133,-1367,-1100,-1433,-900,-1500,-800,-1633,-733,-1633,-567,-1833,-500,-1833,-433,-1900,-433,-1967,-333,-1933,-300,-2000,-200,-2000,-200,-1833,-133,-1833,-133,-1800,200,-1800,200,-1767,0,-1767,0,-1667,-100,-1567,33,-1433,100,-1433,167,-1267,333,-1133,333,-967,133,-900,133,-800,233,-767,233,-700,167,-633,-167,-667,-200,-633,-200,-533,-133,-533,-133,-400}}}
+t[267]={c=0,n=4276,ui=1424,w={{-31,-183,82,-66,83,-30,3,-11,-43,48,-167,67,-167,167,-300,267,-300,400,-367,400,-367,467,-500,600,-567,600,-633,667,-800,667,-800,600,-900,600,-900,667,-1000,767,-1100,733,-1100,700,-1233,700,-1267,767,-1433,800,-1533,700,-1533,633,-1600,600,-1600,433,-1800,433,-1900,333,-2267,333,-2267,400,-2367,500,-2600,500,-2633,533,-2600,800,-2667,800,-2667,933,-2867,900,-2867,967,-3000,967,-3000,700,-2933,667,-2900,567,-2833,567,-2800,367,-2733,300,-2600,300,-2567,333,-2567,300,-2400,267,-2367,167,-2300,133,-2300,33,-2267,0,-2133,0,-2133,-567,-2167,-567,-2167,-700,-2133,-700,-2133,-1333,-2033,-1333,-1967,-1267,-1900,-1367,-1700,-1367,-1700,-1267,-1667,-1267,-1667,-1300,-1567,-1300,-1567,-1333,-1233,-1333,-1233,-1367,-1133,-1367,-1100,-1433,-900,-1500,-800,-1633,-733,-1633,-567,-1833,-500,-1833,-433,-1900,-433,-1967,-333,-1933,-300,-2000,-200,-2000,-200,-1833,-133,-1833,-133,-1800,200,-1800,200,-1767,0,-1767,0,-1667,-100,-1567,33,-1433,100,-1433,167,-1267,434,-1026,441,-961,541,-992,558,-1056,582,-1028,543,-976,414,-888,432,-803,338,-821,290,-768,346,-637,308,-593,87,-559,62,-523,98,-483,31,-372,-62,-304}}}
 t[268]={c=37,m={},n=6638,ui=0,w={{167,-1300,167,-1067,1600,-1067,1600,1600,-1067,1600,-1067,-1067,-967,-1067,-967,-1300}}}
 t[331]={c=1,m={{925,609,931,609,936,565,942,565,948,487,983,444,983,427,994,418,994,392,1000,392,1000,357,994,357,994,331,988,331,983,288,977,288,977,210,983,201,971,201,971,192,942,192,942,210,908,210,902,296,890,296,867,331,850,331,850,357,832,366,827,383,642,383,636,349,618,340,618,288,532,288,503,340,445,331,434,305,399,288,399,244,387,244,387,218,376,218,376,192,358,166,335,166,335,106,306,106,289,140,277,140,272,123,249,123,243,166,179,158,168,132,156,132,139,106,-353,106,-353,661,-75,661,-75,557,-98,548,-98,531,-116,522,-116,496,-110,496,-116,461,-110,453,116,453,116,548,150,548,150,591,162,591,156,600,162,609,162,687,185,687,185,704,289,704,289,756,451,756,457,773,491,782,497,791,497,825,526,869,590,860,590,895,653,895,665,869,751,869,751,834,815,834,815,817,867,817,867,834,890,834,896,808,919,782,919,765,913,765,908,739,884,739,884,730,913,730,948,782,948,747,936,739,931,695,925,695}},n=13068,ui=1440,w={{2333,-3633,2333,-3667,2500,-3700,2500,-3733,2800,-3767,2967,-3967,3033,-3967,3067,-4033,3167,-4033,3167,-4067,3300,-4067,3300,-4033,3400,-4033,3400,-4000,3567,-3967,3567,-3933,3867,-3933,3900,-3967,3900,-3900,3933,-3900,3933,-3733,3867,-3733,3867,-3533,3533,-3500,3533,-3433,3400,-3300,3400,-3200,3300,-3200,3267,-3100,3200,-3067,3200,-2000,3333,-1967,3367,-1867,3567,-1867,3567,-1367,3367,-1200,3400,-867,3500,-800,3567,-600,3733,-600,3733,-533,3833,-533,3833,-467,3933,-467,4033,-367,4033,-233,4267,-233,4267,-67,4133,33,4133,100,4200,133,4200,267,4033,300,4067,667,4167,733,4167,800,4267,900,4267,3733,2133,3733,2133,2133,2533,2133,2567,2267,2633,2267,2667,2367,2767,2367,2767,2333,2900,2367,2933,2333,2933,1033,2567,1033,2567,833,2400,833,2400,767,2367,800,2333,767,2033,767,2033,633,1967,633,1967,33,1767,33,1767,-900,1700,-933,1667,-1133,1633,-1167,1500,-1167,1333,-1333,1367,-1700,1233,-1700,1233,-2067,1333,-2133,1333,-2633,1467,-2633,1467,-3000,1533,-3000,1533,-3300,1467,-3300,1467,-3433,1567,-3467,1667,-3600,1733,-3600,1733,-3567,1833,-3533,1833,-3400,1867,-3400,1867,-3567,1667,-3767,1800,-3767,1833,-3700,2000,-3667,2000,-3633}}}
 t[332]={c=1,m={},n=35,ui=0,w={{1633,-8500,1633,-8533,2133,-8533,2133,-8500},{2133,-5467,2267,-5467,2300,-5433,2300,-5333,2133,-5333}}}
@@ -1901,4 +2088,20 @@ t[17852]={c=2995,m={},n=597,ui=0,w={{5100,-3333,5200,-3367,5200,-3400,5600,-3400
 end)()
 D.osummon = D.osummon or {}
 D.zcross = D.zcross or {}
+;(function() local t = D.zcross
+t[0]={["36-267"]={213,-1230,330,-617},["45-47"]={},["47-267"]={-118,-1821}}
+t[1]={["14-1637"]={1401,-4370}}
+end)()
+D.zcrossDel = D.zcrossDel or {}
+;(function() local t = D.zcrossDel
+t[0]={["45-47"]={-673,-3777}}
+end)()
+D.zbordEd = D.zbordEd or {}
+;(function() local t = D.zbordEd
+t[0]=true
+end)()
+D.walls = D.walls or {}
 D.fpath = D.fpath or {}
+;(function() local t = D.fpath
+t["accept:1446"]={i=0,n={-637.4,-4718.7,-621.3,-4663.1,-565.2,-4571.2,-515.8,-4532.8,-324.7,-4505.4,-202.4,-4518.5,-93.4,-4533.7,-180.2,-4406.7,-228.7,-4369.2,-173.8,-4292,84.9,-3857.7,113.5,-3726.9,80.6,-3649.2,-165.4,-3119.8,-159.9,-2958.9,-442.4,-2906.7,-464,-2874}}
+end)()
