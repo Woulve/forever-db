@@ -135,6 +135,25 @@ def main():
     check("slice caps never cut a recorded drop row", _s.capped(capdb, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000], [9, 100]]
           and _s.capped({"seen": {}}, "drop", "7000", capdb["drop"]["7000"], 2) == [[1, 9000], [2, 8000]])
 
+    # ---- quest dialog: Forever sources first field by field, recordings win
+    import merge as _m
+    mq, _ = _m.merge([("questie", {"qtext": {"1": {"o": "Forever objectives"}}}),
+                      ("vmangos", {"qtext": {"1": {"o": "1.12 objectives", "d": "1.12 details", "c": "done"}}})])
+    check("quest dialog: Forever objective text wins, the rest filled from MaNGOS",
+          mq["qtext"]["1"] == {"o": "Forever objectives", "d": "1.12 details", "c": "done"})
+    qcol = os.path.join(tmp, "qtextcol"); os.makedirs(qcol)
+    with open(os.path.join(qcol, "qrec-pc.lua"), "w", encoding="utf-8-sig") as f:
+        f.write('QuesticusCollect = { ["qtext"] = { [5001] = { ["d"] = "Forever words, $N.", ["p"] = "Got them?", ["t"] = 5 } },'
+                ' ["qgreet"] = { ["c777"] = { ["x"] = "Hello $C.", ["t"] = 5 } } }\n')
+    base_q = json.load(open(os.path.join(tmp, "base.json")))
+    base_q["qtext"] = {"5001": {"d": "old words", "o": "kill things", "c": "thanks"}}
+    json.dump(base_q, open(os.path.join(tmp, "base_q.json"), "w"))
+    run("tools/build.py", "--base", os.path.join(tmp, "base_q.json"), "--collected", qcol, "--out", os.path.join(tmp, "q.json"))
+    qdb = json.load(open(os.path.join(tmp, "q.json")))
+    check("quest dialog: recorded text replaces the sources', the rest stays",
+          qdb["qtext"]["5001"] == {"d": "Forever words, $N.", "o": "kill things", "p": "Got them?", "c": "thanks", "rec": 1})
+    check("quest dialog: recorded greeting", qdb["qgreet"]["c777"] == "Hello $C.")
+
     # ---- zone borders from the terrain (tools/import_terrain.py)
     tdir = os.path.join(tmp, "terrain"); os.makedirs(tdir)
     run("tests/fixtures/terrain/make.py", tdir)

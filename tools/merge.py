@@ -38,7 +38,8 @@ PASS = ["qx", "nfac", "dng", "ind",    # single-source detail tables: first sour
         "legacy", "lcrit", "explore", "spf",
         # zone and sub-zone borders from the Forever client's terrain (tools/import_terrain.py)
         "zbord", "abord", "agrid",
-        "qrw", "ptl", "qwk"]                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
+        "qrw", "ptl", "qwk",
+        "qgreet"]                                                   # questgiver greetings (MaNGOS dumps)                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel", "ilvl", "class", "subclass", "slot", "icon", "classes", "skill",
                    "skillRank", "races", "minFaction", "minRep"],
@@ -91,7 +92,7 @@ def merge(sources):
     global NAMES
     NAMES = [n for n, _ in sources]
     data = [d for _, d in sources]
-    out = {t: {} for t in ENTITY + UNION + DROPS + PASS + ["start", "world", "spw", "spz", "loc", "src"]}
+    out = {t: {} for t in ENTITY + UNION + DROPS + PASS + ["start", "world", "spw", "spz", "loc", "src", "qtext"]}
     rep = {"sources": {}, "conflicts": {}, "rates": {"compared": 0, "disagree": 0, "examples": []},
            "forever_only": {}, "added_by": {}}
     conflicts = defaultdict(lambda: {"count": 0, "examples": []})
@@ -208,6 +209,15 @@ def merge(sources):
         for d in data:
             for k, v in (d.get(t) or {}).items():
                 out[t].setdefault(k, v)
+    # ---------------- quest dialog, field by field: Forever sources first (QuestieDB's Forever objective
+    # lines), then the rest in priority order (MaNGOS details / progress / completion, pfQuest)
+    order = [d for n, d in zip(NAMES, data) if n in FOREVER] + [d for n, d in zip(NAMES, data) if n not in FOREVER]
+    for d in order:
+        for k, v in (d.get("qtext") or {}).items():
+            if isinstance(v, dict):
+                e = out["qtext"].setdefault(k, {})
+                for f, x in v.items():
+                    e.setdefault(f, x)
     # ---------------- translations
     for d in data:
         for loc, tbls in (d.get("loc") or {}).items():

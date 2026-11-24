@@ -134,6 +134,9 @@ Tables:
 | `sla` / `ieff` / `seff` | skill line spells (recipes) / item use effects / spell effects |
 | `tset` / `bpet` / `ctun` / `wmo` | transmog sets / battle pet species / content tuning (levels) / map overlays |
 | `legacy` / `lcrit` / `explore` | LegacyForever: challenge data, criterion locations, exploration areas |
+| `qtext` | `{quest: {d = details (the offer), o = objectives, p = progress ("have you got them?"), c = completion (turn-in text), e = end text, ot = {objective lines}, rec = 1 when recorded in game}}` quest dialog: what players recorded in WoW Forever (Questicus) wins, then QuestieDB's Forever objective lines, then VMaNGOS / cMaNGOS / pfQuest (ForeverDB_Full). Texts keep the game's $N / $C / $R / $B tokens |
+| `qgreet` | `{"c<npc>" / "o<object>": greeting}` the text above a quest giver's quest list (recorded in game, then MaNGOS) (ForeverDB_Full) |
+| `loc[lang].qtext` | quest details and objectives in 8 more languages (pfQuest) (ForeverDB_Locales) |
 | `zbord` | `{zone areaID: {c = continent mapID, ui = uiMapID, n = map chunks, w = {{x, y, x, y, ...}, ...} world-yard loops (outlines and holes), m = the same loops on the zone's map, 0-1000}}` zone borders from the WoW Forever client's own terrain (every ADT map chunk's area) |
 | `abord` | the same for every sub-zone (towns, camps, ...), plus `z` = its zone (ForeverDB_Full) |
 | `agrid` | `{continent: {o, c, z = {row: "zoneID*count,..."}}}` which zone each 33-yard map chunk belongs to (world X = o - (row + 0.5) * c, Y = o - (col + 0.5) * c), for point-in-zone lookups (ForeverDB_Full) |

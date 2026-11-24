@@ -141,9 +141,12 @@ local function pfquest(root, outpath)
     end
     local qs = rawget(db.quests, loc)
     if qs then
-      n.quests = {}
+      n.quests, n.qtext = {}, {}
       for id, q in pairs(qs) do
-        if type(q) == "table" then n.quests[id] = q.T elseif type(q) == "string" then n.quests[id] = q end
+        if type(q) == "table" then
+          n.quests[id] = q.T
+          if q.D or q.O then n.qtext[id] = { d = q.D, o = q.O } end      -- quest dialog: details, objectives
+        elseif type(q) == "string" then n.quests[id] = q end
       end
     end
     if next(n) then res.names[loc] = n end

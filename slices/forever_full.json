@@ -16,7 +16,9 @@
     "gold",
     "zbord",
     "abord",
-    "agrid"
+    "agrid",
+    "qtext",
+    "qgreet"
   ],
   "prune": false
 }

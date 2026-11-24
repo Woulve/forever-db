@@ -260,7 +260,8 @@ def merge_extra(recs, agg):
     """The tables only Questicus' Record.lua fills: money, skinning, fishing, flight costs, trainers,
     quest details, offers, reputation, subzones, encounters, rares, gathering skills, items, creature types."""
     x = {k: {} for k in ("gold", "skinl", "fishl", "fcost", "trn", "qinfo", "qoff", "qmiss", "qrep", "zsub", "enc",
-                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath", "zcrossDel", "zbord", "walls")}
+                         "rare", "oskill", "itemx", "ctype", "resp", "vendx", "osummon", "zcross", "nspawn", "fpath", "zcrossDel", "zbord", "walls",
+                         "qtext", "qgreet")}
     for _, _, r in recs:
         for npc, e in as_dict(r.get("gold")).items():
             e = as_dict(e)
@@ -287,6 +288,18 @@ def merge_extra(recs, agg):
             cur = x["trn"].get(int(npc))
             if cur is None or (e.get("t") or 0) >= (cur.get("t") or 0):
                 x["trn"][int(npc)] = e
+        # quest dialog as the game showed it (Questicus Record.lua): newest text per quest and field
+        for qid, e in as_dict(r.get("qtext")).items():
+            e = as_dict(e)
+            a = x["qtext"].setdefault(int(qid), {})
+            for k in ("d", "o", "p", "c"):
+                if isinstance(e.get(k), str) and e[k].strip() and (e.get("t") or 0) >= a.get("t_" + k, -1):
+                    a[k], a["t_" + k] = e[k], e.get("t") or 0
+        for key, e in as_dict(r.get("qgreet")).items():
+            e = as_dict(e)
+            cur = x["qgreet"].get(str(key))
+            if isinstance(e.get("x"), str) and e["x"].strip() and (cur is None or (e.get("t") or 0) >= cur[1]):
+                x["qgreet"][str(key)] = (e["x"], e.get("t") or 0)
         for qid, e in as_dict(r.get("qinfo")).items():
             e = as_dict(e)
             a = x["qinfo"].setdefault(int(qid), {})
@@ -523,6 +536,18 @@ def apply_extra(db, x):
             db["qrw"][qid] = new
         for k in ("xl", "act", "mact"):
             e.pop(k, None)
+    # recorded quest dialog replaces the sources' (WoW Forever's own words, never overwritten)
+    db.setdefault("qtext", {})
+    for qid, e in x["qtext"].items():
+        cur = dict(db["qtext"].get(qid) or {})
+        for k in ("d", "o", "p", "c"):
+            if k in e:
+                cur[k] = e[k]
+        cur["rec"] = 1                              # (recorded in game)
+        db["qtext"][qid] = cur
+    db.setdefault("qgreet", {})
+    for key, (text, _) in x["qgreet"].items():
+        db["qgreet"][key] = text
     db["qinfo"] = x["qinfo"]
     for qid, e in x["qinfo"].items():
         q = db["quest"].get(qid)

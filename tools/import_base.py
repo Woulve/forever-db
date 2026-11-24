@@ -32,7 +32,7 @@ TABLES = ["creature_template", "creature", "gameobject_template", "gameobject", 
           "creature_loot_template", "gameobject_loot_template", "item_loot_template", "reference_loot_template",
           "npc_vendor", "npc_vendor_template", "quest_template", "creature_questrelation",
           "creature_involvedrelation", "gameobject_questrelation", "gameobject_involvedrelation",
-          "quest_relations"]
+          "quest_relations", "questgiver_greeting"]
 
 WORLD_DROP_USERS = 40     # a shared loot table used by this many creatures = world drop
 SPAWN_CAP = 120           # spawn points kept per creature/object
@@ -64,7 +64,8 @@ def final_patch(raw):
 
 def build(tables):
     T = {k: Table(final_patch(tables.get(k))) for k in TABLES}
-    out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw", "qrw"]}
+    out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw", "qrw",
+                           "qtext", "qgreet"]}
 
     # --- creatures
     ct = T["creature_template"]
@@ -197,6 +198,18 @@ def build(tables):
     ch_cols = [(qt.col("rewchoiceitemid%d" % k), qt.col("rewchoiceitemcount%d" % k)) for k in range(1, 7)]
     fx_cols = [(qt.col("rewitemid%d" % k), qt.col("rewitemcount%d" % k)) for k in range(1, 5)]
 
+    q_det, q_obj, q_req = qt.col("details"), qt.col("objectives"), qt.col("requestitemstext")
+    q_off, q_end = qt.col("offerrewardtext"), qt.col("endtext")
+    q_ot = [qt.col("objectivetext%d" % k) for k in range(1, 5)]
+
+    # questgiver greetings (the text above an NPC's / object's quest list): {"c234": text, "o123": text}
+    gt = T["questgiver_greeting"]
+    g_e, g_t, g_x = gt.col("entry"), gt.col("type"), gt.col("text")
+    if g_e is not None and g_x is not None:
+        for r in gt:
+            if isinstance(r[g_x], str) and r[g_x].strip():
+                out["qgreet"][("o" if g_t is not None and r[g_t] == 1 else "c") + str(r[g_e])] = r[g_x]
+
     def full_xp(qlvl, maxmoney):
         """XP at full value (no grey penalty), cMaNGOS classic Quest::XPValue."""
         if not maxmoney:
@@ -214,6 +227,19 @@ def build(tables):
         xp = full_xp(r[q_lv] if q_lv is not None else None, maxm)
         if money > 0 or xp or ch or fixed:
             out["qrw"][r[q_e]] = [max(0, money or 0), xp, ch or None, fixed or None]
+        # quest dialog: d = details (the NPC's offer), o = objectives, p = progress ("have you got them?"),
+        # c = completion (the turn-in text), e = end text, ot = the objectives' own lines
+        tx = {}
+        for key, col in (("d", q_det), ("o", q_obj), ("p", q_req), ("c", q_off), ("e", q_end)):
+            if col is not None and isinstance(r[col], str) and r[col].strip():
+                tx[key] = r[col]
+        ot = [r[c] if isinstance(r[c], str) else "" for c in q_ot if c is not None]
+        if any(s.strip() for s in ot):
+            while ot and not ot[-1].strip():
+                ot.pop()
+            tx["ot"] = ot
+        if tx:
+            out["qtext"][r[q_e]] = tx
         for c in rew_cols:
             if r[c]:
                 lst = out["rew"].setdefault(r[c], [])

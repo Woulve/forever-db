@@ -109,7 +109,17 @@ def add_spots(spz, key, ui, x, y):
 
 def empty():
     return {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop",
-                            "vend", "rew", "start", "world", "spw", "spz", "loc", "qx", "nfac", "dng", "ind"]}
+                            "vend", "rew", "start", "world", "spw", "spz", "loc", "qx", "nfac", "dng", "ind", "qtext"]}
+
+
+def qtext_entry(d, o):
+    """{"d": details, "o": objectives} without empty fields (quest dialog)"""
+    e = {}
+    if isinstance(d, str) and d.strip():
+        e["d"] = d
+    if isinstance(o, str) and o.strip():
+        e["o"] = o
+    return e
 
 
 def push(d, k, v):
@@ -196,6 +206,17 @@ def pfquest(p, a2u, coef):
             t = tbls.get(src) or {}
             if t:
                 out["loc"].setdefault(loc, {})[dst] = {int(k): v for k, v in t.items() if isinstance(v, str)}
+        # quest dialog (details, objectives): English in qtext, the other languages in loc[lang].qtext
+        qt = {}
+        for k, v in (tbls.get("qtext") or {}).items():
+            e = qtext_entry(v.get("d"), v.get("o")) if isinstance(v, dict) else {}
+            if e:
+                qt[int(k)] = e
+        if qt:
+            if loc == "enUS":
+                out["qtext"] = qt
+            else:
+                out["loc"].setdefault(loc, {})["qtext"] = qt
     return out, unmapped
 
 
@@ -354,6 +375,11 @@ def questie(q, a2u):
         for it in ints(sb.get("3") if isinstance(sb, dict) else None):
             out["start"].setdefault(it, qid)
         out["qx"][qid] = quest_extra(r, qk, a2u)
+        ot = field(r, qk, "objectivesText")          # WoW Forever's own objective lines (quest log text)
+        lines = [s for s in (ot.values() if isinstance(ot, dict) else ot or []) if isinstance(s, str) and s.strip()] \
+            if isinstance(ot, (dict, list)) else ([ot] if isinstance(ot, str) and ot.strip() else [])
+        if lines:
+            out["qtext"][qid] = {"o": " ".join(lines)}
     return out, unmapped
 
 
