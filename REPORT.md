@@ -16,7 +16,7 @@ Sources in priority order: client, questie, att, vmangos, cmangos, pfquest, lega
 | spf | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 | terrain | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) | 0 (0 only here) |
 
-Merged: npc 15831, obj 12111, item 32279, quest 6307, qg 5678, qe 6020, vend 3933, rew 3202, drop 11011, odrop 3762, idrop 2750, qx 6084, nfac 7565, dng 232, ind 154, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7389, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 29, zbord 58, abord 833, agrid 6, qrw 4132, ptl 0, qwk 0, qgreet 200, start 823, world 3136, spw 15877, spz 16536, qtext 6036
+Merged: npc 15831, obj 12111, item 32279, quest 6307, qg 5678, qe 6020, vend 3933, rew 3202, drop 11011, odrop 3762, idrop 2750, qx 6084, nfac 7565, dng 232, ind 154, taxi 101, umap 60, umaa 61, area 1404, ach 493, ctree 6759, crit 3371, mtree 2879, hol 23, sla 7389, ieff 9026, seff 3931, tset 9, bpet 122, ctun 102, wmo 1081, legacy 5, lcrit 6, explore 43, spf 29, zbord 58, abord 833, agrid 6, ptl 0, qwk 0, qgreet 200, start 823, world 3136, spw 15877, spz 16536, qtext 6036, qrw 5365
 
 Forever-only entries (only the Forever source has them): npc 5192, obj 754, item 5590, quest 234
 

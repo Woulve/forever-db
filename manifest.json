@@ -43,7 +43,7 @@
   "qinfo": 251,
   "qmiss": 13,
   "qrep": 13,
-  "qrw": 4241,
+  "qrw": 5372,
   "qsp": 144,
   "qsrc": 46,
   "qtext": 6036,
@@ -87,10 +87,10 @@
   "submissions": 9
  },
  "fixes": 7,
- "hash": "3ef443ad02d4a50c",
+ "hash": "7d709dca1e0a87a3",
  "recorded": {
   "newSpawns": 2,
-  "questRewardsFromGame": 223
+  "questRewardsFromGame": 169
  },
  "recordings": 4,
  "sourceList": [
@@ -152,7 +152,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "cbe00c0",
+   "ref": "a5e8f24",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   },
