@@ -262,7 +262,7 @@ jobs:
             --notes "ForeverDB $VERSION, built $(date -u +%F) from the Forever client tables + AllTheThings ${REF_ATT}, QuestieDB ${REF_QUESTIE}, VMaNGOS ${REF_VMANGOS}, cMaNGOS ${REF_CMANGOS}, pfQuest ${REF_PFQUEST}, LegacyForever ${REF_LEGACY}, Shortest Path Forever ${REF_SPF}, Drop Tables ${REF_DROPTABLES} + recordings. Hash ${{ steps.diff.outputs.new }}. See report.md for the cross-check."
 
       - name: Upload ForeverDB to CurseForge
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true' && github.repository == 'foreverfraddons/forever-db'
         uses: BigWigsMods/packager@v2
         with:
           args: -p ${{ env.CF_PROJECT }}
