@@ -18,7 +18,7 @@
   "fcost": 14,
   "fish": 0,
   "fpath": 1,
-  "gold": 1340,
+  "gold": 1342,
   "hol": 23,
   "idrop": 2750,
   "ieff": 9026,
@@ -53,12 +53,12 @@
   "rare": 1,
   "resp": 10,
   "rew": 3204,
-  "seen": 2123,
+  "seen": 2127,
   "seff": 3931,
   "skin": 21,
   "sla": 7389,
   "spf": 29,
-  "spm": 5000,
+  "spm": 5008,
   "spw": 15877,
   "spz": 16536,
   "start": 823,
@@ -81,13 +81,13 @@
   "zsub": 30
  },
  "dropTables": {
-  "built": 1795519130,
-  "kills": 40538,
-  "mobs": 2071,
-  "submissions": 7
+  "built": 1795592354,
+  "kills": 40774,
+  "mobs": 2075,
+  "submissions": 8
  },
  "fixes": 7,
- "hash": "10478e8479227421",
+ "hash": "51ede6b8b2d6a96b",
  "recorded": {
   "newSpawns": 2,
   "questRewardsFromGame": 223
@@ -136,7 +136,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "f0c965b",
+   "ref": "0c78f3f",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -152,7 +152,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "f9ce97a",
+   "ref": "bfc861c",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   },
@@ -160,7 +160,7 @@
    "forever": true,
    "licence": "CC BY-SA 4.0 (data; includes Blackthornes Farmer MIT, EG Link CC BY 4.0, Everloot CC BY-SA 4.0)",
    "name": "droptables",
-   "ref": "96b0513",
+   "ref": "04bcffb",
    "repo": "valcheffnet/DropTables",
    "title": "Drop Tables (WoW Forever loot counts)"
   },
