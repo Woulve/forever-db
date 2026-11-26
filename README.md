@@ -145,7 +145,8 @@ Tables:
 | `skin` | `{item: {npc, chance per 10000, npc, chance, ...}}` (flat like drop) what skinning a mob gives (Drop Tables, 3+ skinned corpses) |
 | `gold` | `{npc: [average copper per kill, smallest pile, largest pile, kills]}` (Drop Tables) |
 | `spf` | Shortest Path Forever travel data (TaxiNodes, TaxiPaths, Docks, Routes, Portals, Teleports, Entrances, trainers, Food, Drink, TownAreas, Zones, Walks) |
-| `spw` | spawn world coordinates per map. Convert in game with `C_Map.GetMapPosFromWorldPos` |
+| `spw` | spawn world coordinates per map, up to 120 per creature and every one of an object. Convert in game with `C_Map.GetMapPosFromWorldPos` |
+| `oskill` | `{object: [skill, level]}` gathering nodes: `"Herbalism"` or `"Mining"` and the skill they need, from the object template's lock and the Forever client's `Lock` table; recordings win, and an object without either takes the skill of a node with its name |
 | `qe` | quest enders (same keys as `qg`) |
 | `qx` | quest details from QuestieDB, per quest: 1 races mask, 2 classes mask, 3 preQuestSingle, 4 preQuestGroup, 5 exclusiveTo, 6 breadcrumbFor, 7 nextInChain, 8 creature objectives, 9 object objectives, 10 item objectives, 11 zoneOrSort, 12 questFlags, 13 specialFlags, 14 requiredSkill {id, value}, 15 reputation rewards {faction, value, ...}, 16 exploration spots {[uiMap] = {x, y, ...}}, 17 parentQuest, 18 sourceItem, 19 requiredMinRep, 20 breadcrumbs, 21 requiredSourceItems, 22 extra objective spots {[uiMap] = {x, y, ...}}, 23 extra objective targets {"c123", "o45"} |
 | `nfac` | NPC friendly to: "A", "H" or "AH" |

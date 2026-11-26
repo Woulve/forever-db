@@ -118,8 +118,15 @@ jobs:
               echo "$name $ref: cached"; return 0; fi
             "$@" && echo "$ref" > "work/cache/$name.ref" || echo "::warning::import of $name failed"
           }
-          imp cmangos "$REF_CMANGOS" python tools/import_base.py work/src/cmangos/Full_DB work/cache/src-cmangos.json
-          imp vmangos "$REF_VMANGOS" python tools/import_base.py work/src/vmangos work/cache/src-vmangos.json
+          CB=$(ls work/src/att/.contrib/.db/forever/.config/.wago/AreaTable.*.csv 2>/dev/null | sed -E 's/.*AreaTable\.([0-9.]+)\.csv/\1/' | head -1)
+          # the Forever client's Lock table names the skill a gathering node needs (wago.tools, the build ATT ships)
+          LOCK=work/client-csv/Lock.$CB.csv LOCKARG=""
+          mkdir -p work/client-csv
+          [ -z "$CB" ] || [ -s "$LOCK" ] || curl -sSfL -A "forever-db/1" -o "$LOCK" "https://wago.tools/db2/Lock/csv?build=$CB" \
+            || echo "::warning::Lock table not fetched from wago.tools"
+          [ -s "$LOCK" ] && LOCKARG="--lock $LOCK"
+          imp cmangos "$REF_CMANGOS-$CB" python tools/import_base.py work/src/cmangos/Full_DB work/cache/src-cmangos.json $LOCKARG
+          imp vmangos "$REF_VMANGOS-$CB" python tools/import_base.py work/src/vmangos work/cache/src-vmangos.json $LOCKARG
           GEN=""; [ "$QUESTIE_GENERATED" = "off" ] && GEN="no-generated"
           CONV=work/src/questie/data/Forever/conversion.json
           imp questie "$REF_QUESTIE-$QUESTIE_GENERATED" sh -c "lua5.1 tools/lua/export.lua questie work/src/questie Forever work/cache/questie.json $GEN && python tools/import_addons.py questie work/cache/questie.json work/cache/src-questie.json --conversion $CONV --dungeons work/src/questie/support/Forever/Zones/dungeons.lua"
@@ -130,7 +137,6 @@ jobs:
           imp client "$REF_ATT" python tools/import_client.py work/src/att/.contrib/.db/forever/.config/.wago work/cache/src-client.json
           # zone borders from the Forever client's own terrain (every outdoor continent's ADT map chunks, from
           # wago.tools for the client build ATT ships; only a small grid per continent is kept in the cache)
-          CB=$(ls work/src/att/.contrib/.db/forever/.config/.wago/AreaTable.*.csv 2>/dev/null | sed -E 's/.*AreaTable\.([0-9.]+)\.csv/\1/' | head -1)
           if [ -n "$CB" ]; then
             mkdir -p work/terrain-csv
             cp work/src/att/.contrib/.db/forever/.config/.wago/{AreaTable,UiMap,UiMapAssignment}.$CB.csv work/terrain-csv/

@@ -4,7 +4,9 @@ source format (one JSON per source; tools/merge.py combines them).
 VMaNGOS keeps one row per patch (column `patch`) or a patch range (`patch_min`/`patch_max`);
 only rows valid in the final patch (1.12) are used.
 
-  python tools/import_base.py <folder with .sql/.sql.gz/.zip dumps> data/base.json
+  python tools/import_base.py <folder with .sql/.sql.gz/.zip dumps> data/base.json [--lock Lock.csv]
+
+--lock is the Forever client's Lock table (wago.tools CSV); it names the skill a gathering node needs.
 
 Master format (JSON keys are strings; ids are numbers in the values):
   npc   {id: [name, subname, minLv, maxLv, rank]}
@@ -21,8 +23,9 @@ Master format (JSON keys are strings; ids are numbers in the values):
   start {itemId: questId}
   world {itemId: minLevel}               world drops (shared loot tables)
   spw   {"c123": [[map, x, y, x, y, ...], ...]}   world coordinates per map
+  oskill {objId: [skill, level]}         gathering nodes ("Herbalism", "Mining") from the chest's lock
 """
-import json, sys, os
+import csv, json, sys, os
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -35,7 +38,9 @@ TABLES = ["creature_template", "creature", "gameobject_template", "gameobject", 
           "quest_relations", "questgiver_greeting"]
 
 WORLD_DROP_USERS = 40     # a shared loot table used by this many creatures = world drop
-SPAWN_CAP = 120           # spawn points kept per creature/object
+SPAWN_CAP = 120           # spawn points kept per creature; objects keep all
+LOCK_SKILL = 2            # Lock.Type: the lock opens with a skill named by Lock.Index
+GATHERING = {2: "Herbalism", 3: "Mining"}   # Lock.Index of a skill lock
 MIN_CHANCE = 1            # per 10000; smaller drops are dropped
 
 
@@ -62,10 +67,22 @@ def final_patch(raw):
     return {"cols": cols, "rows": rows}
 
 
-def build(tables):
+def read_locks(path):
+    """{lockId: [skill, level]} for the locks that need a gathering skill."""
+    locks = {}
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for r in csv.DictReader(f):
+            for k in range(8):
+                if int(r["Type_%d" % k]) == LOCK_SKILL and int(r["_Index_%d" % k]) in GATHERING:
+                    locks[int(r["ID"])] = [GATHERING[int(r["_Index_%d" % k])], int(r["Skill_%d" % k])]
+                    break
+    return locks
+
+
+def build(tables, locks=None):
     T = {k: Table(final_patch(tables.get(k))) for k in TABLES}
     out = {k: {} for k in ["npc", "obj", "item", "quest", "qg", "qe", "drop", "odrop", "idrop", "vend", "rew", "start", "world", "spw", "qrw",
-                           "qtext", "qgreet"]}
+                           "qtext", "qgreet", "oskill"]}
 
     # --- creatures
     ct = T["creature_template"]
@@ -88,12 +105,14 @@ def build(tables):
 
     # --- objects
     gt = T["gameobject_template"]
-    g_entry, g_name, g_type, g_d1 = gt.col("entry"), gt.col("name"), gt.col("type"), gt.col("data1")
+    g_entry, g_name, g_type, g_d0, g_d1 = gt.col("entry"), gt.col("name"), gt.col("type"), gt.col("data0"), gt.col("data1")
     obj_loot = {}
     for r in gt:
         out["obj"][r[g_entry]] = [r[g_name]]
         if g_type is not None and r[g_type] in (3, 25) and g_d1 is not None and r[g_d1]:   # chest / fishing hole
             obj_loot[r[g_entry]] = r[g_d1]
+        if g_type is not None and r[g_type] == 3 and g_d0 is not None and (r[g_d0] in (locks or {})):   # chest: data0 = lock
+            out["oskill"][r[g_entry]] = locks[r[g_d0]]
 
     # --- items
     it = T["item_template"]
@@ -277,10 +296,11 @@ def build(tables):
                     grouped[r[i]][r[m]].append((int(round(r[x])), int(round(r[y]))))
         for ent, maps in grouped.items():
             res, total = [], 0
+            cap = SPAWN_CAP if kind == "c" else None
             for mp, pts in sorted(maps.items(), key=lambda kv: -len(kv[1])):
                 flat = [mp]
                 for (px, py) in pts:
-                    if total >= SPAWN_CAP:
+                    if cap is not None and total >= cap:
                         break
                     flat += [px, py]
                     total += 1
@@ -294,13 +314,19 @@ def build(tables):
 
 
 def main():
-    src, dst = sys.argv[1], sys.argv[2]
+    args = sys.argv[1:]
+    locks = None
+    if "--lock" in args:
+        i = args.index("--lock")
+        locks = read_locks(args[i + 1])
+        del args[i:i + 2]
+    src, dst = args[0], args[1]
     dumps = find_dumps(src)
     if not dumps:
         sys.exit("no .sql dumps found in " + src)
     tables = read_tables(dumps, TABLES)
     print("tables:", {k: len(v["rows"]) for k, v in tables.items()})
-    out = build(tables)
+    out = build(tables, locks)
     print("built:", {k: len(v) for k, v in out.items()})
     os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
     with open(dst, "w", encoding="utf-8") as f:

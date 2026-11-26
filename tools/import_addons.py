@@ -16,7 +16,7 @@ redrew a few zone maps, e.g. Mulgore).
 """
 import json, os, re, sys
 
-SPAWN_CAP = 120
+SPAWN_CAP = 120   # map positions kept per creature; objects keep all
 
 
 def obj_list(v):
@@ -99,7 +99,7 @@ def add_spots(spz, key, ui, x, y):
         return
     m = spz.setdefault(key, {})
     pts = m.setdefault(ui, [])
-    if sum(len(p) for p in m.values()) // 2 >= SPAWN_CAP:
+    if key.startswith("c") and sum(len(p) for p in m.values()) // 2 >= SPAWN_CAP:
         return
     for j in range(0, len(pts), 2):
         if abs(pts[j] - x) <= 5 and abs(pts[j + 1] - y) <= 5:

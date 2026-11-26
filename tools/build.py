@@ -459,6 +459,20 @@ def merge_extra(recs, agg):
     return x
 
 
+def node_skills(db, recorded):
+    """oskill: the MaNGOS dumps' nodes, then recordings on top. An object without either (Forever's own nodes)
+    takes the skill of a node with the same name."""
+    skills = {**keyed(db.get("oskill") or {}), **recorded}
+    by_name = {}
+    for o, e in sorted(skills.items()):
+        by_name.setdefault((db["obj"].get(o) or [None])[0], e)
+    for o in db["obj"].keys() - skills.keys():
+        e = by_name.get((db["obj"].get(o) or [None])[0])
+        if e:
+            skills[o] = e
+    return skills
+
+
 def apply_extra(db, x):
     """Put Record.lua's tables in the master database (after Drop Tables, so recordings add to theirs)."""
     if not x:
@@ -708,7 +722,7 @@ def apply_extra(db, x):
         if rows:
             vendx[npc] = rows
     db["vendx"] = vendx
-    db["oskill"] = x["oskill"]
+    db["oskill"] = node_skills(db, x["oskill"])
     db["ctype"] = x["ctype"]
     for it, e in x["itemx"].items():
         if it not in db["item"]:

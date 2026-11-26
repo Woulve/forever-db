@@ -17,6 +17,8 @@ source has is kept, so each source adds what the others are missing.
   world                      lowest level any source gives
   spw                        world coordinates, union, near-duplicates dropped
   spz                        Forever map positions (uiMap, 0-1000), Forever source first
+                             (both capped at SPAWN_CAP points per creature; objects keep all)
+  oskill                     gathering nodes' skill and level (MaNGOS dumps), first source wins
   loc                        translated names (union, first source per locale wins)
   src                        which sources have each npc/obj/item/quest: bit k = k-th source
 
@@ -39,7 +41,8 @@ PASS = ["qx", "nfac", "dng", "ind",    # single-source detail tables: first sour
         # zone and sub-zone borders from the Forever client's terrain (tools/import_terrain.py)
         "zbord", "abord", "agrid",
         "ptl", "qwk",
-        "qgreet"]                                                   # questgiver greetings (MaNGOS dumps)                                        # quest rewards (MaNGOS dumps): money, XP, choice / fixed items
+        "qgreet",                                                   # questgiver greetings (MaNGOS dumps)
+        "oskill"]                                                   # gathering nodes' skill (MaNGOS dumps)
 FIELDS = {"npc": ["name", "sub", "minLv", "maxLv", "rank"], "obj": ["name"],
           "item": ["name", "quality", "reqLevel", "ilvl", "class", "subclass", "slot", "icon", "classes", "skill",
                    "skillRank", "races", "minFaction", "minRep"],
@@ -183,10 +186,11 @@ def merge(sources):
         for key, groups in (d.get("spw") or {}).items():
             cur = {g[0]: g[1:] for g in out["spw"].get(key, [])}
             total = sum(len(p) // 2 for p in cur.values())
+            cap = SPAWN_CAP if key.startswith("c") else None
             for g in groups:
                 m, pts = g[0], cur.setdefault(g[0], [])
                 for j in range(1, len(g) - 1, 2):
-                    if total >= SPAWN_CAP:
+                    if cap is not None and total >= cap:
                         break
                     if not near_dupe(pts, g[j], g[j + 1], NEAR_WORLD):
                         pts += [g[j], g[j + 1]]
@@ -196,10 +200,11 @@ def merge(sources):
         for key, maps in (d.get("spz") or {}).items():
             cur = out["spz"].setdefault(key, {})
             total = sum(len(p) // 2 for p in cur.values())
+            cap = SPAWN_CAP if key.startswith("c") else None
             for m, pts in maps.items():
                 lst = cur.setdefault(str(m), [])
                 for j in range(0, len(pts) - 1, 2):
-                    if total >= SPAWN_CAP:
+                    if cap is not None and total >= cap:
                         break
                     if not near_dupe(lst, pts[j], pts[j + 1], NEAR_MAP):
                         lst += [pts[j], pts[j + 1]]
