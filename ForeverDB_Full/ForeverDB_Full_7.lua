@@ -3116,6 +3116,7 @@ t[96899]={o="Meet Leonid Barthalomew at Bandarion Keep in Tirisfal Glades."}
 t[96912]={o="Win 10 duels."}
 t[96913]={o="Complete 3 Warsong Gulch battles."}
 t[96914]={o="Kill 25 players of the enemy faction in Warsong Gulch."}
+t[96915]={o="Complete 3 Arathi Basin battles."}
 t[96930]={o="Return to the Curious Crow."}
 t[96931]={o="Touch the Crow Effigy on the bridge overlooking the Cradle of Tranquility to call the Wild God, Jereman."}
 t[96939]={o="Speak to the Wild God, Marrosis."}
