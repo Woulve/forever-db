@@ -18,7 +18,7 @@
   "fcost": 14,
   "fish": 0,
   "fpath": 1,
-  "gold": 1408,
+  "gold": 1431,
   "hol": 23,
   "idrop": 2750,
   "ieff": 9026,
@@ -34,7 +34,7 @@
   "npc": 15831,
   "obj": 12111,
   "odrop": 3762,
-  "oskill": 0,
+  "oskill": 163,
   "osummon": 0,
   "ptl": 0,
   "qe": 6022,
@@ -53,12 +53,12 @@
   "rare": 1,
   "resp": 10,
   "rew": 3205,
-  "seen": 2230,
+  "seen": 2273,
   "seff": 3931,
   "skin": 21,
   "sla": 7390,
   "spf": 29,
-  "spm": 5052,
+  "spm": 5075,
   "spw": 15877,
   "spz": 16533,
   "start": 823,
@@ -81,13 +81,13 @@
   "zsub": 30
  },
  "dropTables": {
-  "built": 1795631166,
-  "kills": 42131,
-  "mobs": 2190,
-  "submissions": 10
+  "built": 1795683122,
+  "kills": 43794,
+  "mobs": 2235,
+  "submissions": 11
  },
  "fixes": 7,
- "hash": "6ae1f365204502b6",
+ "hash": "1dcef5f1a0f79ba0",
  "recorded": {
   "newSpawns": 2,
   "questRewardsFromGame": 169
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "GPL-3.0 (see LICENSE-DATA.txt)",
    "name": "questie",
-   "ref": "498734b",
+   "ref": "6c9c712",
    "repo": "Questie/QuestieDB",
    "title": "QuestieDB (WoW Forever)"
   },
@@ -136,7 +136,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "e6d9347",
+   "ref": "0b14eb6",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -144,7 +144,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "5f071f3",
+   "ref": "6f98d77",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -152,7 +152,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "98bb3df",
+   "ref": "cd5aabe",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   },
@@ -160,7 +160,7 @@
    "forever": true,
    "licence": "CC BY-SA 4.0 (data; includes Blackthornes Farmer MIT, EG Link CC BY 4.0, Everloot CC BY-SA 4.0)",
    "name": "droptables",
-   "ref": "d3508b7",
+   "ref": "e2c6bf3",
    "repo": "valcheffnet/DropTables",
    "title": "Drop Tables (WoW Forever loot counts)"
   },
