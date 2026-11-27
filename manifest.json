@@ -1,5 +1,5 @@
 {
- "build": "2026-11-26",
+ "build": "2026-11-27",
  "chainPrereqs": 155,
  "counts": {
   "abord": 833,
@@ -32,7 +32,7 @@
   "nfac": 7575,
   "note": 3,
   "npc": 15831,
-  "obj": 12111,
+  "obj": 12115,
   "odrop": 3762,
   "oskill": 163,
   "osummon": 0,
@@ -52,15 +52,15 @@
   "qx": 6085,
   "rare": 1,
   "resp": 10,
-  "rew": 3205,
+  "rew": 3206,
   "seen": 2293,
   "seff": 3931,
   "skin": 22,
   "sla": 7390,
-  "spf": 29,
-  "spm": 5099,
+  "spf": 30,
+  "spm": 5103,
   "spw": 15877,
-  "spz": 16533,
+  "spz": 16537,
   "start": 823,
   "taxi": 101,
   "train": 2,
@@ -81,13 +81,13 @@
   "zsub": 30
  },
  "dropTables": {
-  "built": 1795683122,
-  "kills": 44755,
+  "built": 1795733818,
+  "kills": 44820,
   "mobs": 2256,
-  "submissions": 11
+  "submissions": 12
  },
  "fixes": 7,
- "hash": "89369cf45fab8bff",
+ "hash": "53d7781ab9b878b8",
  "recorded": {
   "newSpawns": 2,
   "questRewardsFromGame": 169
@@ -98,7 +98,7 @@
    "forever": true,
    "licence": "GPL-3.0 (see LICENSE-DATA.txt)",
    "name": "questie",
-   "ref": "661d7ff",
+   "ref": "5c145e3",
    "repo": "Questie/QuestieDB",
    "title": "QuestieDB (WoW Forever)"
   },
@@ -113,7 +113,7 @@
   {
    "licence": "GPL-3.0",
    "name": "cmangos",
-   "ref": "13e9337",
+   "ref": "830293e",
    "repo": "cmangos/classic-db",
    "title": "cMaNGOS classic-db"
   },
@@ -136,7 +136,7 @@
    "forever": true,
    "licence": "MIT",
    "name": "att",
-   "ref": "b83dafc",
+   "ref": "77cd0b6",
    "repo": "ATTWoWAddon/AllTheThings",
    "title": "AllTheThings (WoW Forever database)"
   },
@@ -144,7 +144,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "legacy",
-   "ref": "53fd109",
+   "ref": "fefdcb6",
    "repo": "cjber/legacy-forever",
    "title": "LegacyForever"
   },
@@ -152,7 +152,7 @@
    "forever": true,
    "licence": "GPL-3.0-or-later",
    "name": "spf",
-   "ref": "abf1012",
+   "ref": "3f7008e",
    "repo": "cjber/shortest-path-forever",
    "title": "Shortest Path Forever"
   },
@@ -160,7 +160,7 @@
    "forever": true,
    "licence": "CC BY-SA 4.0 (data; includes Blackthornes Farmer MIT, EG Link CC BY 4.0, Everloot CC BY-SA 4.0)",
    "name": "droptables",
-   "ref": "d11a89a",
+   "ref": "ff0b214",
    "repo": "valcheffnet/DropTables",
    "title": "Drop Tables (WoW Forever loot counts)"
   },
